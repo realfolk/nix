@@ -10,6 +10,11 @@ rec {
     allPkgs = import ./lib/config/package-set.nix { inherit (systemPkgs) fetchFromGitHub; };
   };
 
+  pkgs = {
+    vim = lib.importPackage ./lib/packages/vim/default.nix;
+    screen = lib.importPackage ./lib/packages/screen/default.nix;
+  };
+
   lib = {
 
     importPackage = path: import path { pkgs = config.allPkgs; };
@@ -27,11 +32,6 @@ rec {
       '';
     };
 
-  };
-
-  pkgs = {
-    vim = lib.importPackage ./lib/packages/vim/default.nix;
-    screen = lib.importPackage ./lib/packages/screen/default.nix;
   };
 
 }
