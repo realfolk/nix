@@ -1,6 +1,10 @@
-{ fetchFromGitHub }:
+let
 
-import (fetchFromGitHub {
+systemPkgs = import <nixpkgs> {};
+
+in
+
+import (systemPkgs.fetchFromGitHub {
   owner = "nixos";
   repo = "nixpkgs-channels";
   rev = "91cdcf313578e9520bb45cb21e6a9b1773bd656c";

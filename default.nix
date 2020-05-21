@@ -1,13 +1,7 @@
-let
-
-systemPkgs = import <nixpkgs> {};
-
-in
-
 rec {
 
   config = {
-    allPkgs = import ./lib/config/package-set.nix { inherit (systemPkgs) fetchFromGitHub; };
+    allPkgs = import ./lib/config/package-set.nix;
   };
 
   pkgs = {
