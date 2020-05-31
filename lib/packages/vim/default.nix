@@ -157,7 +157,7 @@ overridden_vim_configurable.customize {
     " easily change filestype
     nmap <Leader>f :set filetype=
     " fix js code
-    "nmap <Leader>p :ALEFix<CR>
+    nmap <Leader>p :ALEFix<CR>
     " pretty JSON
     nmap <Leader>j :%!jq .<CR>
     " close quickfix window
