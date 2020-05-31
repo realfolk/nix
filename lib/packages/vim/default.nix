@@ -156,7 +156,7 @@ overridden_vim_configurable.customize {
     nmap <Leader>h :nohlsearch<CR>
     " easily change filestype
     nmap <Leader>f :set filetype=
-    " fix js code
+    " fix code via fixers
     nmap <Leader>p :ALEFix<CR>
     " pretty JSON
     nmap <Leader>j :%!jq .<CR>
@@ -203,6 +203,7 @@ overridden_vim_configurable.customize {
     let g:ale_linters['haskell'] = ['hlint', 'ghc']
     let g:ale_linters['typescript'] = ['tslint', 'tsserver']
     let g:ale_fixers = {}
+    let g:ale_fixers['*'] = ['remove_trailing_lines', 'trim_whitespace']
     let g:ale_fixers['javascript'] = ['prettier', 'eslint']
     let g:ale_fixers['typescript'] = ['tslint', 'prettier', 'eslint']
     let g:ale_fixers['haskell'] = ['hlint', 'hfmt']
