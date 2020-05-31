@@ -98,7 +98,6 @@ overridden_vim_configurable.customize {
     opt = with plugins; [
       yaml-folds
       ale
-      LanguageClient-neovim
     ];
   };
 
@@ -244,8 +243,6 @@ overridden_vim_configurable.customize {
       endif
       " Start ALE
       packadd ale
-      " Start LanguageClient
-      packadd LanguageClient-neovim
     endfunction
     " Load local .vimrc file when starting vim
     autocmd VimEnter * call StartUp()
