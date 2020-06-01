@@ -156,14 +156,14 @@ overridden_vim_configurable.customize {
     nmap <Leader>h :nohlsearch<CR>
     " easily change filestype
     nmap <Leader>f :set filetype=
-    " fix code via fixers
-    nmap <Leader>p :ALEFix<CR>
     " pretty JSON
     nmap <Leader>j :%!jq .<CR>
     " close quickfix window
     nmap <Leader>qc :cclose<CR>
     " open quickfix window
     nmap <Leader>qo :copen<CR>
+    " close preview window
+    nmap <Leader>pc :pclose <CR>
 
     " remap omnicomplete
     " inoremap <C-n> <C-x><C-o>
@@ -223,6 +223,7 @@ overridden_vim_configurable.customize {
     nmap <leader>agv :ALEGoToDefinitionInVSplit<CR>
     nmap <leader>ar :ALEFindReferences<CR>
     nmap <leader>ah :ALEHover<CR>
+    nmap <Leader>af :ALEFix<CR>
 
     " Set make program repo-specific make script
     if filereadable("./make.sh")
