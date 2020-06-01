@@ -108,6 +108,7 @@ overridden_vim_configurable.customize {
 
 		set nocompatible
 		syntax enable
+    set path+=**
     
     " tabs as 2 spaces instead of \t characters
     set tabstop=2 shiftwidth=2 expandtab
