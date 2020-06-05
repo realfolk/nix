@@ -45,7 +45,7 @@ let mapleader=","
 " easier to switch to the last active buffer
 nmap <Leader><Leader> :b#<CR>
 " toggle line numbers
-nmap <Leader>l :set invrelativenumber<CR>
+nmap <Leader>L :set invrelativenumber<CR>
 " open terminal
 nmap <Leader>t :tab terminal
 nmap <Leader>tv :vert terminal
