@@ -68,12 +68,9 @@ screenrc = pkgs.writeText "screenrc" ''
   defscrollback 30000
 
   #init
-  #TODO how to stay DRY in screenrc?
   screen -t ranger bash -c "$SCREENRC_NIX_SHELL --command 'PYTHONPATH="" ranger' || ranger"
-  split -v
-  focus right
   screen -t shell bash -c "$SCREENRC_NIX_SHELL || bash"
-  focus left
+  prev
 '';
 
 in
