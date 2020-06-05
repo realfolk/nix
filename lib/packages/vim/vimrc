@@ -116,6 +116,7 @@ let g:ale_javascript_eslint_use_global = 0
 let g:ale_completion_enabled = 1
 let g:ale_close_preview_on_insert = 1
 let g:ale_lsp_show_message_severity = 'information'
+let g:ale_fix_on_save = 1
 set omnifunc=ale#completion#OmniFunc
 " easily jump between errors
 map <silent><C-k> <Plug>(ale_previous_wrap)
