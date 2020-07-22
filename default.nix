@@ -11,6 +11,10 @@ rec {
 
   lib = {
 
+    ghc = import ./lib/ghc/default.nix;
+
+    projects = import ./lib/projects.nix;
+
     importPackage = path: import path { pkgs = config.allPkgs; };
 
     mkShell = { buildInputs ? [], shellHook ? "" }: config.allPkgs.mkShell {
