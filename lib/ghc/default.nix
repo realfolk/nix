@@ -101,7 +101,6 @@ commands = rec {
       ${ghcPkg}/bin/haddock -h ${makeGhcFlagsString project "--optghc=" " "} -o ${buildDir} $interface_cmds "$@" --package-name=${project.name} "${project.srcPath}/${mainFile}"
   '');
 
-  #${(ghc project).bin} -odir "${project.buildArtifacts}" -hidir "${project.buildArtifacts}" -O2 -threaded --make -j8 "${project.srcPath}/${mainFile}" -o "${buildTarget}" -prof -fprof-auto -rtsopts -static -optl-pthread -optl-static "$@" && echo "Successfully built: ${buildTarget}"
   build = makeCommandsForExecutables "build" false (project: execName: mainFile: let
     buildDir = makeBuildDir project execName;
     buildTarget = makeBuildTarget project execName;
@@ -109,6 +108,7 @@ commands = rec {
     mkdir -p "${buildDir}"
     test -f "${buildTarget}" && rm "${buildTarget}"
     ${(ghc project).bin} -O2 -threaded +RTS -N8 -RTS --make -j8 -hidir "${project.buildArtifacts}" -odir "${project.buildArtifacts}" "${project.srcPath}/${mainFile}" -o "${buildTarget}" -prof -fprof-auto -rtsopts "$@" && echo "Successfully built: ${buildTarget}"
+    #${(ghc project).bin} -O2 -threaded +RTS -N8 -RTS --make -j8 -hidir "${project.buildArtifacts}" -odir "${project.buildArtifacts}" "${project.srcPath}/${mainFile}" -o "${buildTarget}" -prof -fprof-auto -rtsopts -static -optl-pthread -optl-static "$@" && echo "Successfully built: ${buildTarget}"
   '');
 
   run = makeCommandsForExecutables "run" false (project: execName: mainFile:
