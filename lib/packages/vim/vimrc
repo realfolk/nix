@@ -149,6 +149,9 @@ function StartUp()
   if filereadable("./.vimrc")
     source .vimrc
   endif
+  if filereadable("./.tmp.vimrc")
+    source .tmp.vimrc
+  endif
 endfunction
 " Load local .vimrc file when starting vim
 autocmd VimEnter * call StartUp()
