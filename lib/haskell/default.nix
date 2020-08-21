@@ -1,4 +1,12 @@
-{ pkgs, selectHaskellPackages, extraHaskellExtensions ? self: super: {} }:
+{
+  pkgs,
+  selectGhcPackages ? p: [],
+  selectGhcjsPackages ? p: [],
+  selectSharedPackages ? p: [],
+  extraGhcExtensions ? self: super: {},
+  extraGhcjsExtensions ? self: super: {},
+  extraSharedExtensions ? self: super: {}
+}:
 
 let
 
@@ -6,9 +14,9 @@ projectsLib = import ../projects.nix { inherit pkgs; };
 
 hlib = pkgs.haskell.lib;
 
-rootHaskellPkgs = pkgs.haskell.packages.ghc8101;
+# GHC
 
-haskellSourceOverrides = hlib.packageSourceOverrides {
+ghcSourceOverrides = hlib.packageSourceOverrides {
   th-expand-syns = pkgs.fetchFromGitHub {
     owner = " DanielSchuessler";
     repo = "th-expand-syns";
@@ -37,7 +45,7 @@ dataTreePrintSrc = pkgs.fetchFromGitHub {
   sha256 = "0q4hl6s8fr82m5b7mcwbr18pv9hcyarsbd5y6ik504f5zw8jwld7";
 };
 
-haskellExtensions = pkgs.lib.composeExtensions haskellSourceOverrides (self: super: {
+ghcExtensions = pkgs.lib.composeExtensions ghcSourceOverrides (self: super: {
   stylish-haskell = hlib.appendPatch super.stylish-haskell ./patches/stylish-haskell-0.11.0.0.patch;
   hindent = hlib.appendPatch super.hindent ./patches/hindent-5.3.1.patch;
   ghc-exactprint = super.ghc-exactprint_0_6_3_1;
@@ -50,9 +58,11 @@ haskellExtensions = pkgs.lib.composeExtensions haskellSourceOverrides (self: sup
   haddock = hlib.dontHaddock super.haddock;
 });
 
-haskellPkgs = rootHaskellPkgs.extend (pkgs.lib.composeExtensions haskellExtensions extraHaskellExtensions);
+rootGhcPkgs = pkgs.haskell.packages.ghc8101;
 
-ghcPkg = haskellPkgs.ghcWithHoogle selectHaskellPackages;
+ghcPkgs = rootGhcPkgs.extend (pkgs.lib.composeExtensions (pkgs.lib.composeExtensions ghcExtensions extraGhcExtensions) extraSharedExtensions);
+
+ghcPkg = ghcPkgs.ghcWithHoogle (p: (selectGhcPackages p) ++ (selectSharedPackages p));
 
 ghcidPkg = pkgs.ghcid;
 
@@ -66,15 +76,44 @@ makeGhcFlags = project: prefix: builtins.concatLists [
 
 makeGhcFlagsString = project: prefix: sep: builtins.concatStringsSep sep (makeGhcFlags project prefix);
 
+# GHCJS
+
+miso = import (pkgs.fetchFromGitHub {
+  owner = "dmjio";
+  repo = "miso";
+  rev = "b25512dfb0cc316902c33f9825355944312d1e15";
+  sha256 = "007cl5125zj0c35xim8935k0pvyd0x4fc0s7jryc3qg3pmjbszc9";
+}) {};
+
+ghcjsPkgSet = miso.pkgs;
+
+ghcjsSourceOverrides = hlib.packageSourceOverrides {
+};
+
+ghcjsExtensions = pkgs.lib.composeExtensions ghcjsSourceOverrides (self: super: {
+});
+
+rootGhcjsPkgs = ghcjsPkgSet.haskell.packages.ghcjs86;
+
+ghcjsPkgs = rootGhcjsPkgs.extend (pkgs.lib.composeExtensions (pkgs.lib.composeExtensions ghcjsExtensions extraGhcjsExtensions) extraSharedExtensions);
+
+ghcjsPkg = ghcjsPkgs.ghcWithPackages (p: (selectGhcjsPackages p) ++ (selectSharedPackages p));
+
+# COMMANDS
+
 makeCommandsForExecutables = name: shellHook: makeScript: project:
   pkgs.lib.attrsets.mapAttrsToList
     (execName: mainFile: projectsLib.makeCommand project "${name}-${execName}" (makeScript project execName mainFile) shellHook)
     project.executables;
 
 makeBuildDir = project: execName: "${project.buildPath}/${execName}";
-makeBuildTarget = project: execName: "${makeBuildDir project execName}/exe";
+makeBuildTarget = { project, execName, targetName ? "exe" }: "${makeBuildDir project execName}/${targetName}";
+makeBuildTargetExe = project: execName: makeBuildTarget { inherit project execName; targetName = "exe"; };
+makeBuildTargetJs = project: execName: makeBuildTarget { inherit project execName; targetName = "js"; };
 
 commands = rec {
+
+  # GHC COMMANDS
 
   ghc-flags = project: projectsLib.makeCommand project "ghc-flags" "echo -n \"${makeGhcFlagsString project "" " "}\"" false;
 
@@ -103,28 +142,42 @@ commands = rec {
 
   build = makeCommandsForExecutables "build" false (project: execName: mainFile: let
     buildDir = makeBuildDir project execName;
-    buildTarget = makeBuildTarget project execName;
+    buildTarget = makeBuildTargetExe project execName;
   in ''
     mkdir -p "${buildDir}"
     test -f "${buildTarget}" && rm "${buildTarget}"
-    ${(ghc project).bin} -O2 -threaded +RTS -N8 -RTS --make -j8 -hidir "${project.buildArtifacts}" -odir "${project.buildArtifacts}" "${project.srcPath}/${mainFile}" -o "${buildTarget}" -prof -fprof-auto -rtsopts "$@" && echo "Successfully built: ${buildTarget}"
-    #${(ghc project).bin} -O2 -threaded +RTS -N8 -RTS --make -j8 -hidir "${project.buildArtifacts}" -odir "${project.buildArtifacts}" "${project.srcPath}/${mainFile}" -o "${buildTarget}" -prof -fprof-auto -rtsopts -static -optl-pthread -optl-static "$@" && echo "Successfully built: ${buildTarget}"
+    ${(ghc project).bin} -O2 -threaded +RTS -N6 -RTS --make -j6 -hidir "${project.buildArtifacts}" -odir "${project.buildArtifacts}" "${project.srcPath}/${mainFile}" -o "${buildTarget}" -rtsopts "$@" && echo "Successfully built: ${buildTarget}"
   '');
 
   run = makeCommandsForExecutables "run" false (project: execName: mainFile:
     let
-      buildTarget = makeBuildTarget project execName;
+      buildTarget = makeBuildTargetExe project execName;
       buildCommandName = projectsLib.makeCommandName {
         inherit project execName;
         commandName = "build";
       };
       buildCommand = projectsLib.findCommand buildCommandName (build project);
     in if buildCommand == false then "echo 'Build command not found: ${buildCommandName}'" else ''
-      ${buildCommand.bin}
+      ${buildCommand.bin} -prof -fprof-auto
       ${buildTarget} "$@"
     '');
 
+  # GHCJS COMMANDS
+
+  ghcjs = project: projectsLib.makeCommand project "ghcjs" "${ghcjsPkg}/bin/ghcjs ${makeGhcFlagsString project "" " "} \"$@\"" false;
+
+  buildjs = makeCommandsForExecutables "buildjs" false (project: execName: mainFile: let
+    buildDir = makeBuildDir project execName;
+    buildTarget = makeBuildTargetJs project execName;
+  in ''
+    mkdir -p "${buildDir}"
+    test -f "${buildTarget}" && rm "${buildTarget}"
+    ${(ghcjs project).bin} -O2 -threaded +RTS -N6 -RTS --make -j6 -hidir "${project.buildArtifacts}" -odir "${project.buildArtifacts}" "${project.srcPath}/${mainFile}" -o "${buildTarget}" "$@" && echo "Successfully built: ${buildTarget}"
+  '');
+
   };
+
+# PROJECTS
 
 projectConfig = {
   commands = [
@@ -137,6 +190,8 @@ projectConfig = {
     commands.ghcid
     commands.build
     commands.run
+    commands.ghcjs
+    commands.buildjs
   ];
 };
 
@@ -149,19 +204,15 @@ makeProjects = projects: projectsLib.makeProjects projects projectConfig;
 
 in
 
+# EXPORTS
+
 {
   inherit defineProject makeProject makeProjects;
 
   pkgs = [
     ghcPkg
     ghcidPkg
-    #following used for static linking of built binaries
-    #pkgs.gmp5.static
-    #pkgs.glibc.static
-    #pkgs.zlib.static
-    #pkgs.zlib.dev
-    #pkgs.lmdb.dev
-    #(pkgs.libffi.overrideAttrs (old: { dontDisableStatic = true; }))
+    ghcjsPkg
   ];
 
   shellHook = ''

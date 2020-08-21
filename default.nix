@@ -1,7 +1,7 @@
 rec {
 
   config = {
-    allPkgs = import ./lib/config/package-set.nix;
+    pkgSet = import ./lib/config/package-set.nix;
   };
 
   pkgs = {
@@ -11,13 +11,13 @@ rec {
 
   lib = {
 
-    ghc = import ./lib/ghc/default.nix;
-
     projects = import ./lib/projects.nix;
 
-    importPackage = path: import path { pkgs = config.allPkgs; };
+    haskell = import ./lib/haskell/default.nix;
 
-    mkShell = { buildInputs ? [], shellHook ? "" }: config.allPkgs.mkShell {
+    importPackage = path: import path { pkgs = config.pkgSet; };
+
+    mkShell = { buildInputs ? [], shellHook ? "" }: config.pkgSet.mkShell {
       buildInputs = builtins.concatLists [
         (builtins.attrValues pkgs)
         buildInputs
