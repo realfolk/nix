@@ -125,6 +125,9 @@ commands = rec {
     projectsLib.makeCommand project "hie-yaml" ''
       mkdir -p "${project.srcPath}"
       echo -ne "cradle: {direct: {arguments: [${makeGhcFlagsString project "" ", "}]}}" > "${project.srcPath}/hie.yaml"
+
+      #echo -ne 'cradle: {bios: {with-ghc: "${(ghc project).bin}/bin/ghc"}, shell: "echo -ne \"${makeGhcFlagsString project "" " "}\" > $HIE_BIOS_OUTPUT"}' > "${project.srcPath}/hie.yaml"
+      #echo -ne 'cradle: {bios: {shell: "echo -ne \\"${makeGhcFlagsString project "" " "}\\" > $HIE_BIOS_OUTPUT"}}' > "${project.srcPath}/hie.yaml"
     '' true;
 
   ghcid = makeCommandsForExecutables "ghcid" false (project: execName: mainFile: ''
