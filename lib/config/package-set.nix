@@ -7,6 +7,6 @@ in
 import (systemPkgs.fetchFromGitHub {
   owner = "nixos";
   repo = "nixpkgs-channels";
-  rev = "1d8018068278a717771e9ec4054dff1ebd3252b0";
-  sha256 = "1vi3wbvlvpd4200swd3594vps1fsnd7775mgzm3nnfs1imzkg00i";
+  rev = "c59ea8b8a0e7f927e7291c14ea6cd1bd3a16ff38";
+  sha256 = "1ak7jqx94fjhc68xh1lh35kh3w3ndbadprrb762qgvcfb8351x8v";
 }) {}

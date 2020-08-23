@@ -29,13 +29,12 @@ ghcSourceOverrides = hlib.packageSourceOverrides {
     rev = "b876669e74ce5ca9e183c0bc53b90fc6a946e799";
     sha256 = "0psaydskbkfxyl2466nxw1bm3hx6cbm543xvqrbmhkbprbz2rkxh";
   };
-};
-
-hlsSrc = pkgs.fetchFromGitHub {
-  owner = "haskell";
-  repo = "haskell-language-server";
-  rev = "7ad18cfa2d358e9def610dff1c113c87eb0eb19c";
-  sha256 = "1j76wgfngil40qji29b76x20m4n6vdkz18i18y5yn71izxna2i8n";
+  http-media = pkgs.fetchFromGitHub {
+    owner = "zmthy";
+    repo = "http-media";
+    rev = "917b58ff5f69f1dc7791c59f6530767d099680bf";
+    sha256 = "0j9qwx8h16szj7hwkx8zar7w6b2nsvqqq5fp0aaphjqijl33x9r4";
+  };
 };
 
 dataTreePrintSrc = pkgs.fetchFromGitHub {
@@ -46,16 +45,19 @@ dataTreePrintSrc = pkgs.fetchFromGitHub {
 };
 
 ghcExtensions = pkgs.lib.composeExtensions ghcSourceOverrides (self: super: {
-  stylish-haskell = hlib.appendPatch super.stylish-haskell ./patches/stylish-haskell-0.11.0.0.patch;
+  stylish-haskell = hlib.dontCheck super.stylish-haskell;
   hindent = hlib.appendPatch super.hindent ./patches/hindent-5.3.1.patch;
-  ghc-exactprint = super.ghc-exactprint_0_6_3_1;
+  ghc-exactprint = super.ghc-exactprint_0_6_3_2;
   data-tree-print = hlib.appendPatch (super.callCabal2nix "data-tree-print" dataTreePrintSrc {}) ./patches/data-tree-print-0.1.0.2.patch;
   doctest = hlib.dontCheck super.doctest_0_17;
-  haskell-language-server_0_2 = hlib.dontCheck (super.callCabal2nixWithOptions "haskell-language-server" hlsSrc "-f -agpl" {
-    ormolu = super.ormolu_0_0_5_0;
-    ghcide = super.hls-ghcide;
-  });
+  haskell-language-server = (hlib.disableCabalFlag super.haskell-language-server "agpl").override {
+    brittany = null;
+  };
   haddock = hlib.dontHaddock super.haddock;
+  servant = super.servant_0_18;
+  servant-server = super.servant-server_0_18;
+  servant-lucid = hlib.appendPatch super.servant-lucid_0_9_0_1 ./patches/servant-lucid-0.9.0.1.patch;
+  miso = super.miso_1_7_1_0;
 });
 
 rootGhcPkgs = pkgs.haskell.packages.ghc8101;
@@ -125,10 +127,13 @@ commands = rec {
     projectsLib.makeCommand project "hie-yaml" ''
       mkdir -p "${project.srcPath}"
       echo -ne "cradle: {direct: {arguments: [${makeGhcFlagsString project "" ", "}]}}" > "${project.srcPath}/hie.yaml"
-
-      #echo -ne 'cradle: {bios: {with-ghc: "${(ghc project).bin}/bin/ghc"}, shell: "echo -ne \"${makeGhcFlagsString project "" " "}\" > $HIE_BIOS_OUTPUT"}' > "${project.srcPath}/hie.yaml"
-      #echo -ne 'cradle: {bios: {shell: "echo -ne \\"${makeGhcFlagsString project "" " "}\\" > $HIE_BIOS_OUTPUT"}}' > "${project.srcPath}/hie.yaml"
-    '' true;
+      #cat <<EOF > "${project.srcPath}/hie.yaml"
+        #cradle:
+          #bios:
+            #with-ghc: "PATH_TO_GHC"
+            #shell: 'echo -ne "${makeGhcFlagsString project "" " "}"'
+      #EOF
+    '' (!project.ghcjs); #haskell-language-server is only supported for ghc
 
   ghcid = makeCommandsForExecutables "ghcid" false (project: execName: mainFile: ''
       ${ghcidPkg}/bin/ghcid --command=${(ghci project).bin} --test=main --reload "${project.srcPath}" "${project.srcPath}/${mainFile}" "$@"
@@ -198,8 +203,8 @@ projectConfig = {
   ];
 };
 
-defineProject = { executables ? {}, ... } @ args:
-  { inherit executables; } // (projectsLib.defineProject (builtins.removeAttrs args [ "executables" ]));
+defineProject = { executables ? {}, ghcjs ? false, ... } @ args:
+  { inherit executables ghcjs; } // (projectsLib.defineProject (builtins.removeAttrs args [ "executables" "ghcjs" ]));
 
 makeProject = project: projectsLib.makeProject project projectConfig;
 
