@@ -57,7 +57,6 @@ overridden_vim_configurable.customize {
     ];
     # manually loadable by calling `:packadd $plugin-name`
     opt = with plugins; [
-      sensible
       yaml-folds
     ];
   };
