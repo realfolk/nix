@@ -45,7 +45,6 @@ overridden_vim_configurable.customize {
       haskell-vim
       vim-markdown
       elm-vim
-      haskell-vim
       typescript-vim
       vim-rooter
       ledger
