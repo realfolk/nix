@@ -59,8 +59,8 @@ plugins = pkgs.vimPlugins // {
     src = pkgs.fetchFromGitHub {
       owner = "peitalin";
       repo = "vim-jsx-typescript";
-      rev = "9abb310f2b71be869f936c0ed715ae98fc7d703a";
-      sha256 = "0fr6zxm3qf3c7b6xx32p890f1gz2i922jz6cfb2cwxb8j5kpby1w";
+      rev = "07370d48c605ec027543b52762930165b1b27779";
+      sha256 = "190nyy7kr6i3xr6nrjlfv643s1c48kxlbh8ynk8p53yf32gcxwz7";
     };
   };
 };
