@@ -24,6 +24,15 @@ plugins = pkgs.vimPlugins // {
       sha256 = "0yp2jgaqiria79lh75fkrs77rw7nk518bq63w9bvyy814i7s4scn";
     };
   };
+  yajs-vim = pkgs.vimUtils.buildVimPluginFrom2Nix {
+    name = "yajs-vim";
+    src = pkgs.fetchFromGitHub {
+      owner = "othree";
+      repo = "yajs.vim";
+      rev = "2bebc45ce94d02875803c67033b2d294a5375064";
+      sha256 = "15ky34nbv0wa9jq92hm7ya4s05zgippkcifd3m8s59n0dy5lkpc0";
+    };
+  };
 };
 
 in
@@ -45,14 +54,12 @@ overridden_vim_configurable.customize {
       haskell-vim
       vim-markdown
       elm-vim
-      typescript-vim
       vim-rooter
       ledger
-      vim-json
-      vim-javascript
       vim-jsdoc
+      yajs-vim #javascript & json syntax highlighting
+      yats-vim #typescript syntax highlighting
       Hoogle
-      vim-jsx-typescript
       ale
     ];
     # manually loadable by calling `:packadd $plugin-name`
