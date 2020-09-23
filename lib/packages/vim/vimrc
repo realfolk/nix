@@ -105,6 +105,7 @@ autocmd BufWritePost * call system('which ctags &> /dev/null && ctags -R . || ex
 
 " rooter config
 let g:rooter_patterns = ['.git', '.git/', 'shell.nix', 'src/']
+let g:rooter_silent_chdir = 1
 
 " airline
 let g:airline#extensions#ale#enabled = 1
