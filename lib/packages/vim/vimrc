@@ -1,6 +1,21 @@
 set nocompatible
-syntax enable
 set path+=**
+
+" settings from vim-sensible
+syntax enable
+filetype plugin indent on
+set autoindent
+set backspace=indent,eol,start " normal backspace in insert mode
+set complete-=i " don't search included files for completion
+set smarttab
+set history=1000
+set tabpagemax=50
+set ruler
+set wildmenu
+set scrolloff=1
+set sidescrolloff=5
+set display=lastline
+set formatoptions+=j
 
 " tabs as 2 spaces instead of \t characters
 set tabstop=2 shiftwidth=2 expandtab
@@ -75,7 +90,7 @@ nmap <Leader>ln :lnext<CR>
 
 " wildignore / ctrlp ignore rules
 "let g:ctrlp_custom_ignore = "\.(git|svg|hg)$"
-set wildignore+=*.so,*.swp,*.zip,*.hi,*.o,*/node_modules/*,*/dist/*,*/.dist/*,*/build/*,*/.build/*,*/Godeps/*,*/elm-stuff/*,*/.gem/*,*/.git/*
+set wildignore+=*.so,*.swp,*.zip,*.hi,*.o,*/node_modules/*,*/dist/*,*/.dist/*,*/build/*,*/.build/*,*/Godeps/*,*/elm-stuff/*,*/.gem/*,*/.git/*,*/tmp/*
 
 " NERD tree options
 map <C-l> :NERDTreeToggle<CR>
