@@ -43,6 +43,7 @@ overridden_vim_configurable.customize {
 
   vimrcConfig.packages.myVimPackages = {
     start = with plugins; [
+      vim-sensible
       gruvbox
       ctrlp
       easy-align
