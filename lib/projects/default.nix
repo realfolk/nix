@@ -4,13 +4,15 @@ let
 
 foldr = pkgs.lib.foldr;
 
+commonCommandPrefix = "common";
+
 in
 
 rec {
 
-  defineProject = { groupName, srcDir, buildDir, buildArtifactsDir }: { name, dependencies }:
+  defineProject = { groupName, srcDir, buildDir, buildArtifactsDir }: { name }:
     {
-      inherit name groupName dependencies;
+      inherit name groupName;
       srcPath = "${srcDir}/${groupName}/${name}";
       buildPath = "${buildDir}/${groupName}/${name}";
       buildArtifacts = "${buildArtifactsDir}/${groupName}/${name}";
@@ -45,14 +47,44 @@ rec {
 
   findCommand = matchName: commands: pkgs.lib.lists.findFirst ({ name, ...}: name == matchName) false commands;
 
-  commands = {
-    cd = project: makeCommand {
+  commonCommands = {
+
+    cd-src = project: makeCommand {
       inherit project;
-      name = "cd";
+      name = "${commonCommandPrefix}-cd";
+      subName = "src";
       script = ''
-        cd ${project.srcPath}
+        cd "${project.srcPath}"
       '';
     };
+
+    cd-build = project: makeCommand {
+      inherit project;
+      name = "${commonCommandPrefix}-cd";
+      subName = "build";
+      script = ''
+        cd "${project.buildPath}"
+      '';
+    };
+
+    ls-src = project: makeCommand {
+      inherit project;
+      name = "${commonCommandPrefix}-ls";
+      subName = "src";
+      script = ''
+        ls "${project.srcPath}" "$@"
+      '';
+    };
+
+    ls-build = project: makeCommand {
+      inherit project;
+      name = "${commonCommandPrefix}-ls";
+      subName = "build";
+      script = ''
+        ls "${project.buildPath}" "$@"
+      '';
+    };
+
   };
 
 }

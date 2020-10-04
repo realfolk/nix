@@ -11,9 +11,10 @@ rec {
 
   lib = {
 
-    projects = import ./lib/projects.nix;
-
-    haskell = import ./lib/haskell/default.nix;
+    projects = args: ((import ./lib/projects/default.nix) args) // {
+      haskell = import ./lib/projects/haskell/default.nix;
+      static = import ./lib/projects/static/default.nix;
+    };
 
     importPackage = path: import path { pkgs = config.pkgSet; };
 

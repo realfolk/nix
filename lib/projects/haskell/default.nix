@@ -10,7 +10,7 @@
 
 let
 
-projectsLib = import ../projects.nix { inherit pkgs; };
+projectsLib = import ../default.nix { inherit pkgs; };
 
 hlib = pkgs.haskell.lib;
 
@@ -103,7 +103,7 @@ ghcjsPkg = ghcjsPkgs.ghcWithPackages (p: (selectGhcjsPackages p) ++ (selectShare
 
 # COMMANDS
 
-commandPrefix = "haskell";
+projectTypeId = "haskell";
 
 makeCommandsForExecutables = { name, makeScript, includeInShellHook ? false }: project:
   pkgs.lib.attrsets.mapAttrsToList
@@ -113,10 +113,10 @@ makeCommandsForExecutables = { name, makeScript, includeInShellHook ? false }: p
     })
     project.executables;
 
-makeBuildDir = project: dirName: "${project.buildPath}/haskell/${dirName}";
+makeBuildDir = project: dirName: "${project.buildPath}/${projectTypeId}/${dirName}";
 makeBuildTarget = { project, dirName, targetName }: "${makeBuildDir project dirName}/${targetName}";
-makeBuildTargetGHC = project: dirName: makeBuildTarget { inherit project dirName; targetName = "out.ghc"; };
-makeBuildTargetGHCJS = project: dirName: makeBuildTarget { inherit project dirName; targetName = "out.ghcjs"; };
+makeBuildTargetGhc = project: dirName: makeBuildTarget { inherit project dirName; targetName = "out.ghc"; };
+makeBuildTargetGhcJs = project: dirName: makeBuildTarget { inherit project dirName; targetName = "out.ghcjs"; };
 
 commands = rec {
 
@@ -124,26 +124,26 @@ commands = rec {
 
   ghc-flags = project: projectsLib.makeCommand {
     inherit project;
-    name = "${commandPrefix}-ghc-flags";
+    name = "${projectTypeId}-ghc-flags";
     script = "echo -n \"${makeGhcFlagsString project "" " "}\"";
   };
 
   ghc = project: projectsLib.makeCommand {
     inherit project;
-    name = "${commandPrefix}-ghc";
+    name = "${projectTypeId}-ghc";
     script = "${ghcPkg}/bin/ghc ${makeGhcFlagsString project "" " "} \"$@\"";
   };
 
   ghci = project: projectsLib.makeCommand {
     inherit project;
-    name = "${commandPrefix}-ghci";
+    name = "${projectTypeId}-ghci";
     script = "${ghcPkg}/bin/ghci ${makeGhcFlagsString project "" " "} \"$@\"";
   };
 
   hie-yaml = project:
     projectsLib.makeCommand {
       inherit project;
-      name = "${commandPrefix}-hie-yaml";
+      name = "${projectTypeId}-hie-yaml";
       includeInShellHook = true; #TODO haskell-language-server is only supported for ghc
       script = ''
         mkdir -p "${project.srcPath}"
@@ -158,14 +158,14 @@ commands = rec {
     };
 
     ghcid = makeCommandsForExecutables {
-      name = "${commandPrefix}-ghcid";
+      name = "${projectTypeId}-ghcid";
       makeScript = (project: subName: mainFile: ''
         ${ghcidPkg}/bin/ghcid --command=${(ghci project).bin} --test=main --reload "${project.srcPath}" "${project.srcPath}/${mainFile}" "$@"
       '');
     };
 
     docs = makeCommandsForExecutables {
-      name = "${commandPrefix}-docs";
+      name = "${projectTypeId}-docs";
       makeScript = (project: subName: mainFile:
         let
           buildDir = "${makeBuildDir project subName}/docs";
@@ -178,11 +178,11 @@ commands = rec {
     };
 
     build = makeCommandsForExecutables {
-      name = "${commandPrefix}-build";
+      name = "${projectTypeId}-build";
       makeScript = (project: subName: mainFile:
         let
           buildDir = makeBuildDir project subName;
-          buildTarget = makeBuildTargetGHC project subName;
+          buildTarget = makeBuildTargetGhc project subName;
         in ''
           mkdir -p "${buildDir}"
           test -f "${buildTarget}" && rm "${buildTarget}"
@@ -191,13 +191,13 @@ commands = rec {
     };
 
     run = makeCommandsForExecutables {
-      name = "${commandPrefix}-run";
+      name = "${projectTypeId}-run";
       makeScript = (project: subName: mainFile:
         let
-          buildTarget = makeBuildTargetGHC project subName;
+          buildTarget = makeBuildTargetGhc project subName;
           buildCommandName = projectsLib.makeCommandName {
             inherit project subName;
-            name = "${commandPrefix}-build";
+            name = "${projectTypeId}-build";
           };
           buildCommand = projectsLib.findCommand buildCommandName (build project);
         in if buildCommand == false then "echo 'Build command not found: ${buildCommandName}'" else ''
@@ -210,16 +210,16 @@ commands = rec {
 
   ghcjs = project: projectsLib.makeCommand {
     inherit project;
-    name = "${commandPrefix}-ghcjs";
+    name = "${projectTypeId}-ghcjs";
     script = "${ghcjsPkg}/bin/ghcjs ${makeGhcFlagsString project "" " "} \"$@\"";
   };
 
   buildjs = makeCommandsForExecutables {
-    name = "${commandPrefix}-buildjs";
+    name = "${projectTypeId}-buildjs";
     makeScript = (project: subName: mainFile:
       let
         buildDir = makeBuildDir project subName;
-        buildTarget = makeBuildTargetGHCJS project subName;
+        buildTarget = makeBuildTargetGhcJs project subName;
       in ''
         mkdir -p "${buildDir}"
         test -f "${buildTarget}" && rm "${buildTarget}"
@@ -233,7 +233,10 @@ commands = rec {
 
 projectConfig = {
   commands = [
-    projectsLib.commands.cd
+    projectsLib.commonCommands.cd-src
+    projectsLib.commonCommands.cd-build
+    projectsLib.commonCommands.ls-src
+    projectsLib.commonCommands.ls-build
     commands.ghc-flags
     commands.ghc
     commands.ghci
@@ -247,8 +250,8 @@ projectConfig = {
   ];
 };
 
-defineProject = rootConfig: { executables ? {}, ... }@args:
-  { inherit executables; } // (projectsLib.defineProject rootConfig (builtins.removeAttrs args [ "executables" ]));
+defineProject = rootConfig: { executables ? {}, dependencies ? [], ... }@args:
+  { inherit executables dependencies; } // (projectsLib.defineProject rootConfig (builtins.removeAttrs args [ "executables" "dependencies" ]));
 
 makeProject = project: projectsLib.makeProject project projectConfig;
 
