@@ -2,7 +2,7 @@
 
 let
 
-screenrc = builtins.readFile ./screenrc;
+screenrc = pkgs.writeText "screenrc" (builtins.readFile ./screenrc);
 
 in
 
