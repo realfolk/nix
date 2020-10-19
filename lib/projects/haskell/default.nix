@@ -201,7 +201,7 @@ commands = rec {
           };
           buildCommand = projectsLib.findCommand buildCommandName (build project);
         in if buildCommand == false then "echo 'Build command not found: ${buildCommandName}'" else ''
-          ${buildCommand.bin} -prof -fprof-auto
+          ${buildCommand.bin}
           ${buildTarget} "$@"
       '');
     };
