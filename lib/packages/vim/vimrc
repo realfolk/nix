@@ -79,10 +79,10 @@ nmap <Leader>ln :lnext<CR>
 set wildignore+=*.so,*.swp,*.zip,*.hi,*.o,*/node_modules/*,*/dist/*,*/.dist/*,*/build/*,*/.build/*,*/Godeps/*,*/elm-stuff/*,*/.gem/*,*/.git/*,*/tmp/*
 
 " NERD tree options
-map <C-l> :NERDTreeToggle<CR>
+map <C-L> :NERDTreeToggle<CR>
 
 " Search tags with CtrlP
-map <C-o> :CtrlPTag<CR>
+map <C-\> :CtrlPTag<CR>
 
 " easy-align mapping
 nmap ga <Plug>(EasyAlign)
