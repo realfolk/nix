@@ -99,7 +99,7 @@ au! BufNewFile,BufRead *.ejs set filetype=html
 au! BufNewFile,BufRead *.ledger set filetype=ledger
 au! BufNewFile,BufRead *.json,*.js,*.jsx set filetype=javascript
 au! BufNewFile,BufRead *.ts,*.tsx set filetype=typescript
-au! BufNewFile,BufRead *.dockerfile,*.docker set filetype=Dockerfile
+au! BufNewFile,BufRead *.dockerfile,*.docker set filetype=dockerfile
 
 " run ctags on save, if available
 autocmd BufWritePost * call system('which ctags &> /dev/null && ctags -R . || exit 0')
