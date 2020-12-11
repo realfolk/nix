@@ -5,6 +5,16 @@ let
 overridden_vim_configurable = pkgs.vim_configurable.override { guiSupport = "false"; };
 
 plugins = pkgs.vimPlugins // {
+  #Use v3.0.0 of Ale
+  vim-ale-latest = pkgs.vimUtils.buildVimPluginFrom2Nix {
+    name = "vim-ale-latest";
+    src = pkgs.fetchFromGitHub {
+      owner = "dense-analysis";
+      repo = "ale";
+      rev = "08295ce17405cb5f6c80d2f726262493bfd21210";
+      sha256 = "1y73h2s8zbl29yvmxlds042abb7vxrgm59mx4mdpp7f41wsm72xm";
+    };
+  };
   ledger = pkgs.vimUtils.buildVimPluginFrom2Nix {
     name = "ledger";
     src = pkgs.fetchFromGitHub {
@@ -61,7 +71,7 @@ overridden_vim_configurable.customize {
       yajs-vim #javascript & json syntax highlighting
       yats-vim #typescript syntax highlighting
       Hoogle
-      ale
+      vim-ale-latest
     ];
     # manually loadable by calling `:packadd $plugin-name`
     opt = with plugins; [
