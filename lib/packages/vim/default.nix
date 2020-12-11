@@ -12,7 +12,7 @@ plugins = pkgs.vimPlugins // {
       owner = "dense-analysis";
       repo = "ale";
       rev = "08295ce17405cb5f6c80d2f726262493bfd21210";
-      sha256 = "1y73h2s8zbl29yvmxlds042abb7vxrgm59mx4mdpp7f41wsm72xm";
+      sha256 = "1jyxxn6j7jkcr1yky6p1y798rza04q3pivsddig8qk85kg6dkgy5";
     };
   };
   ledger = pkgs.vimUtils.buildVimPluginFrom2Nix {
