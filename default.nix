@@ -13,6 +13,7 @@ rec {
 
     projects = args: ((import ./lib/projects/default.nix) args) // {
       haskell = import ./lib/projects/haskell/default.nix;
+      elm = import ./lib/projects/elm/default.nix;
       static = import ./lib/projects/static/default.nix;
     };
 
