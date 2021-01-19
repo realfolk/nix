@@ -73,5 +73,7 @@ in
   pkgs = [
     elmPkg
     pkgs.elmPackages.elm-language-server
+    pkgs.elmPackages.elm-format
+    pkgs.elmPackages.elm-test
   ];
 }
