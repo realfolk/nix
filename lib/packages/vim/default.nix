@@ -63,8 +63,8 @@ overridden_vim_configurable.customize {
       airline
       fugitive
       haskell-vim
-      vim-markdown
       elm-vim
+      vim-markdown
       vim-rooter
       ledger
       vim-jsdoc
