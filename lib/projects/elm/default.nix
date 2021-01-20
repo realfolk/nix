@@ -52,6 +52,10 @@ commands = {
 
 projectConfig = {
   commands = [
+    projectsLib.commonCommands.cd-src
+    projectsLib.commonCommands.cd-build
+    projectsLib.commonCommands.ls-src
+    projectsLib.commonCommands.ls-build
     commands.make-src-dir
     commands.elm
     commands.build
