@@ -264,11 +264,16 @@ in
 {
   inherit defineProject makeProject makeProjects;
 
-  pkgs = [
-    ghcPkg
-    ghcidPkg
-    ghcjsPkg
-  ];
+  pkgs = {
+    all = [
+      ghcPkg
+      ghcidPkg
+      ghcjsPkg
+    ];
+    ghc = ghcPkg;
+    ghcid = ghcidPkg;
+    ghcjs = ghcjsPkg;
+  };
 
   shellHook = ''
     export NIX_GHC="${ghcPkg}/bin/ghc"
