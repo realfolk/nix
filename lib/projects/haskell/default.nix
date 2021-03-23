@@ -47,6 +47,7 @@ dataTreePrintSrc = pkgs.fetchFromGitHub {
 ghcExtensions = pkgs.lib.composeExtensions ghcSourceOverrides (self: super: {
   stylish-haskell = hlib.dontCheck super.stylish-haskell;
   hindent = hlib.appendPatch super.hindent ./patches/hindent-5.3.1.patch;
+  text-trie = hlib.dontCheck (hlib.appendPatch super.text-trie ./patches/text-trie-0.2.5.0.patch);
   ghc-exactprint = super.ghc-exactprint_0_6_3_2;
   data-tree-print = hlib.appendPatch (self.callCabal2nix "data-tree-print" dataTreePrintSrc {}) ./patches/data-tree-print-0.1.0.2.patch;
   doctest = hlib.dontCheck super.doctest_0_17;
