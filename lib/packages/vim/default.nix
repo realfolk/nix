@@ -71,7 +71,9 @@ overridden_vim_configurable.customize {
       yajs-vim #javascript & json syntax highlighting
       yats-vim #typescript syntax highlighting
       Hoogle
-      vim-ale-latest
+      #vim-ale-latest
+      coc-nvim
+      vim-hindent
     ];
     # manually loadable by calling `:packadd $plugin-name`
     opt = with plugins; [

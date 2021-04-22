@@ -1,5 +1,6 @@
 "NOTE: vim-sensible is automatically loaded.
 
+
 set nocompatible
 set path+=**
 
@@ -40,6 +41,8 @@ set hlsearch "highlights all results
 " set the colorscheme
 colorscheme gruvbox
 set background=dark
+"hi Quote ctermbg=109 guifg=#83a598
+hi! link CocFloating markdown
 
 " set auto-completion options
 " also fixes an vim/ale bug that causes completions to occur
@@ -113,37 +116,86 @@ let g:airline#extensions#ale#enabled = 1
 let g:airline#extensions#branch#enabled = 1
 
 " Ale auto-fixing
-let g:ale_linters = {}
-let g:ale_linters['haskell'] = []
-let g:ale_linters['typescript'] = ['tsserver', 'tslint']
-let g:ale_linters['typescriptreact'] = g:ale_linters['typescript']
-let g:ale_linters['elm'] = ['elm_ls', 'make']
-let g:ale_fixers = {}
-let g:ale_fixers['*'] = ['remove_trailing_lines', 'trim_whitespace']
-let g:ale_fixers['javascript'] = ['prettier', 'eslint', 'remove_trailing_lines', 'trim_whitespace']
-let g:ale_fixers['typescript'] = ['tslint', 'prettier', 'eslint', 'remove_trailing_lines', 'trim_whitespace']
-let g:ale_fixers['typescriptreact'] = g:ale_fixers['typescript']
-let g:ale_fixers['markdown'] = ['remove_trailing_lines']
-let g:ale_fixers['haskell'] = ['remove_trailing_lines', 'trim_whitespace']
-let g:ale_fixers['elm'] = ['elm-format', 'remove_trailing_lines', 'trim_whitespace']
-let g:ale_javascript_eslint_use_global = 0
-let g:ale_completion_enabled = 1
-let g:ale_close_preview_on_insert = 1
-let g:ale_lsp_show_message_severity = 'information'
-let g:ale_fix_on_save = 1
-set omnifunc=ale#completion#OmniFunc
-" easily jump between errors
-map <silent><C-k> <Plug>(ale_previous_wrap)
-map <silent><C-j> <Plug>(ale_next_wrap)
-nmap <leader>ap <Plug>(ale_previous_wrap)
-nmap <leader>an <Plug>(ale_next_wrap)
-nmap <leader>ad :ALEDetail<CR>
-nmap <leader>ag :ALEGoToDefinition<CR>
-nmap <leader>agv :ALEGoToDefinitionInVSplit<CR>
-nmap <leader>agt :ALEGoToDefinitionInTab<CR>
-nmap <leader>ar :ALEFindReferences<CR>
-nmap <leader>ah :ALEHover<CR>
-nmap <Leader>af :ALEFix<CR>
+"let g:ale_linters = {}
+"let g:ale_linters['haskell'] = []
+"let g:ale_linters['typescript'] = ['tsserver', 'tslint']
+"let g:ale_linters['typescriptreact'] = g:ale_linters['typescript']
+"let g:ale_linters['elm'] = ['elm_ls', 'make']
+"let g:ale_fixers = {}
+"let g:ale_fixers['*'] = ['remove_trailing_lines', 'trim_whitespace']
+"let g:ale_fixers['javascript'] = ['prettier', 'eslint', 'remove_trailing_lines', 'trim_whitespace']
+"let g:ale_fixers['typescript'] = ['tslint', 'prettier', 'eslint', 'remove_trailing_lines', 'trim_whitespace']
+"let g:ale_fixers['typescriptreact'] = g:ale_fixers['typescript']
+"let g:ale_fixers['markdown'] = ['remove_trailing_lines']
+"let g:ale_fixers['haskell'] = ['remove_trailing_lines', 'trim_whitespace']
+"let g:ale_fixers['elm'] = ['elm-format', 'remove_trailing_lines', 'trim_whitespace']
+"let g:ale_javascript_eslint_use_global = 0
+"let g:ale_completion_enabled = 1
+"let g:ale_close_preview_on_insert = 1
+"let g:ale_lsp_show_message_severity = 'information'
+"let g:ale_fix_on_save = 1
+"set omnifunc=ale#completion#OmniFunc
+"" easily jump between errors
+"map <silent><C-k> <Plug>(ale_previous_wrap)
+"map <silent><C-j> <Plug>(ale_next_wrap)
+"nmap <leader>ap <Plug>(ale_previous_wrap)
+"nmap <leader>an <Plug>(ale_next_wrap)
+"nmap <leader>ad :ALEDetail<CR>
+"nmap <leader>ag :ALEGoToDefinition<CR>
+"nmap <leader>agv :ALEGoToDefinitionInVSplit<CR>
+"nmap <leader>agt :ALEGoToDefinitionInTab<CR>
+"nmap <leader>ar :ALEFindReferences<CR>
+"nmap <leader>ah :ALEHover<CR>
+"nmap <Leader>af :ALEFix<CR>
+
+" CoC Configuration (sets up language servers, formatters)
+let g:coc_user_config = {
+    \ 'languageserver': {
+      \ 'elmLS': {
+        \ 'command': 'elm-language-server',
+        \ 'filetypes': ['elm'],
+        \ 'rootPatterns': ['elm.json']
+      \ },
+      \ 'haskell': {
+        \ 'command': 'haskell-language-server-wrapper',
+        \ 'args': [
+          \ '--lsp'
+        \ ],
+        \ 'rootPatterns': [
+          \ 'hie.yaml',
+        \ ],
+        \ 'filetypes': [
+          \ 'haskell',
+          \ 'lhaskell',
+        \ ]
+      \ }
+    \}
+\ }
+
+" CoC-specific key bindings
+nmap <silent><C-k> <Plug>(coc-diagnostic-prev)
+nmap <silent><C-j> <Plug>(coc-diagnostic-next)
+nmap <leader>cd <Plug>(coc-diagnostic-info)
+nmap <leader>cp <Plug>(coc-diagnostic-prev)
+nmap <leader>cn <Plug>(coc-diagnostic-next)
+nmap <leader>cg <Plug>(coc-definition)
+nmap <leader>ct <Plug>(coc-type-definition)
+nmap <leader>cgs :call CocAction('jumpDefinition', 'split')<CR>
+nmap <leader>cgv :call CocAction('jumpDefinition', 'vsplit')<CR>
+nmap <leader>cgt :call CocAction('jumpDefinition', 'tabe')<CR>
+nmap <leader>cr <Plug>(coc-references)
+
+" Use <leader>ch to show documentation in preview window.
+nnoremap <silent> <leader>ch :call <SID>show_documentation()<CR>
+function! s:show_documentation()
+ if (index(['vim','help'], &filetype) >= 0)
+   execute 'h '.expand('<cword>')
+ elseif (coc#rpc#ready())
+   call CocActionAsync('doHover')
+ else
+   execute '!' . &keywordprg . " " . expand('<cword>')
+ endif
+endfunction
 
 " Set make program repo-specific make script
 if filereadable("./make.sh")
@@ -169,3 +221,11 @@ function StartUp()
 endfunction
 " Load local .vimrc file when starting vim
 autocmd VimEnter * call StartUp()
+
+" Remap <C-f> and <C-b> for scroll float windows/popups.
+if has('nvim-0.4.0') || has('patch-8.2.0750')
+ nnoremap <silent><nowait><expr> <C-u> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-u>"
+ nnoremap <silent><nowait><expr> <C-i> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-i>"
+ vnoremap <silent><nowait><expr> <C-u> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-u>"
+ vnoremap <silent><nowait><expr> <C-i> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-i>"
+endif
