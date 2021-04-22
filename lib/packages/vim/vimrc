@@ -41,8 +41,10 @@ set hlsearch "highlights all results
 " set the colorscheme
 colorscheme gruvbox
 set background=dark
-"hi Quote ctermbg=109 guifg=#83a598
 hi! link CocFloating markdown
+hi CocUnderline gui=undercurl term=undercurl
+hi CocErrorHighlight ctermfg=red  guifg=#c4384b gui=undercurl term=undercurl
+hi CocWarningHighlight ctermfg=yellow guifg=#c4ab39 gui=undercurl term=undercurl
 
 " set auto-completion options
 " also fixes an vim/ale bug that causes completions to occur
@@ -169,7 +171,8 @@ let g:coc_user_config = {
           \ 'lhaskell',
         \ ]
       \ }
-    \}
+    \},
+    \ 'codeLens.enable': 'true'
 \ }
 
 " CoC-specific key bindings
@@ -223,9 +226,9 @@ endfunction
 autocmd VimEnter * call StartUp()
 
 " Remap <C-f> and <C-b> for scroll float windows/popups.
-if has('nvim-0.4.0') || has('patch-8.2.0750')
- nnoremap <silent><nowait><expr> <C-u> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-u>"
- nnoremap <silent><nowait><expr> <C-i> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-i>"
- vnoremap <silent><nowait><expr> <C-u> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-u>"
- vnoremap <silent><nowait><expr> <C-i> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-i>"
-endif
+"if has('nvim-0.4.0') || has('patch-8.2.0750')
+ "nnoremap <silent><nowait><expr> <C-u> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-u>"
+ "nnoremap <silent><nowait><expr> <C-i> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-i>"
+ "vnoremap <silent><nowait><expr> <C-u> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-u>"
+ "vnoremap <silent><nowait><expr> <C-i> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-i>"
+"endif
