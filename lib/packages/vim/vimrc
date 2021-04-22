@@ -105,6 +105,7 @@ au! BufNewFile,BufRead *.ledger set filetype=ledger
 au! BufNewFile,BufRead *.json,*.js,*.jsx set filetype=javascript
 au! BufNewFile,BufRead *.ts,*.tsx set filetype=typescript
 au! BufNewFile,BufRead *.dockerfile,*.docker set filetype=dockerfile
+au! BufNewFile,BufRead *.mdrn set filetype=lisp
 
 " run ctags on save, if available
 autocmd BufWritePost * call system('which ctags &> /dev/null && ctags -R . || exit 0')
@@ -152,6 +153,7 @@ let g:airline#extensions#branch#enabled = 1
 
 " CoC Configuration (sets up language servers, formatters)
 let g:coc_user_config = {
+    \ 'diagnostic.messageTarget': 'echo',
     \ 'languageserver': {
       \ 'elmLS': {
         \ 'command': 'elm-language-server',
@@ -171,25 +173,24 @@ let g:coc_user_config = {
           \ 'lhaskell',
         \ ]
       \ }
-    \},
-    \ 'codeLens.enable': 'true'
+    \}
 \ }
 
 " CoC-specific key bindings
 nmap <silent><C-k> <Plug>(coc-diagnostic-prev)
 nmap <silent><C-j> <Plug>(coc-diagnostic-next)
-nmap <leader>cd <Plug>(coc-diagnostic-info)
-nmap <leader>cp <Plug>(coc-diagnostic-prev)
-nmap <leader>cn <Plug>(coc-diagnostic-next)
-nmap <leader>cg <Plug>(coc-definition)
-nmap <leader>ct <Plug>(coc-type-definition)
-nmap <leader>cgs :call CocAction('jumpDefinition', 'split')<CR>
-nmap <leader>cgv :call CocAction('jumpDefinition', 'vsplit')<CR>
-nmap <leader>cgt :call CocAction('jumpDefinition', 'tabe')<CR>
-nmap <leader>cr <Plug>(coc-references)
+nmap <leader>ad :call CocAction('diagnosticPreview')<CR>
+nmap <leader>ap <Plug>(coc-diagnostic-prev)
+nmap <leader>an <Plug>(coc-diagnostic-next)
+nmap <leader>ag <Plug>(coc-definition)
+nmap <leader>at <Plug>(coc-type-definition)
+nmap <leader>ags :call CocAction('jumpDefinition', 'split')<CR>
+nmap <leader>agv :call CocAction('jumpDefinition', 'vsplit')<CR>
+nmap <leader>agt :call CocAction('jumpDefinition', 'tabe')<CR>
+nmap <leader>ar <Plug>(coc-references)
 
 " Use <leader>ch to show documentation in preview window.
-nnoremap <silent> <leader>ch :call <SID>show_documentation()<CR>
+nnoremap <silent> <leader>ah :call <SID>show_documentation()<CR>
 function! s:show_documentation()
  if (index(['vim','help'], &filetype) >= 0)
    execute 'h '.expand('<cword>')
@@ -224,11 +225,3 @@ function StartUp()
 endfunction
 " Load local .vimrc file when starting vim
 autocmd VimEnter * call StartUp()
-
-" Remap <C-f> and <C-b> for scroll float windows/popups.
-"if has('nvim-0.4.0') || has('patch-8.2.0750')
- "nnoremap <silent><nowait><expr> <C-u> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-u>"
- "nnoremap <silent><nowait><expr> <C-i> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-i>"
- "vnoremap <silent><nowait><expr> <C-u> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-u>"
- "vnoremap <silent><nowait><expr> <C-i> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-i>"
-"endif
