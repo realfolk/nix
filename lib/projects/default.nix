@@ -49,6 +49,24 @@ rec {
 
   commonCommands = {
 
+    pwd-src = project: makeCommand {
+      inherit project;
+      name = "${commonCommandPrefix}-pwd";
+      subName = "src";
+      script = ''
+        echo "${project.srcPath}"
+      '';
+    };
+
+    pwd-build = project: makeCommand {
+      inherit project;
+      name = "${commonCommandPrefix}-pwd";
+      subName = "build";
+      script = ''
+        echo "${project.buildPath}"
+      '';
+    };
+
     cd-src = project: makeCommand {
       inherit project;
       name = "${commonCommandPrefix}-cd";

@@ -30,6 +30,8 @@ commands = {
 
 projectConfig = {
   commands = [
+    projectsLib.commonCommands.pwd-src
+    projectsLib.commonCommands.pwd-build
     projectsLib.commonCommands.cd-src
     projectsLib.commonCommands.cd-build
     projectsLib.commonCommands.ls-src

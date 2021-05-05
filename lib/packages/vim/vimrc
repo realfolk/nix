@@ -84,6 +84,7 @@ nmap <Leader>ln :lnext<CR>
 set wildignore+=*.so,*.swp,*.zip,*.hi,*.o,*/node_modules/*,*/dist/*,*/.dist/*,*/build/*,*/.build/*,*/Godeps/*,*/elm-stuff/*,*/.gem/*,*/.git/*,*/tmp/*
 
 " NERD tree options
+" TODO update binding to not conflict with screen
 map <C-L> :NERDTreeToggle<CR>
 
 " Search tags with CtrlP
