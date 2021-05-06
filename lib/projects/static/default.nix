@@ -38,10 +38,14 @@ commands = rec {
         file="$1"
         old_suffix="$2"
         new_suffix="$3"
-        echo "$(dirname $file)/$(basename $file $old_suffix)$new_suffix"
+        echo $(dirname "$file")/$(basename "$file" "$old_suffix")$new_suffix
       }
       export -f replace_suffix
-      find -iname '*.js' -exec bash -c 'echo "Minifying $1" && ${pkgs.closurecompiler}/bin/closure-compiler --js $1 --js_output_file $(replace_suffix $1 ".js" ".min.js") && echo "Minified $(replace_suffix $1 ".js" ".min.js")"' bash {} \;
+      find -iname '*.js' -exec bash -c 'echo "Minifying $1" && ${pkgs.closurecompiler}/bin/closure-compiler --js "$1" --js_output_file $(replace_suffix "$1" ".js" ".min.js") && echo "Minified $(replace_suffix "$1" ".js" ".min.js")"' bash {} \;
+
+      echo "--- Optimize images ---"
+      find . \( -iname '*.jpg' -o -iname '*.jpeg' \) -exec bash -c '${pkgs.jpegoptim}/bin/jpegoptim --strip-all "$1"' bash {} \;
+      find . -iname '*.png' -exec bash -c '${pkgs.optipng}/bin/optipng "$1"' bash {} \;
 
       echo "--- Compress assets ---"
       zopfli_compress() {
@@ -58,7 +62,7 @@ commands = rec {
       }
       export -f zopfli_compress
       export -f brotli_compress
-      find . \( -iname '*.js' -o -iname '*.css' -o -iname '*.png' -o -iname '*.jpg' -o -iname '*.svg' -o -iname '*.html' -o -iname   '*.mdrn' -o -iname '*.json' \) -exec bash -c 'zopfli_compress $1; brotli_compress $1' bash {} \;
+      find . \( -iname '*.js' -o -iname '*.css' -o -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.svg' -o -iname '*.html' -o -iname   '*.mdrn' -o -iname '*.json' \) -exec bash -c 'zopfli_compress "$1"; brotli_compress "$1"' bash {} \;
 
       echo "--- Successfully completed optimized build ---"
       echo "Build files written to ${project.buildPath}"
