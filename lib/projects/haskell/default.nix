@@ -274,8 +274,10 @@ in
       ghcjsPkg
     ];
     ghc = ghcPkg;
+    ghcPkgs = ghcPkgs;
     ghcid = ghcidPkg;
     ghcjs = ghcjsPkg;
+    ghcjsPkgs = ghcjsPkgs;
   };
 
   shellHook = ''
