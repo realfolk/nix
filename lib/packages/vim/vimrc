@@ -12,8 +12,10 @@ au! BufNewFile,BufRead *.py set tabstop=4 shiftwidth=4
 " always show one line above/below cursor
 set incsearch
 
-" enable line numbers
+" enable relative line numbers
 set relativenumber
+" show the current line's number instead of zero
+set number
 
 " highlight the active row
 set cursorline
@@ -38,6 +40,9 @@ set updatetime=300
 set incsearch "highlight as i'm searching
 set hlsearch "highlights all results
 
+" disable folding
+set nofoldenable
+
 " set the colorscheme
 colorscheme gruvbox
 set background=dark
@@ -47,8 +52,6 @@ hi CocErrorHighlight ctermfg=red  guifg=#c4384b gui=undercurl term=undercurl
 hi CocWarningHighlight ctermfg=yellow guifg=#c4ab39 gui=undercurl term=undercurl
 
 " set auto-completion options
-" also fixes an vim/ale bug that causes completions to occur
-" while typing. see ":help ale-completion-copmleteopt-bug".
 set completeopt=menu,menuone,popup,noselect,noinsert
 
 " leader shortcuts
@@ -57,8 +60,10 @@ let mapleader=","
 nmap <Leader><Leader> :b#<CR>
 " toggle line numbers
 nmap <Leader>n :set invrelativenumber<CR>
+" open NERDTree
+nmap <Leader>t :NERDTreeToggle<CR>
 " open terminal
-nmap <Leader>t :tab terminal
+nmap <Leader>tt :tab terminal
 nmap <Leader>tv :vert terminal
 " unhighlight search results
 nmap <Leader>h :nohlsearch<CR>
@@ -80,15 +85,12 @@ nmap <Leader>lp :lprevious<CR>
 nmap <Leader>ln :lnext<CR>
 
 " wildignore / ctrlp ignore rules
-"let g:ctrlp_custom_ignore = "\.(git|svg|hg)$"
 set wildignore+=*.so,*.swp,*.zip,*.hi,*.o,*/node_modules/*,*/dist/*,*/.dist/*,*/build/*,*/.build/*,*/Godeps/*,*/elm-stuff/*,*/.gem/*,*/.git/*,*/tmp/*
 
-" NERD tree options
-" TODO update binding to not conflict with screen
-map <C-L> :NERDTreeToggle<CR>
-
-" Search tags with CtrlP
-map <C-\> :CtrlPTag<CR>
+" Search shortcuts with fzf.vim
+map <C-p> :Files<CR>
+map <C-\> :Ag<CR>
+nmap <Leader>b :Buffers<CR>
 
 " easy-align mapping
 nmap ga <Plug>(EasyAlign)
@@ -116,41 +118,7 @@ let g:rooter_patterns = ['.git', '.git/', 'shell.nix', 'src/']
 let g:rooter_silent_chdir = 1
 
 " airline
-let g:airline#extensions#ale#enabled = 1
 let g:airline#extensions#branch#enabled = 1
-
-" Ale auto-fixing
-"let g:ale_linters = {}
-"let g:ale_linters['haskell'] = []
-"let g:ale_linters['typescript'] = ['tsserver', 'tslint']
-"let g:ale_linters['typescriptreact'] = g:ale_linters['typescript']
-"let g:ale_linters['elm'] = ['elm_ls', 'make']
-"let g:ale_fixers = {}
-"let g:ale_fixers['*'] = ['remove_trailing_lines', 'trim_whitespace']
-"let g:ale_fixers['javascript'] = ['prettier', 'eslint', 'remove_trailing_lines', 'trim_whitespace']
-"let g:ale_fixers['typescript'] = ['tslint', 'prettier', 'eslint', 'remove_trailing_lines', 'trim_whitespace']
-"let g:ale_fixers['typescriptreact'] = g:ale_fixers['typescript']
-"let g:ale_fixers['markdown'] = ['remove_trailing_lines']
-"let g:ale_fixers['haskell'] = ['remove_trailing_lines', 'trim_whitespace']
-"let g:ale_fixers['elm'] = ['elm-format', 'remove_trailing_lines', 'trim_whitespace']
-"let g:ale_javascript_eslint_use_global = 0
-"let g:ale_completion_enabled = 1
-"let g:ale_close_preview_on_insert = 1
-"let g:ale_lsp_show_message_severity = 'information'
-"let g:ale_fix_on_save = 1
-"set omnifunc=ale#completion#OmniFunc
-"" easily jump between errors
-"map <silent><C-k> <Plug>(ale_previous_wrap)
-"map <silent><C-j> <Plug>(ale_next_wrap)
-"nmap <leader>ap <Plug>(ale_previous_wrap)
-"nmap <leader>an <Plug>(ale_next_wrap)
-"nmap <leader>ad :ALEDetail<CR>
-"nmap <leader>ag :ALEGoToDefinition<CR>
-"nmap <leader>agv :ALEGoToDefinitionInVSplit<CR>
-"nmap <leader>agt :ALEGoToDefinitionInTab<CR>
-"nmap <leader>ar :ALEFindReferences<CR>
-"nmap <leader>ah :ALEHover<CR>
-"nmap <Leader>af :ALEFix<CR>
 
 " CoC Configuration (sets up language servers, formatters)
 let g:coc_user_config = {
@@ -190,7 +158,7 @@ nmap <leader>agv :call CocAction('jumpDefinition', 'vsplit')<CR>
 nmap <leader>agt :call CocAction('jumpDefinition', 'tabe')<CR>
 nmap <leader>ar <Plug>(coc-references)
 
-" Use <leader>ch to show documentation in preview window.
+" Show documentation in preview window.
 nnoremap <silent> <leader>ah :call <SID>show_documentation()<CR>
 function! s:show_documentation()
  if (index(['vim','help'], &filetype) >= 0)
@@ -202,15 +170,9 @@ function! s:show_documentation()
  endif
 endfunction
 
-" Set make program repo-specific make script
-if filereadable("./make.sh")
-  set makeprg=./make.sh
-elseif filereadable("./scripts/make.sh")
-  set makeprg=./scripts/make.sh
-endif
-
 " Enable per-project .vimrc files
 set exrc
+
 " Ensure per-project .vimrc files are secure
 set secure
 
