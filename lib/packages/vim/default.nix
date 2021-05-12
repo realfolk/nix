@@ -50,7 +50,6 @@ vim = vimConfigurable.customize {
       yats-vim #typescript syntax highlighting
       Hoogle
       coc-nvim
-      vim-hindent
       fzf-vim
     ];
 

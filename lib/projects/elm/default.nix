@@ -79,6 +79,7 @@ in
   pkgs = [
     elmPkg
     pkgs.elmPackages.elm-language-server
+    #elm-format not bundled with elm-language-server
     pkgs.elmPackages.elm-format
     pkgs.elmPackages.elm-test
   ];

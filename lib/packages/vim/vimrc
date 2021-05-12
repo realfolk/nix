@@ -113,16 +113,26 @@ au! BufNewFile,BufRead *.mdrn set filetype=lisp
 " run ctags on save, if available
 autocmd BufWritePost * call system('which ctags &> /dev/null && ctags -R . || exit 0')
 
-" rooter config
-let g:rooter_patterns = ['.git', '.git/', 'shell.nix', 'src/']
+" rooter
+let g:rooter_patterns = ['.git', '.git/', 'shell.sh', 'shell.nix']
 let g:rooter_silent_chdir = 1
 
 " airline
 let g:airline#extensions#branch#enabled = 1
 
+" elm-vim
+let g:elm_setup_keybindings = 0
+let g:elm_format_autosave = 0
+
 " CoC Configuration (sets up language servers, formatters)
 let g:coc_user_config = {
-    \ 'diagnostic.messageTarget': 'echo',
+    \ 'diagnostic': {
+      \ 'enableMessage': 'never',
+      \ 'messageTarget': 'echo'
+    \ },
+    \ 'coc.preferences': {
+      \ 'formatOnSaveFiletypes': ['elm', 'haskell', 'lhaskell']
+    \ },
     \ 'languageserver': {
       \ 'elmLS': {
         \ 'command': 'elm-language-server',
@@ -140,7 +150,12 @@ let g:coc_user_config = {
         \ 'filetypes': [
           \ 'haskell',
           \ 'lhaskell',
-        \ ]
+        \ ],
+        \ 'settings': {
+          \ 'haskell': {
+            \ 'formattingProvider': 'ormolu'
+          \ }
+        \ }
       \ }
     \}
 \ }
@@ -153,6 +168,7 @@ nmap <leader>ap <Plug>(coc-diagnostic-prev)
 nmap <leader>an <Plug>(coc-diagnostic-next)
 nmap <leader>ag <Plug>(coc-definition)
 nmap <leader>at <Plug>(coc-type-definition)
+nmap <leader>af :call CocAction('format')<CR>
 nmap <leader>ags :call CocAction('jumpDefinition', 'split')<CR>
 nmap <leader>agv :call CocAction('jumpDefinition', 'vsplit')<CR>
 nmap <leader>agt :call CocAction('jumpDefinition', 'tabe')<CR>

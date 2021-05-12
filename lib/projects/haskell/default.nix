@@ -272,6 +272,9 @@ in
       ghcPkg
       ghcidPkg
       ghcjsPkg
+      #formatters bundled with haskell-language-server
+      #no need to install them separately
+      ghcPkgs.haskell-language-server
     ];
     ghc = ghcPkg;
     ghcPkgs = ghcPkgs;
