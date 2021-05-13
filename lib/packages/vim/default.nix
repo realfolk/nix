@@ -40,9 +40,7 @@ vim = vimConfigurable.customize {
       surround
       airline
       fugitive
-      haskell-vim
-      elm-vim
-      vim-markdown
+			haskell-vim
       vim-rooter
       ledger
       vim-jsdoc
