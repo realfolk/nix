@@ -132,6 +132,11 @@ function LoadElmFile()
   syn clear elmCaseItemBlock
   syn clear elmLetBlock
   syn keyword elmLetKeyword let in
+  " exclude operators from comments, define again to increase priority
+  syn clear elmLineComment
+  syn match elmLineComment "--.*" contains=elmTodo,@spell
+  syn clear elmComment
+  syn region elmComment matchgroup=elmComment start="{-|\=" end="-}" contains=elmTodo,elmComment,@spell fold
 endfunction
 
 " Syntax rules adapted from https://github.com/neovimhaskell/haskell-vim/blob/master/syntax/haskell.vim
