@@ -61,8 +61,8 @@ hi! link StructureKeyword GruvboxOrange
 hi! link ModuleReference GruvboxYellow
 hi! link TypeName GruvboxAqua
 hi! link TypeValue GruvboxAqua
-hi! link FunctionNameDeclaration GruvboxGreenBold
-hi! link FunctionNameInvocation GruvboxGreen
+hi! link FunctionNameTypeDeclaration GruvboxGreenBold
+hi! link FunctionNameBodyDeclaration GruvboxGreen
 hi! link VariableNameDeclaration Normal
 hi! link VariableNameReference Normal
 hi! link Operator GruvboxBlue
@@ -101,28 +101,37 @@ function LoadElmFile()
   let module_name_segment_pattern = module_name_first_pattern . module_name_non_first_pattern . "*"
   let module_name_full_pattern = module_name_segment_pattern . '\(\.' . module_name_segment_pattern . '\)*'
   let value_name_first_pattern = "[A-Za-z]"
+  let func_name_first_pattern = "[_a-z]"
+  let func_name_non_first_pattern = "[a-zA-Z0-9_']"
+  let func_name_infix_pattern = '([-!#$%&\*\+/<=>\?@\\^|~:.]\+)'
+  let func_name_full_pattern = '\(\<' . func_name_first_pattern . func_name_non_first_pattern . '*#\?\>\|' . func_name_infix_pattern . '\)'
   set filetype=elm
-  syn match elmOperator contained "\<=\>"
-  " remove existing elm module syntax highlighting
+  " operators
+  syn clear elmOperator
+  syn match elmOperators "[-!#$%&\*\+/<=>\?@\\^|~:.]\+\|\<_\>"
+  " function declarations
+  syn clear elmTopLevelDecl
+  syn clear elmTopLevelFunction
+  syn clear elmFuncName
+  execute 'syn match elmFuncBodyDefinition /^\s*\(\(type\|type\s\+alias\|{\_s*\|,\s_*\)\s\+\)\@!\zs' . func_name_full_pattern . '\ze.*\(\n\+.\+\)\?=\(\s\|$\)/'
+  execute 'syn match elmFuncTypeDefinition "^\s*\zs' . func_name_full_pattern . '\ze\_s\+:\_s"'
+  " modules
   syn clear elmModule
   syn clear elmImport
-  " establish better elm module syntax highlighting
   syn keyword elmModuleKeyword contained exposing as import module where
   execute 'syn match elmFullModuleName "\<' . module_name_full_pattern . '\>" contained'
   execute 'syn match elmReferenceModuleName "\<' . module_name_full_pattern . '\.' . value_name_first_pattern . '"me=e-2'
   execute 'syn match elmModuleHeader "^module\s\+\<' . module_name_full_pattern . '\>\(\s\+exposing\)\?" contains=elmModuleKeyword,elmFullModuleName'
   execute 'syn match elmImportModule "^import\s\+\<' . module_name_full_pattern . '\>\(\s\+as\s\+\<' . module_name_full_pattern . '\>\)\?\(\s\+exposing\)\?" contains=elmModuleKeyword,elmFullModuleName'
-  " reset some syntax matchers for better compatibility
+  " misc keywords
+  syn clear elmTypedef
   syn clear elmTopLevelTypedef
-  syn clear elmTopLevelFunction
+  syn keyword elmTypeKeyword type alias
   syn clear elmCaseBlock
+  syn keyword elmCaseKeyword case of
   syn clear elmCaseItemBlock
   syn clear elmLetBlock
-  syn region elmTopLevelTypedef start="type" end="\n\(\n\n\)\@=" contains=ALLBUT,elmFullModuleName fold
-  syn region elmTopLevelFunction start="^[a-zA-Z].\+\n[a-zA-Z].\+=" end="^\(\n\+\)\@=" contains=ALLBUT,elmFullModuleName fold
-  syn region elmCaseBlock matchgroup=elmCaseBlockDefinition start="^\z\(\s\+\)\<case\>" end="^\z1\@!\W\@=" end="\(\n\n\z1\@!\)\@=" end="\n\z1\@!\(\n\n\)\@=" contains=ALLBUT,elmFullModuleName fold
-  syn region elmCaseItemBlock start="^\z\(\s\+\).\+->$" end="^\z1\@!\W\@=" end="\(\n\n\z1\@!\)\@=" end="\(\n\z1\S\)\@=" contains=ALLBUT,elmFullModuleName fold
-  syn region elmLetBlock matchgroup=elmLetBlockDefinition start="\<let\>" end="\<in\>" contains=ALLBUT,elmFullModuleName fold
+  syn keyword elmLetKeyword let in
 endfunction
 
 " Syntax rules adapted from https://github.com/neovimhaskell/haskell-vim/blob/master/syntax/haskell.vim
@@ -132,11 +141,27 @@ function LoadHaskellFile()
   let module_name_segment_pattern = module_name_first_pattern . module_name_non_first_pattern . "*"
   let module_name_full_pattern = module_name_segment_pattern . '\(\.' . module_name_segment_pattern . '\)*'
   let value_name_first_pattern = "[A-Za-z]"
+  let func_name_first_pattern = "[_a-z]"
+  let func_name_non_first_pattern = "[a-zA-Z0-9_']"
+  let func_name_infix_pattern = '([-!#$%&\*\+/<=>\?@\\^|~:.]\+)'
+  let func_name_full_pattern = '\(\<' . func_name_first_pattern . func_name_non_first_pattern . '*#\?\>\|' . func_name_infix_pattern . '\)'
   set filetype=haskell
-  syn match haskellFuncName /^\zs\l\w*\ze\s\+.*=/
+  " ensure 'let' is contained
+  syn clear haskellLet
+  syn keyword haskellLetKeyword contained let
+  syn match haskellIsolatedLet "^\s\+\zslet\ze\s*$" contains=haskellLetKeyword
+  " function declarations
+  execute 'syn match haskellFuncBodyDefinition /^\s*\(\(data\|type\)\s\+\)\@!\zs\(\(let\|where\)\s\+\)\?' . func_name_full_pattern . '\(,\s*' . func_name_full_pattern . '\)*\ze.*\(\_s\|\_s\+|.\+\)\?=\(\s\|$\)/ contains=haskellLetKeyword'
+  syn clear haskellTypeSig
+  execute 'syn match haskellFuncTypeDefinition "^\s*\zs\(\(where\|let\|default\)\s\+\)\?' . func_name_full_pattern . '\(,\s*' . func_name_full_pattern . '\)*\ze\_s\+::\_s" contains=haskellLetKeyword'
+  " ensure 'module' is containe
+  syn clear haskellDeclKeyword
+  syn keyword haskellDeclKeyword class instance newtype in
+  syn keyword haskellModuleKeyword contained module
+  " modules
   execute 'syn match haskellFullModuleName "\<' . module_name_full_pattern . '\>" contained'
-  execute 'syn match haskellReferenceModuleName "\<' . module_name_full_pattern . '\.' . value_name_first_pattern . '"me=e-2'
-  execute 'syn match haskellModuleHeader "^module\s\+\<' . module_name_full_pattern . '\>\(\s\+(.\+)\)\?\(\s\+where\)\?" contains=haskellWhere,haskellDeclKeyword,haskellFullModuleName'
+  execute 'syn match haskellReferenceModuleName "\(\<module\>\s\+\)\@!\<' . module_name_full_pattern . '\.' . value_name_first_pattern . '"me=e-2'
+  execute 'syn match haskellModuleHeader "\<module\>\s\+' . module_name_full_pattern . '" contains=haskellModuleKeyword,haskellFullModuleName,haskellOperators'
   execute 'syn match haskellImportModule "^\(import\|import\s\+qualified\|import\s\+safe\)\s\+\<' . module_name_full_pattern . '\>\(\s\+as\s\+\<' . module_name_full_pattern . '\>\)\?\(\s\+hiding\)\?" contains=haskellImportKeywords,haskellFullModuleName'
 endfunction
 
@@ -147,22 +172,20 @@ hi! link elmComment Comment
 hi! link elmLineComment Comment
 hi! link elmTodo Todo
 hi! link elmDebug Debug
-hi! link elmCaseBlockDefinition LogicKeyword
-hi! link elmCaseBlockItemDefinition LogicKeyword
-hi! link elmLetBlockDefinition LogicKeyword
+hi! link elmCaseKeyword LogicKeyword
 hi! link elmConditional LogicKeyword
-hi! link elmTypedef StructureKeyword
+hi! link elmLetKeyword StructureKeyword
+hi! link elmTypeKeyword StructureKeyword
 hi! link elmModuleKeyword StructureKeyword
 hi! link elmAlias StructureKeyword
 hi! link elmFullModuleName ModuleReference
 hi! link elmReferenceModuleName ModuleReference
-hi! link elmTopLevelTypedef TypeName
 hi! link elmType TypeName
 hi! link elmNumberType TypeName
-hi! link elmFuncName FunctionNameDeclaration
-hi! link elmTopLevelDecl FunctionNameDeclaration
+hi! link elmFuncTypeDefinition FunctionNameTypeDeclaration
+hi! link elmFuncBodyDefinition FunctionNameBodyDeclaration
 hi! link elmLambdaFunc Normal
-hi! link elmOperator Operator
+hi! link elmOperators Operator
 hi! link elmDelimiter Delimiter
 hi! link elmBraces Delimiter
 hi! link elmString StringContents
@@ -176,8 +199,8 @@ hi! link elmFloat Primitive
 let g:haskell_enable_quantification = 1
 hi! link haskellBottom Operator
 hi! link haskellTH Normal
-hi! link haskellIdentifier FunctionNameDeclaration
-hi! link haskellFuncName FunctionNameDeclaration
+hi! link haskellFuncTypeDefinition FunctionNameTypeDeclaration
+hi! link haskellFuncBodyDefinition FunctionNameBodyDeclaration
 hi! link haskellForeignKeywords StructureKeyword
 hi! link haskellKeyword LogicKeyword
 hi! link haskellDefault StructureKeyword
@@ -207,10 +230,11 @@ hi! link haskellFullModuleName ModuleReference
 hi! link haskellReferenceModuleName ModuleReference
 hi! link haskellImportKeywords StructureKeyword
 hi! link haskellDeclKeyword StructureKeyword
+hi! link haskellModuleKeyword StructureKeyword
 hi! link haskellDeriveKeyword StructureKeyword
 hi! link haskellDecl StructureKeyword
 hi! link haskellWhere StructureKeyword
-hi! link haskellLet LogicKeyword
+hi! link haskellLetKeyword StructureKeyword
 hi! link haskellForall Operator
 " coc
 hi! link CocErrorHighlight Error
