@@ -63,7 +63,7 @@ hi! link TypeName GruvboxAqua
 hi! link TypeValue GruvboxAqua
 hi! link FunctionNameTypeDeclaration GruvboxGreenBold
 hi! link FunctionNameBodyDeclaration GruvboxGreen
-hi! link VariableNameDeclaration Normal
+hi! link VariableNameDeclaration GruvboxGreen
 hi! link VariableNameReference Normal
 hi! link Operator GruvboxBlue
 hi! link Delimiter GruvboxFg4
@@ -113,7 +113,7 @@ function LoadElmFile()
   syn clear elmTopLevelDecl
   syn clear elmTopLevelFunction
   syn clear elmFuncName
-  execute 'syn match elmFuncBodyDefinition /^\s*\(\(type\|type\s\+alias\|{\_s*\|,\s_*\)\s\+\)\@!\zs' . func_name_full_pattern . '\ze.*\(\n\+.\+\)\?=\(\s\|$\)/'
+  execute 'syn match elmFuncBodyDefinition /^\s*\(\(type\|type\s\+alias\|{\_s*\|,\s_*\)\s\+\)\@!\zs' . func_name_full_pattern . '\ze.*\(\_s\+\)\?=\(\s\|$\)/'
   execute 'syn match elmFuncTypeDefinition "^\s*\zs' . func_name_full_pattern . '\ze\_s\+:\_s"'
   " modules
   syn clear elmModule
@@ -155,10 +155,14 @@ function LoadHaskellFile()
   syn clear haskellLet
   syn keyword haskellLetKeyword contained let
   syn match haskellIsolatedLet "^\s\+\zslet\ze\s*$" contains=haskellLetKeyword
-  " function declarations
-  execute 'syn match haskellFuncBodyDefinition /^\s*\(\(data\|type\)\s\+\)\@!\zs\(\(let\|where\)\s\+\)\?' . func_name_full_pattern . '\(,\s*' . func_name_full_pattern . '\)*\ze.*\(\_s\|\_s\+|.\+\)\?=\(\s\|$\)/ contains=haskellLetKeyword'
+  " function declarations and bindings
+  execute 'syn match haskellFuncBodyDefinition /^\s*\(\(data\|type\)\s\+\)\@!\zs\(\(let\|where\)\s\+\)\?' . func_name_full_pattern . '\(,\s*' . func_name_full_pattern . '\)*\ze.*\(\_s\+\|\_s\+|.\+\)\?=\(\s\|$\)/ contains=haskellLetKeyword'
+  execute 'syn match haskellArrowBinding "\zs' . func_name_full_pattern . '\ze\s\+<-"'
   syn clear haskellTypeSig
   execute 'syn match haskellFuncTypeDefinition "^\s*\zs\(\(where\|let\|default\)\s\+\)\?' . func_name_full_pattern . '\(,\s*' . func_name_full_pattern . '\)*\ze\_s\+::\_s" contains=haskellLetKeyword'
+  " do not parse type sigs in record blocks
+  syn clear haskellBlock
+  syn region haskellBlock matchgroup=haskellDelimiter start="{" end="}" contains=TOP,haskellFuncTypeDefinition,@Spell
   " ensure 'module' is containe
   syn clear haskellDeclKeyword
   syn keyword haskellDeclKeyword class instance newtype in
@@ -206,6 +210,7 @@ hi! link haskellBottom Operator
 hi! link haskellTH Normal
 hi! link haskellFuncTypeDefinition FunctionNameTypeDeclaration
 hi! link haskellFuncBodyDefinition FunctionNameBodyDeclaration
+hi! link haskellArrowBinding VariableNameDeclaration
 hi! link haskellForeignKeywords StructureKeyword
 hi! link haskellKeyword LogicKeyword
 hi! link haskellDefault StructureKeyword
@@ -341,7 +346,7 @@ let g:coc_user_config = {
         \ ],
         \ 'settings': {
           \ 'haskell': {
-            \ 'formattingProvider': 'ormolu'
+            \ 'formattingProvider': 'stylish-haskell'
           \ }
         \ }
       \ }
