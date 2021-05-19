@@ -14,7 +14,7 @@ makeBuildDir = project: "${project.buildPath}/${projectTypeId}";
 
 elmPkg = pkgs.elmPackages.elm;
 
-commands = {
+commands = rec {
   make-src-dir = project: projectsLib.makeCommand {
     inherit project;
     name = "${projectTypeId}-make-src-dir";
@@ -61,6 +61,7 @@ projectConfig = {
     commands.make-src-dir
     commands.elm
     commands.build
+    commands.nix
   ];
 };
 
@@ -76,11 +77,14 @@ in
 {
   inherit defineProject makeProject makeProjects;
 
-  pkgs = [
-    elmPkg
-    pkgs.elmPackages.elm-language-server
-    #elm-format not bundled with elm-language-server
-    pkgs.elmPackages.elm-format
-    pkgs.elmPackages.elm-test
-  ];
+  pkgs = {
+    all = [
+      elmPkg
+      pkgs.elmPackages.elm-language-server
+      #elm-format not bundled with elm-language-server
+      pkgs.elmPackages.elm-format
+      pkgs.elmPackages.elm-test
+    ];
+    elm = elmPkg;
+  };
 }

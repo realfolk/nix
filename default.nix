@@ -1,6 +1,7 @@
 rec {
 
   config = {
+    nixpkgs = import ./lib/config/nixpkgs.nix;
     pkgSet = import ./lib/config/package-set.nix;
   };
 
