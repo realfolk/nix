@@ -259,7 +259,7 @@ let mapleader=","
 " easier to switch to the last active buffer
 nmap <leader><leader> :b#<CR>
 " toggle line numbers
-nmap <leader>n :set invrelativenumber<CR>
+nmap <leader>n :set invrelativenumber invnumber<CR>
 " open NERDTree
 nmap <leader>t :NERDTreeToggle<CR>
 " open terminal
