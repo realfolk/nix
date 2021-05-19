@@ -61,7 +61,6 @@ projectConfig = {
     commands.make-src-dir
     commands.elm
     commands.build
-    commands.nix
   ];
 };
 
