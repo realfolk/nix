@@ -32,7 +32,7 @@ vim = vimConfigurable.customize {
 
   vimrcConfig.packages.myVimPackages = {
     start = with pkgs.vimPlugins; [
-      vim-sensible
+			vim-sensible
       gruvbox
       easy-align
       The_NERD_tree

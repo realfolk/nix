@@ -1,5 +1,3 @@
-"NOTE: vim-sensible is automatically loaded.
-
 set nocompatible
 set path+=**
 
@@ -41,6 +39,9 @@ set hlsearch "highlights all results
 
 " disable folding
 set nofoldenable
+
+" enable syntax highlighting before linking highlight groups
+syntax enable
 
 " set the colorscheme
 colorscheme gruvbox
@@ -84,7 +85,7 @@ hi! link Identifier Normal
 
 " auto-syntax rules
 au! BufNewFile,BufRead *.elm call LoadElmFile()
-au! BufNewFile,BufRead *.hs call LoadHaskellFile()
+au! BufNewFile,BufRead *.hs,*.lhs call LoadHaskellFile()
 au! BufNewFile,BufRead *.hdl set filetype=txt
 au! BufNewFile,BufRead *.ejs set filetype=html
 au! BufNewFile,BufRead *.ledger set filetype=ledger
@@ -95,6 +96,7 @@ au! BufNewFile,BufRead *.mdrn set filetype=lisp
 
 " Syntax rules adapted from https://github.com/vim/vim/blob/master/runtime/syntax/elm.vim
 function LoadElmFile()
+  set filetype=elm
   let module_name_first_pattern = "[A-Z]"
   let module_name_non_first_pattern = "[0-9A-Za-z_'-]"
   let module_name_segment_pattern = module_name_first_pattern . module_name_non_first_pattern . "*"
@@ -136,12 +138,11 @@ function LoadElmFile()
   syn match elmLineComment "--.*" contains=elmTodo,@spell
   syn clear elmComment
   syn region elmComment matchgroup=elmComment start="{-|\=" end="-}" contains=elmTodo,elmComment,@spell fold
-  " set the filetype
-  set filetype=elm
 endfunction
 
 " Syntax rules adapted from https://github.com/neovimhaskell/haskell-vim/blob/master/syntax/haskell.vim
 function LoadHaskellFile()
+  set filetype=haskell
   let module_name_first_pattern = "[A-Z]"
   let module_name_non_first_pattern = "[0-9A-Za-z_'-]"
   let module_name_segment_pattern = module_name_first_pattern . module_name_non_first_pattern . "*"
@@ -172,8 +173,6 @@ function LoadHaskellFile()
   execute 'syn match haskellReferenceModuleName "\(\<module\>\s\+\)\@!\<' . module_name_full_pattern . '\.' . value_name_first_pattern . '"me=e-2'
   execute 'syn match haskellModuleHeader "\<module\>\s\+' . module_name_full_pattern . '" contains=haskellModuleKeyword,haskellFullModuleName,haskellOperators'
   execute 'syn match haskellImportModule "^\(import\|import\s\+qualified\|import\s\+safe\)\s\+\<' . module_name_full_pattern . '\>\(\s\+as\s\+\<' . module_name_full_pattern . '\>\)\?\(\s\+hiding\)\?" contains=haskellImportKeywords,haskellFullModuleName'
-  " set the filetype
-  set filetype=haskell
 endfunction
 
 " syntax overrides to use custom groups
