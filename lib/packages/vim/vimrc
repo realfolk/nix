@@ -1,6 +1,5 @@
 "NOTE: vim-sensible is automatically loaded.
 
-
 set nocompatible
 set path+=**
 
@@ -105,7 +104,6 @@ function LoadElmFile()
   let func_name_non_first_pattern = "[a-zA-Z0-9_']"
   let func_name_infix_pattern = '([-!#$%&\*\+/<=>\?@\\^|~:.]\+)'
   let func_name_full_pattern = '\(\<' . func_name_first_pattern . func_name_non_first_pattern . '*#\?\>\|' . func_name_infix_pattern . '\)'
-  set filetype=elm
   " operators
   syn clear elmOperator
   syn match elmOperators "[-!#$%&\*\+/<=>\?@\\^|~:.]\+\|\<_\>"
@@ -138,6 +136,8 @@ function LoadElmFile()
   syn match elmLineComment "--.*" contains=elmTodo,@spell
   syn clear elmComment
   syn region elmComment matchgroup=elmComment start="{-|\=" end="-}" contains=elmTodo,elmComment,@spell fold
+  " set the filetype
+  set filetype=elm
 endfunction
 
 " Syntax rules adapted from https://github.com/neovimhaskell/haskell-vim/blob/master/syntax/haskell.vim
@@ -151,7 +151,6 @@ function LoadHaskellFile()
   let func_name_non_first_pattern = "[a-zA-Z0-9_']"
   let func_name_infix_pattern = '([-!#$%&\*\+/<=>\?@\\^|~:.]\+)'
   let func_name_full_pattern = '\(\<' . func_name_first_pattern . func_name_non_first_pattern . '*#\?\>\|' . func_name_infix_pattern . '\)'
-  set filetype=haskell
   " ensure 'let' is contained
   syn clear haskellLet
   syn keyword haskellLetKeyword contained let
@@ -173,6 +172,8 @@ function LoadHaskellFile()
   execute 'syn match haskellReferenceModuleName "\(\<module\>\s\+\)\@!\<' . module_name_full_pattern . '\.' . value_name_first_pattern . '"me=e-2'
   execute 'syn match haskellModuleHeader "\<module\>\s\+' . module_name_full_pattern . '" contains=haskellModuleKeyword,haskellFullModuleName,haskellOperators'
   execute 'syn match haskellImportModule "^\(import\|import\s\+qualified\|import\s\+safe\)\s\+\<' . module_name_full_pattern . '\>\(\s\+as\s\+\<' . module_name_full_pattern . '\>\)\?\(\s\+hiding\)\?" contains=haskellImportKeywords,haskellFullModuleName'
+  " set the filetype
+  set filetype=haskell
 endfunction
 
 " syntax overrides to use custom groups
@@ -334,10 +335,11 @@ let g:coc_user_config = {
         \ 'rootPatterns': ['elm.json', 'elm-tooling.json']
       \ },
       \ 'haskell': {
-        \ 'command': 'haskell-language-server-wrapper',
+        \ 'command': 'haskell-language-server',
         \ 'args': [
           \ '--lsp'
         \ ],
+        \ 'requireRootPattern': v:true,
         \ 'rootPatterns': [
           \ 'hie.yaml',
         \ ],

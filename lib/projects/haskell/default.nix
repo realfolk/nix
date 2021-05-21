@@ -1,11 +1,7 @@
 {
   pkgs,
-  selectGhcPackages ? p: [],
-  selectGhcjsPackages ? p: [],
-  selectSharedPackages ? p: [],
-  extraGhcExtensions ? self: super: {},
-  extraGhcjsExtensions ? self: super: {},
-  extraSharedExtensions ? self: super: {}
+  selectPackages ? p: [],
+  packageExtensions ? self: super: {},
 }:
 
 let
@@ -16,56 +12,59 @@ hlib = pkgs.haskell.lib;
 
 # GHC
 
-ghcSourceOverrides = hlib.packageSourceOverrides {
-  th-expand-syns = pkgs.fetchFromGitHub {
-    owner = " DanielSchuessler";
-    repo = "th-expand-syns";
-    rev = "5d41fb524a631fa2c087207701822f4e6313f547";
-    sha256 = "0v4dlyxjy7hrcw14hanlgcfyns4wi50lhwzpsjg34pcdzy6g4fh6";
+srcs = rec {
+  cryptohash-md5 = pkgs.fetchFromGitHub {
+    owner = "haskell-hvr";
+    repo = "cryptohash-md5";
+    rev = "c5531225d9a4fb8a96347e591205ada1d89efb76";
+    sha256 = "1mr9qrr6q946xvjs6vx78yp7fh1wansva2gmm49ys4qim85mqqvj";
   };
-  czipwith = pkgs.fetchFromGitHub {
-    owner = "lspitzner";
-    repo = "czipwith";
-    rev = "b876669e74ce5ca9e183c0bc53b90fc6a946e799";
-    sha256 = "0psaydskbkfxyl2466nxw1bm3hx6cbm543xvqrbmhkbprbz2rkxh";
+  cryptohash-sha1 = pkgs.fetchFromGitHub {
+    owner = "haskell-hvr";
+    repo = "cryptohash-sha1";
+    rev = "10bf345b6b003e77fb96f2ff13861a9a3a149290";
+    sha256 = "0g8x90sw0lg5iz9xh83i7iknf50k7f7fyx91rvsqns58d385csyf";
   };
-  http-media = pkgs.fetchFromGitHub {
-    owner = "zmthy";
-    repo = "http-media";
-    rev = "917b58ff5f69f1dc7791c59f6530767d099680bf";
-    sha256 = "0j9qwx8h16szj7hwkx8zar7w6b2nsvqqq5fp0aaphjqijl33x9r4";
+  haddock = pkgs.fetchFromGitHub {
+    owner = "haskell";
+    repo = "haddock";
+    rev = "3ddd7825865fd8643394354b259b2285ab3b783e";
+    sha256 = "0vwh09iqvr0qprz96fyaiiq9p94sc9ahkm6qv9jg3a7l5hdf7g63";
   };
+  haddock-library = "${haddock}/haddock-library";
+  haddock-api = "${haddock}/haddock-api";
 };
 
-dataTreePrintSrc = pkgs.fetchFromGitHub {
-  owner = "lspitzner";
-  repo = "data-tree-print";
-  rev = "c31afbdfab041dce23f696eacdd68b393309ddd5";
-  sha256 = "0q4hl6s8fr82m5b7mcwbr18pv9hcyarsbd5y6ik504f5zw8jwld7";
-};
-
-ghcExtensions = pkgs.lib.composeExtensions ghcSourceOverrides (self: super: {
-  stylish-haskell = hlib.dontCheck super.stylish-haskell;
-  hindent = hlib.appendPatch super.hindent ./patches/hindent-5.3.1.patch;
-  text-trie = hlib.dontCheck (hlib.appendPatch super.text-trie ./patches/text-trie-0.2.5.0.patch);
-  ghc-exactprint = super.ghc-exactprint_0_6_3_2;
-  data-tree-print = hlib.appendPatch (self.callCabal2nix "data-tree-print" dataTreePrintSrc {}) ./patches/data-tree-print-0.1.0.2.patch;
-  doctest = hlib.dontCheck super.doctest_0_17;
-  haskell-language-server = (hlib.disableCabalFlag super.haskell-language-server "agpl").override {
-    brittany = null;
-  };
-  haddock = hlib.dontHaddock super.haddock;
-  servant = super.servant_0_18;
-  servant-server = super.servant-server_0_18;
-  servant-lucid = hlib.appendPatch super.servant-lucid_0_9_0_1 ./patches/servant-lucid-0.9.0.1.patch;
-  miso = super.miso_1_7_1_0;
+ghcExtensions = (self: super: builtins.mapAttrs (name: value: hlib.dontCheck value) {
+  text-trie = hlib.appendPatch super.text-trie ./patches/text-trie-0.2.5.0.patch;
+  cryptohash-md5 = hlib.appendPatch (self.callCabal2nix "cryptohash-md5" srcs.cryptohash-md5 {}) ./patches/cryptohash-md5-0.11.101.0.patch;
+  cryptohash-sha1 = hlib.appendPatch (self.callCabal2nix "cryptohash-sha1" srcs.cryptohash-sha1 {}) ./patches/cryptohash-sha1-0.11.101.0.patch;
+  haddock = self.callCabal2nix "haddock" srcs.haddock {};
+  haddock-library = self.callCabal2nix "haddock-library" srcs.haddock-library {};
+  haddock-api = self.callCabal2nix "haddock-api" srcs.haddock-api {};
+  haskell-language-server =
+    let
+      hls = pkgs.lib.foldr (flag: pkg: hlib.disableCabalFlag pkg flag) super.haskell-language-server [
+        "all-formatters"
+        "ormolu"
+        "fourmolu"
+        "brittany"
+        "floskell"
+      ];
+    in
+      hls.override {
+        ormolu = null;
+        fourmolu = null;
+        hls-brittany-plugin = null;
+        floskell = null;
+      };
 });
 
-rootGhcPkgs = pkgs.haskell.packages.ghc8101;
+rootGhcPkgs = pkgs.haskell.packages.ghc8104;
 
-ghcPkgs = rootGhcPkgs.extend (pkgs.lib.composeExtensions (pkgs.lib.composeExtensions ghcExtensions extraGhcExtensions) extraSharedExtensions);
+ghcPkgs = rootGhcPkgs.extend (pkgs.lib.composeExtensions ghcExtensions packageExtensions);
 
-ghcPkg = ghcPkgs.ghcWithPackages (p: (selectGhcPackages p) ++ (selectSharedPackages p));
+ghcPkg = ghcPkgs.ghcWithPackages (p: selectPackages p);
 
 ghcidPkg = pkgs.ghcid;
 
@@ -77,30 +76,9 @@ makeGhcFlags = project: prefix: builtins.concatLists [
   (map (p: "${prefix}-i=${p.srcPath}") project.dependencies)
 ];
 
-makeGhcFlagsString = project: prefix: sep: builtins.concatStringsSep sep (makeGhcFlags project prefix);
-
-# GHCJS
-
-miso = import (pkgs.fetchFromGitHub {
-  owner = "dmjio";
-  repo = "miso";
-  rev = "b25512dfb0cc316902c33f9825355944312d1e15";
-  sha256 = "007cl5125zj0c35xim8935k0pvyd0x4fc0s7jryc3qg3pmjbszc9";
-}) {};
-
-ghcjsPkgSet = miso.pkgs;
-
-ghcjsSourceOverrides = hlib.packageSourceOverrides {
-};
-
-ghcjsExtensions = pkgs.lib.composeExtensions ghcjsSourceOverrides (self: super: {
-});
-
-rootGhcjsPkgs = ghcjsPkgSet.haskell.packages.ghcjs86;
-
-ghcjsPkgs = rootGhcjsPkgs.extend (pkgs.lib.composeExtensions (pkgs.lib.composeExtensions ghcjsExtensions extraGhcjsExtensions) extraSharedExtensions);
-
-ghcjsPkg = ghcjsPkgs.ghcWithPackages (p: (selectGhcjsPackages p) ++ (selectSharedPackages p));
+makeGhcFlagsString =
+  project: prefix: sep:
+    builtins.concatStringsSep sep (makeGhcFlags project prefix);
 
 # COMMANDS
 
@@ -117,7 +95,6 @@ makeCommandsForExecutables = { name, makeScript, includeInShellHook ? false }: p
 makeBuildDir = project: dirName: "${project.buildPath}/${projectTypeId}/${dirName}";
 makeBuildTarget = { project, dirName, targetName }: "${makeBuildDir project dirName}/${targetName}";
 makeBuildTargetGhc = project: dirName: makeBuildTarget { inherit project dirName; targetName = "out.ghc"; };
-makeBuildTargetGhcJs = project: dirName: makeBuildTarget { inherit project dirName; targetName = "out.ghcjs"; };
 
 commands = rec {
 
@@ -141,93 +118,89 @@ commands = rec {
     script = "${ghcPkg}/bin/ghci ${makeGhcFlagsString project "" " "} \"$@\"";
   };
 
+  hie-bios = project: projectsLib.makeCommand {
+    inherit project;
+    name = "${projectTypeId}-hie-bios";
+    script = ''
+      test -z "$HIE_BIOS_OUTPUT" && echo "Invalid HIE_BIOS_OUTPUT environment variable" && exit 1
+      test -f "$HIE_BIOS_OUTPUT" && rm "$HIE_BIOS_OUTPUT"
+      touch "$HIE_BIOS_OUTPUT"
+      echo -e "${makeGhcFlagsString project "" "\\n"}" >> "$HIE_BIOS_OUTPUT"
+      for dir in ${builtins.concatStringsSep " " (map (p: p.srcPath) ([project] ++ project.dependencies))}
+      do
+        cd "$dir"
+        find . -iname '*.hs' -exec bash -c 'echo "$(dirname $1)/$(basename $1 .hs)" | sed "s/^\(\.\/\|\/\)// ; s/\/\+/./g" >> "$HIE_BIOS_OUTPUT"' bash {} \;
+      done
+      '';
+  };
+
+  #See https://github.com/haskell/haskell-language-server/issues/826#issuecomment-708647758
+  #We need to explicitly list each module (both in the project.srcPath and all dependency srcPaths)
+  #for haskell-language-server to work.
+  #Consequently, we cannot use a direct cradle, we need to dynamically generate this list of modules.
+  #The hie-bios command above does this.
+  #The below hie-yaml command reconfigures the cradle to be "bios" instead of "direct", calling the
+  #above hie-bios command to dynamically generate the list of arguments to pass to ghc.
   hie-yaml = project:
     projectsLib.makeCommand {
       inherit project;
       name = "${projectTypeId}-hie-yaml";
-      includeInShellHook = true; #TODO haskell-language-server is only supported for ghc
-      script = ''
+      includeInShellHook = true;
+      script = 
+      ''
         mkdir -p "${project.srcPath}"
-        echo -ne "cradle: {direct: {arguments: [${makeGhcFlagsString project "" ", "}]}}" > "${project.srcPath}/hie.yaml"
-        #cat <<EOF > "${project.srcPath}/hie.yaml"
-          #cradle:
-            #bios:
-              #with-ghc: "PATH_TO_GHC"
-              #shell: 'echo -ne "${makeGhcFlagsString project "" " "}"'
-        #EOF
+        echo -ne "cradle: {bios: {program: "${(hie-bios project).bin}"}}" > "${project.srcPath}/hie.yaml"
       '';
     };
 
-    ghcid = makeCommandsForExecutables {
-      name = "${projectTypeId}-ghcid";
-      makeScript = (project: subName: mainFile: ''
-        ${ghcidPkg}/bin/ghcid --command=${(ghci project).bin} --test=main --reload "${project.srcPath}" "${project.srcPath}/${mainFile}" "$@"
-      '');
-    };
-
-    docs = makeCommandsForExecutables {
-      name = "${projectTypeId}-docs";
-      makeScript = (project: subName: mainFile:
-        let
-          buildDir = "${makeBuildDir project subName}/docs";
-        in ''
-          interface_cmds=$(find -L "${ghcPkg}/share/doc" -iname "*.haddock" | sed -e 's|\(.*\)\(/[^/]\+\)|-i \1,\1\2|')
-          test -d "${buildDir}" && rm -rf "${buildDir}"
-          mkdir -p ${buildDir}
-          ${ghcPkg}/bin/haddock -h ${makeGhcFlagsString project "--optghc=" " "} -o ${buildDir} $interface_cmds "$@" --package-name=${project.name} "${project.srcPath}/${mainFile}"
-      '');
-    };
-
-    build = makeCommandsForExecutables {
-      name = "${projectTypeId}-build";
-      makeScript = (project: subName: mainFile:
-        let
-          buildDir = makeBuildDir project subName;
-          buildTarget = makeBuildTargetGhc project subName;
-        in ''
-          mkdir -p "${buildDir}"
-          test -f "${buildTarget}" && rm "${buildTarget}"
-          ${(ghc project).bin} -O2 -threaded +RTS -N6 -RTS --make -j6 -hidir "${project.buildArtifacts}" -odir "${project.buildArtifacts}" "${project.srcPath}/${mainFile}" -o "${buildTarget}" -rtsopts "$@" && echo "Successfully built: ${buildTarget}"
-      '');
-    };
-
-    run = makeCommandsForExecutables {
-      name = "${projectTypeId}-run";
-      makeScript = (project: subName: mainFile:
-        let
-          buildTarget = makeBuildTargetGhc project subName;
-          buildCommandName = projectsLib.makeCommandName {
-            inherit project subName;
-            name = "${projectTypeId}-build";
-          };
-          buildCommand = projectsLib.findCommand buildCommandName (build project);
-        in if buildCommand == false then "echo 'Build command not found: ${buildCommandName}'" else ''
-          ${buildCommand.bin}
-          ${buildTarget} "$@"
-      '');
-    };
-
-  # GHCJS COMMANDS
-
-  ghcjs = project: projectsLib.makeCommand {
-    inherit project;
-    name = "${projectTypeId}-ghcjs";
-    script = "${ghcjsPkg}/bin/ghcjs ${makeGhcFlagsString project "" " "} \"$@\"";
-  };
-
-  buildjs = makeCommandsForExecutables {
-    name = "${projectTypeId}-buildjs";
-    makeScript = (project: subName: mainFile:
-      let
-        buildDir = makeBuildDir project subName;
-        buildTarget = makeBuildTargetGhcJs project subName;
-      in ''
-        mkdir -p "${buildDir}"
-        test -f "${buildTarget}" && rm "${buildTarget}"
-        ${(ghcjs project).bin} -O2 -threaded +RTS -N6 -RTS --make -j6 -hidir "${project.buildArtifacts}" -odir "${project.buildArtifacts}" "${project.srcPath}/${mainFile}" -o "${buildTarget}" "$@" && echo "Successfully built: ${buildTarget}"
+  ghcid = makeCommandsForExecutables {
+    name = "${projectTypeId}-ghcid";
+    makeScript = (project: subName: mainFile: ''
+      ${ghcidPkg}/bin/ghcid --command=${(ghci project).bin} --test=main --reload "${project.srcPath}" "${project.srcPath}/${mainFile}" "$@"
     '');
   };
 
+  docs = makeCommandsForExecutables {
+    name = "${projectTypeId}-docs";
+    makeScript = (project: subName: mainFile:
+      let
+        buildDir = "${makeBuildDir project subName}/docs";
+      in ''
+        interface_cmds=$(find -L "${ghcPkg}/share/doc" -iname "*.haddock" | sed -e 's|\(.*\)\(/[^/]\+\)|-i \1,\1\2|')
+        test -d "${buildDir}" && rm -rf "${buildDir}"
+        mkdir -p ${buildDir}
+        ${ghcPkg}/bin/haddock -h ${makeGhcFlagsString project "--optghc=" " "} -o ${buildDir} $interface_cmds "$@" --package-name=${project.name} "${project.srcPath}/${mainFile}"
+    '');
+  };
+
+  build = makeCommandsForExecutables {
+    name = "${projectTypeId}-build";
+    makeScript = (project: subName: mainFile:
+      let
+        buildDir = makeBuildDir project subName;
+        buildTarget = makeBuildTargetGhc project subName;
+      in ''
+        mkdir -p "${buildDir}"
+        test -f "${buildTarget}" && rm "${buildTarget}"
+        ${(ghc project).bin} -O2 -threaded +RTS -N6 -RTS --make -j6 -hidir "${project.buildArtifacts}" -odir "${project.buildArtifacts}" "${project.srcPath}/${mainFile}" -o "${buildTarget}" -rtsopts "$@" && echo "Successfully built: ${buildTarget}"
+    '');
+  };
+
+  run = makeCommandsForExecutables {
+    name = "${projectTypeId}-run";
+    makeScript = (project: subName: mainFile:
+      let
+        buildTarget = makeBuildTargetGhc project subName;
+        buildCommandName = projectsLib.makeCommandName {
+          inherit project subName;
+          name = "${projectTypeId}-build";
+        };
+        buildCommand = projectsLib.findCommand buildCommandName (build project);
+      in if buildCommand == false then "echo 'Build command not found: ${buildCommandName}'" else ''
+        ${buildCommand.bin}
+        ${buildTarget} "$@"
+    '');
+  };
 };
 
 # PROJECTS
@@ -244,12 +217,11 @@ projectConfig = {
     commands.ghc
     commands.ghci
     commands.docs
+    commands.hie-bios
     commands.hie-yaml
     commands.ghcid
     commands.build
     commands.run
-    commands.ghcjs
-    commands.buildjs
   ];
 };
 
@@ -271,7 +243,6 @@ in
     all = [
       ghcPkg
       ghcidPkg
-      ghcjsPkg
       #formatters bundled with haskell-language-server
       #no need to install them separately
       ghcPkgs.haskell-language-server
@@ -279,8 +250,6 @@ in
     ghc = ghcPkg;
     ghcPkgs = ghcPkgs;
     ghcid = ghcidPkg;
-    ghcjs = ghcjsPkg;
-    ghcjsPkgs = ghcjsPkgs;
   };
 
   shellHook = ''
