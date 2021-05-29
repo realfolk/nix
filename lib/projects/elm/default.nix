@@ -10,19 +10,21 @@ projectsLib = import ../default.nix { inherit pkgs; };
 
 projectTypeId = "elm";
 
-makeBuildDir = project: "${project.buildPath}/${projectTypeId}";
+makeCommandsForEntryPoints = { name, makeScript, includeInShellHook ? false }: project:
+  pkgs.lib.attrsets.mapAttrsToList
+    (subName: mainFile: projectsLib.makeCommand {
+      inherit name subName project includeInShellHook;
+      script = (makeScript project subName mainFile);
+    })
+    project.entryPoints;
+
+makeBuildDir = project: dirName: "${project.buildPath}/${projectTypeId}/${dirName}";
+makeBuildTarget = { project, dirName, targetName }: "${makeBuildDir project dirName}/${targetName}";
+makeBuildTargetJs = project: dirName: makeBuildTarget { inherit project dirName; targetName = "out.js"; };
 
 elmPkg = pkgs.elmPackages.elm;
 
 commands = rec {
-  make-src-dir = project: projectsLib.makeCommand {
-    inherit project;
-    name = "${projectTypeId}-make-src-dir";
-    includeInShellHook = true;
-    script = ''
-      mkdir -p "${project.srcPath}"
-    '';
-  };
   elm = project: projectsLib.makeCommand {
     inherit project;
     name = "${projectTypeId}-elm";
@@ -31,20 +33,20 @@ commands = rec {
       ${elmPkg}/bin/elm "$@"
     '';
   };
-  build = project: projectsLib.makeCommand {
-    inherit project;
+  build = makeCommandsForEntryPoints {
     name = "${projectTypeId}-build";
-    script =
-      let buildDir = makeBuildDir project;
-      in
-        ''
-          echo "Removing old build directory: ${project.buildPath}"
-          mkdir -p "${buildDir}"
-          rm -rf "${buildDir}"
-          cd "${project.srcPath}"
-          ${elmPkg}/bin/elm make src/Main.elm --output "${buildDir}/out.js" "$@"
-          echo "Successfully built project: ${project.buildPath}"
-        '';
+    makeScript = (project: subName: mainFile:
+      let
+        buildDir = makeBuildDir project subName;
+        buildTarget = makeBuildTargetJs project subName;
+      in ''
+        echo "Removing old build directory: ${buildDir}"
+        mkdir -p "${buildDir}"
+        rm -rf "${buildDir}"
+        cd "${project.srcPath}"
+        ${elmPkg}/bin/elm make src/${mainFile} --output "${buildTarget}" "$@"
+        echo "Successfully built entry point ${mainFile}: ${buildTarget}"
+    '');
   };
 };
 
@@ -52,20 +54,21 @@ commands = rec {
 
 projectConfig = {
   commands = [
+    projectsLib.commonCommands.mkdir-src
     projectsLib.commonCommands.pwd-src
     projectsLib.commonCommands.pwd-build
     projectsLib.commonCommands.cd-src
     projectsLib.commonCommands.cd-build
     projectsLib.commonCommands.ls-src
     projectsLib.commonCommands.ls-build
-    commands.make-src-dir
     commands.elm
     commands.build
   ];
 };
 
-defineProject = rootConfig: defineConfig:
-  projectsLib.defineProject rootConfig defineConfig;
+defineProject = rootConfig: { entryPoints ? {}, ... }@args:
+  { inherit entryPoints; } // (projectsLib.defineProject rootConfig (builtins.removeAttrs args [ "entryPoints" ]));
+
 
 makeProject = project: projectsLib.makeProject project projectConfig;
 

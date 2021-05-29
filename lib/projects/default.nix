@@ -47,7 +47,21 @@ rec {
 
   findCommand = matchName: commands: pkgs.lib.lists.findFirst ({ name, ...}: name == matchName) false commands;
 
+  includeInShellHook = command: command // { includeInShellHook = true; };
+
+  excludeFromShellHook = command: command // { includeInShellHook = false; };
+
   commonCommands = {
+
+    mkdir-src = project: makeCommand {
+      inherit project;
+      name = "${commonCommandPrefix}-mkdir";
+      subName = "src";
+      includeInShellHook = true;
+      script = ''
+        mkdir -p "${project.srcPath}"
+      '';
+    };
 
     pwd-src = project: makeCommand {
       inherit project;

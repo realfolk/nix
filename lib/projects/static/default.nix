@@ -85,6 +85,7 @@ commands = rec {
 
 projectConfig = {
   commands = [
+    projectsLib.commonCommands.mkdir-src
     projectsLib.commonCommands.pwd-src
     projectsLib.commonCommands.pwd-build
     projectsLib.commonCommands.cd-src
