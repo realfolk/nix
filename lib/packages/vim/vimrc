@@ -1,11 +1,6 @@
 set nocompatible
 set path+=**
 
-" tabs as 2 spaces instead of \t characters
-set tabstop=2 shiftwidth=2 expandtab
-au! BufNewFile,BufRead *.elm set tabstop=4 shiftwidth=4
-au! BufNewFile,BufRead *.py set tabstop=4 shiftwidth=4
-
 " always show one line above/below cursor
 set incsearch
 
@@ -39,6 +34,9 @@ set hlsearch "highlights all results
 
 " disable folding
 set nofoldenable
+
+" tabs as 2 spaces instead of \t characters
+set tabstop=2 shiftwidth=2 expandtab
 
 " enable syntax highlighting before linking highlight groups
 syntax enable
@@ -83,7 +81,7 @@ hi! link Number Primitive
 hi! link Boolean Primitive
 hi! link Identifier Normal
 
-" auto-syntax rules
+" autocmd syntax etc. rules
 au! BufNewFile,BufRead *.elm call LoadElmFile()
 au! BufNewFile,BufRead *.hs,*.lhs call LoadHaskellFile()
 au! BufNewFile,BufRead *.hdl set filetype=txt
@@ -93,10 +91,12 @@ au! BufNewFile,BufRead *.json,*.js,*.jsx set filetype=javascript
 au! BufNewFile,BufRead *.ts,*.tsx set filetype=typescript
 au! BufNewFile,BufRead *.dockerfile,*.docker set filetype=dockerfile
 au! BufNewFile,BufRead *.mdrn set filetype=lisp
+au! BufNewFile,BufRead *.py set tabstop=4 shiftwidth=4
 
 " Syntax rules adapted from https://github.com/vim/vim/blob/master/runtime/syntax/elm.vim
 function LoadElmFile()
   set filetype=elm
+  set tabstop=4 shiftwidth=4
   let module_name_first_pattern = "[A-Z]"
   let module_name_non_first_pattern = "[0-9A-Za-z_'-]"
   let module_name_segment_pattern = module_name_first_pattern . module_name_non_first_pattern . "*"
