@@ -72,8 +72,8 @@ commands = rec {
       }
       export -f zopfli_compress
       export -f brotli_compress
-      # do not compress png images because there is no added benefit
-      find . \( -iname '*.js' -o -iname '*.css' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.svg' -o -iname '*.html' -o -iname '*.mdrn' -o -iname '*.json' \) -exec bash -c 'zopfli_compress "$1"; brotli_compress "$1"' bash "{}" \;
+      # do not compress jpg or png images because there is no added benefit
+      find . \( -iname '*.js' -o -iname '*.css' -o -iname '*.svg' -o -iname '*.html' -o -iname '*.mdrn' -o -iname '*.json' \) -exec bash -c 'zopfli_compress "$1"; brotli_compress "$1"' bash "{}" \;
 
       echo "--- Successfully completed optimized build ---"
       echo "Build files written to ${project.buildPath}"
