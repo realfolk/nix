@@ -73,6 +73,7 @@ makeGhcFlags = project: prefix: builtins.concatLists [
     "${prefix}-no-user-package-db" # Only use nix dependencies.
     "${prefix}-i=${project.srcPath}"
   ]
+  (map (ext: "${prefix}-X${ext}") project.languageExtensions)
   (map (p: "${prefix}-i=${p.srcPath}") project.dependencies)
 ];
 
@@ -182,8 +183,21 @@ commands = rec {
       in ''
         mkdir -p "${buildDir}"
         test -f "${buildTarget}" && rm "${buildTarget}"
-        ${(ghc project).bin} -O2 -threaded +RTS -N6 -RTS --make -j6 -hidir "${project.buildArtifacts}" -odir "${project.buildArtifacts}" "${project.srcPath}/${mainFile}" -o "${buildTarget}" -rtsopts "$@" && echo "Successfully built: ${buildTarget}"
+        ${(ghc project).bin} -threaded -j4 -hidir "${project.buildArtifacts}" -odir "${project.buildArtifacts}" --make "${project.srcPath}/${mainFile}" -o "${buildTarget}" "$@" && echo "Successfully built: ${buildTarget}"
     '');
+  };
+
+  build-optimized = makeCommandsForExecutables {
+    name = "${projectTypeId}-build-optimized";
+    makeScript = (project: subName: mainFile:
+      let
+        buildCommandName = projectsLib.makeCommandName {
+          inherit project subName;
+          name = "${projectTypeId}-build";
+        };
+        buildCommand = projectsLib.findCommand buildCommandName (build project);
+      in "${buildCommand.bin} -O2"
+    );
   };
 
   run = makeCommandsForExecutables {
@@ -197,7 +211,7 @@ commands = rec {
         };
         buildCommand = projectsLib.findCommand buildCommandName (build project);
       in if buildCommand == false then "echo 'Build command not found: ${buildCommandName}'" else ''
-        ${buildCommand.bin}
+        ${buildCommand.bin} -rtsopts #allow use of +RTS...-RTS options
         ${buildTarget} "$@"
     '');
   };
@@ -222,12 +236,13 @@ projectConfig = {
     commands.hie-yaml
     commands.ghcid
     commands.build
+    commands.build-optimized
     commands.run
   ];
 };
 
-defineProject = rootConfig: { executables ? {}, dependencies ? [], ... }@args:
-  { inherit executables dependencies; } // (projectsLib.defineProject rootConfig (builtins.removeAttrs args [ "executables" "dependencies" ]));
+defineProject = rootConfig: { executables ? {}, dependencies ? [], languageExtensions ? [], ... }@args:
+  { inherit executables dependencies languageExtensions; } // (projectsLib.defineProject rootConfig (builtins.removeAttrs args [ "executables" "dependencies" ]));
 
 makeProject = project: projectsLib.makeProject project projectConfig;
 
