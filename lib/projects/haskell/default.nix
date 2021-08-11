@@ -42,6 +42,9 @@ ghcExtensions = (self: super: builtins.mapAttrs (name: value: hlib.dontCheck val
   haddock = self.callCabal2nix "haddock" srcs.haddock {};
   haddock-library = self.callCabal2nix "haddock-library" srcs.haddock-library {};
   haddock-api = self.callCabal2nix "haddock-api" srcs.haddock-api {};
+  hls-pragma-plugin = hlib.dontCheck super.hls-pragma-plugin;
+  hls-splice-plugin = hlib.dontCheck super.hls-splice-plugin;
+  hls-class-plugin = hlib.dontCheck super.hls-class-plugin;
   haskell-language-server =
     let
       hls = pkgs.lib.foldr (flag: pkg: hlib.disableCabalFlag pkg flag) super.haskell-language-server [
@@ -53,10 +56,10 @@ ghcExtensions = (self: super: builtins.mapAttrs (name: value: hlib.dontCheck val
       ];
     in
       hls.override {
-        ormolu = null;
-        fourmolu = null;
+        hls-ormolu-plugin = null;
+        hls-fourmolu-plugin = null;
         hls-brittany-plugin = null;
-        floskell = null;
+        hls-floskell-plugin = null;
       };
 });
 

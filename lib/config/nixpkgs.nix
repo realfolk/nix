@@ -7,6 +7,6 @@ in
 systemPkgs.fetchFromGitHub {
   owner = "nixos";
   repo = "nixpkgs";
-  rev = "259e3fc46f986ff8502879d8a7408f82c9a19eb2";
-  sha256 = "1d2k93zkzivfg7rkbiaj9psisq05vz2hvd4cq7rlpbfqicf607m3";
+  rev = "c6aa7bdae0143c41043968a3abd9a9727a6cdf5a";
+  sha256 = "17gvpk7kga75ah6xwgzl514zbmcm9vxx44ad521jb84kcdkbzwng";
 }
