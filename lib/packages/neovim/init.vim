@@ -7,7 +7,8 @@ set incsearch
 " enable relative line numbers
 set relativenumber
 " show the current line's number instead of zero
-set number
+" (disabled as it was causing visual artifacts in neovim)
+"set number
 
 " highlight the active row
 set cursorline
