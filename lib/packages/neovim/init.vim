@@ -1,0 +1,394 @@
+set nocompatible
+set path+=**
+
+" always show one line above/below cursor
+set incsearch
+
+" enable relative line numbers
+set relativenumber
+" show the current line's number instead of zero
+set number
+
+" highlight the active row
+set cursorline
+
+" some language servers have issues with backup files
+set nobackup
+set nowritebackup
+
+" always show signcolumn
+set signcolumn=yes
+
+" hide completion menu short messages
+set shortmess+=c
+
+" only hide buffers when leaving them
+set hidden
+
+" improve UX
+set updatetime=300
+
+" highlight all search results
+set incsearch "highlight as i'm searching
+set hlsearch "highlights all results
+
+" disable folding
+set nofoldenable
+
+" tabs as 2 spaces instead of \t characters
+set tabstop=2 shiftwidth=2 expandtab
+
+" enable syntax highlighting before linking highlight groups
+syntax enable
+
+" set the colorscheme
+colorscheme gruvbox
+set background=dark
+
+" custom syntax groups
+" define groups
+hi def link Normal GruvboxFg1
+hi! link Comment GruvboxGray
+hi! link Todo GruvboxFg1
+hi! link Error GruvboxRedBold
+hi! link Warning GruvboxYellowBold
+hi! link Debug GruvboxBlueBold
+hi! link Pragma GruvboxFg3
+hi! link LogicKeyword GruvboxRed
+hi! link StructureKeyword GruvboxOrange
+hi! link ModuleReference GruvboxYellow
+hi! link TypeName GruvboxAqua
+hi! link TypeValue GruvboxAqua
+hi! link FunctionNameTypeDeclaration GruvboxGreenBold
+hi! link FunctionNameBodyDeclaration GruvboxGreen
+hi! link VariableNameDeclaration GruvboxGreen
+hi! link VariableNameReference Normal
+hi! link Operator GruvboxBlue
+hi! link Delimiter GruvboxFg4
+hi! link StringContents GruvboxPurple
+hi! link StringQuotes GruvboxFg4
+hi! link StringEscape GruvboxFg3
+hi! link Primitive GruvboxPurple
+" alias standard groups to custom groups
+hi! link Type TypeName
+hi! link TypeDef StructureKeyword
+hi! link Include StructureKeyword
+hi! link Keyword LogicKeyword
+hi! link Conditional LogicKeyword
+hi! link String StringContents
+hi! link Float Primitive
+hi! link Number Primitive
+hi! link Boolean Primitive
+hi! link Identifier Normal
+
+" autocmd syntax etc. rules
+au! BufNewFile,BufRead *.elm call LoadElmFile()
+au! BufNewFile,BufRead *.hs,*.lhs call LoadHaskellFile()
+au! BufNewFile,BufRead *.hdl set filetype=txt
+au! BufNewFile,BufRead *.ejs set filetype=html
+au! BufNewFile,BufRead *.ledger set filetype=ledger
+au! BufNewFile,BufRead *.json,*.js,*.jsx set filetype=javascript
+au! BufNewFile,BufRead *.ts,*.tsx set filetype=typescript
+au! BufNewFile,BufRead *.dockerfile,*.docker set filetype=dockerfile
+au! BufNewFile,BufRead *.mdrn set filetype=lisp
+au! BufNewFile,BufRead *.py set tabstop=4 shiftwidth=4
+
+" Syntax rules adapted from https://github.com/vim/vim/blob/master/runtime/syntax/elm.vim
+function LoadElmFile()
+  set filetype=elm
+  set tabstop=4 shiftwidth=4
+  let module_name_first_pattern = "[A-Z]"
+  let module_name_non_first_pattern = "[0-9A-Za-z_'-]"
+  let module_name_segment_pattern = module_name_first_pattern . module_name_non_first_pattern . "*"
+  let module_name_full_pattern = module_name_segment_pattern . '\(\.' . module_name_segment_pattern . '\)*'
+  let value_name_first_pattern = "[A-Za-z]"
+  let func_name_first_pattern = "[_a-z]"
+  let func_name_non_first_pattern = "[a-zA-Z0-9_']"
+  let func_name_infix_pattern = '([-!#$%&\*\+/<=>\?@\\^|~:.]\+)'
+  let func_name_full_pattern = '\(\<' . func_name_first_pattern . func_name_non_first_pattern . '*#\?\>\|' . func_name_infix_pattern . '\)'
+  " operators
+  syn clear elmOperator
+  syn match elmOperators "[-!#$%&\*\+/<=>\?@\\^|~:.]\+\|\<_\>"
+  " function declarations
+  syn clear elmTopLevelDecl
+  syn clear elmTopLevelFunction
+  syn clear elmFuncName
+  execute 'syn match elmFuncBodyDefinition /^\s*\(\(type\|type\s\+alias\|{\_s*\|,\s_*\)\s\+\)\@!\zs' . func_name_full_pattern . '\ze[^{]*\(\_s\+\)\?\s=\(\s\|$\)/'
+  execute 'syn match elmFuncTypeDefinition "^\s*\zs' . func_name_full_pattern . '\ze\_s\+:\_s"'
+  syn region elmRecordBlock matchgroup=elmDelimiter start="{" end="}" contains=TOP,elmFuncBodyDefinition,elmFuncTypeDefinition,@Spell
+  " modules
+  syn clear elmModule
+  syn clear elmImport
+  syn keyword elmModuleKeyword contained exposing as import module where
+  execute 'syn match elmFullModuleName "\<' . module_name_full_pattern . '\>" contained'
+  execute 'syn match elmReferenceModuleName "\<' . module_name_full_pattern . '\.' . value_name_first_pattern . '"me=e-2'
+  execute 'syn match elmModuleHeader "^module\s\+\<' . module_name_full_pattern . '\>\(\s\+exposing\)\?" contains=elmModuleKeyword,elmFullModuleName'
+  execute 'syn match elmImportModule "^import\s\+\<' . module_name_full_pattern . '\>\(\s\+as\s\+\<' . module_name_full_pattern . '\>\)\?\(\s\+exposing\)\?" contains=elmModuleKeyword,elmFullModuleName'
+  " misc keywords
+  syn clear elmTypedef
+  syn clear elmTopLevelTypedef
+  syn keyword elmTypeKeyword type alias
+  syn clear elmCaseBlock
+  syn keyword elmCaseKeyword case of
+  syn clear elmCaseItemBlock
+  syn clear elmLetBlock
+  syn keyword elmLetKeyword let in
+  " exclude operators from comments, define again to increase priority
+  syn clear elmLineComment
+  syn match elmLineComment "--.*" contains=elmTodo,@spell
+  syn clear elmComment
+  syn region elmComment matchgroup=elmComment start="{-|\=" end="-}" contains=elmTodo,elmComment,@spell fold
+endfunction
+
+" Syntax rules adapted from https://github.com/neovimhaskell/haskell-vim/blob/master/syntax/haskell.vim
+function LoadHaskellFile()
+  set filetype=haskell
+  let module_name_first_pattern = "[A-Z]"
+  let module_name_non_first_pattern = "[0-9A-Za-z_'-]"
+  let module_name_segment_pattern = module_name_first_pattern . module_name_non_first_pattern . "*"
+  let module_name_full_pattern = module_name_segment_pattern . '\(\.' . module_name_segment_pattern . '\)*'
+  let value_name_first_pattern = "[A-Za-z]"
+  let func_name_first_pattern = "[_a-z]"
+  let func_name_non_first_pattern = "[a-zA-Z0-9_']"
+  let func_name_infix_pattern = '([-!#$%&\*\+/<=>\?@\\^|~:.]\+)'
+  let func_name_full_pattern = '\(\<' . func_name_first_pattern . func_name_non_first_pattern . '*#\?\>\|' . func_name_infix_pattern . '\)'
+  " ensure 'let' is contained
+  syn clear haskellLet
+  syn keyword haskellLetKeyword contained let
+  syn match haskellIsolatedLet "^\s\+\zslet\ze\s*$" contains=haskellLetKeyword
+  " function declarations and bindings
+  execute 'syn match haskellFuncBodyDefinition /^\s*\(\(data\|type\)\s\+\)\@!\zs\(\(let\|where\)\s\+\)\?' . func_name_full_pattern . '\(,\s*' . func_name_full_pattern . '\)*\ze.*\(\_s\+\|\_s\+|.\+\)\?=\(\s\|$\)/ contains=haskellLetKeyword'
+  execute 'syn match haskellArrowBinding "\zs' . func_name_full_pattern . '\ze\s\+<-"'
+  syn clear haskellTypeSig
+  execute 'syn match haskellFuncTypeDefinition "^\s*\zs\(\(where\|let\|default\)\s\+\)\?' . func_name_full_pattern . '\(,\s*' . func_name_full_pattern . '\)*\ze\_s\+::\_s" contains=haskellLetKeyword'
+  " do not parse type sigs in record blocks
+  syn clear haskellBlock
+  syn region haskellRecordBlock matchgroup=haskellDelimiter start="{" end="}" contains=TOP,haskellFuncTypeDefinition,@Spell
+  " ensure 'module' is containe
+  syn clear haskellDeclKeyword
+  syn keyword haskellDeclKeyword class instance newtype in
+  syn keyword haskellModuleKeyword contained module
+  " modules
+  execute 'syn match haskellFullModuleName "\<' . module_name_full_pattern . '\>" contained'
+  execute 'syn match haskellReferenceModuleName "\(\<module\>\s\+\)\@!\<' . module_name_full_pattern . '\.' . value_name_first_pattern . '"me=e-2'
+  execute 'syn match haskellModuleHeader "\<module\>\s\+' . module_name_full_pattern . '" contains=haskellModuleKeyword,haskellFullModuleName,haskellOperators'
+  execute 'syn match haskellImportModule "^\(import\|import\s\+qualified\|import\s\+safe\)\s\+\<' . module_name_full_pattern . '\>\(\s\+as\s\+\<' . module_name_full_pattern . '\>\)\?\(\s\+hiding\)\?" contains=haskellImportKeywords,haskellFullModuleName'
+endfunction
+
+" syntax overrides to use custom groups
+" elm
+hi! link elmTupleFunction Normal
+hi! link elmComment Comment
+hi! link elmLineComment Comment
+hi! link elmTodo Todo
+hi! link elmDebug Debug
+hi! link elmCaseKeyword LogicKeyword
+hi! link elmConditional LogicKeyword
+hi! link elmLetKeyword StructureKeyword
+hi! link elmTypeKeyword StructureKeyword
+hi! link elmModuleKeyword StructureKeyword
+hi! link elmAlias StructureKeyword
+hi! link elmFullModuleName ModuleReference
+hi! link elmReferenceModuleName ModuleReference
+hi! link elmType TypeName
+hi! link elmNumberType TypeName
+hi! link elmFuncTypeDefinition FunctionNameTypeDeclaration
+hi! link elmFuncBodyDefinition FunctionNameBodyDeclaration
+hi! link elmLambdaFunc Normal
+hi! link elmOperators Operator
+hi! link elmDelimiter Delimiter
+hi! link elmBraces Delimiter
+hi! link elmString StringContents
+hi! link elmTripleString StringContents
+hi! link elmChar StringContents
+hi! link elmStringEscape StringEscape
+hi! link elmInt Primitive
+hi! link elmFloat Primitive
+" haskell
+" TODO revisit haskellTH
+let g:haskell_enable_quantification = 1
+hi! link haskellBottom Operator
+hi! link haskellTH Normal
+hi! link haskellFuncTypeDefinition FunctionNameTypeDeclaration
+hi! link haskellFuncBodyDefinition FunctionNameBodyDeclaration
+hi! link haskellArrowBinding VariableNameDeclaration
+hi! link haskellForeignKeywords StructureKeyword
+hi! link haskellKeyword LogicKeyword
+hi! link haskellDefault StructureKeyword
+hi! link haskellConditional LogicKeyword
+hi! link haskellNumber Primitive
+hi! link haskellFloat Primitive
+hi! link haskellSeparator Delimiter
+hi! link haskellDelimiter Delimiter
+hi! link haskellInfix StructureKeyword
+hi! link haskellOperators Operator
+hi! link haskellQuote Operator
+hi! link haskellShebang Comment
+hi! link haskellLineComment Comment
+hi! link haskellBlockComment Comment
+hi! link haskellPragma Pragma
+hi! link haskellLiquid Pragma
+hi! link haskellString StringContents
+hi! link haskellChar StringContents
+hi! link haskellBacktick Operator
+hi! link haskellQuasiQuoted StringContents
+hi! link haskellTodo Todo
+hi! link haskellPreProc StructureKeyword
+hi! link haskellAssocType TypeName
+hi! link haskellQuotedType TypeName
+hi! link haskellType TypeName
+hi! link haskellFullModuleName ModuleReference
+hi! link haskellReferenceModuleName ModuleReference
+hi! link haskellImportKeywords StructureKeyword
+hi! link haskellDeclKeyword StructureKeyword
+hi! link haskellModuleKeyword StructureKeyword
+hi! link haskellDeriveKeyword StructureKeyword
+hi! link haskellDecl StructureKeyword
+hi! link haskellWhere StructureKeyword
+hi! link haskellLetKeyword StructureKeyword
+hi! link haskellForall Operator
+" coc
+hi! link CocErrorHighlight Error
+hi! link CocWarningHighlight Warning
+
+" set auto-completion options
+" (disabled for neovim)
+" set completeopt=menu,menuone,popup,noselect,noinsert 
+
+" leader shortcuts
+let mapleader=","
+" easier to switch to the last active buffer
+nmap <leader><leader> :b#<CR>
+" toggle line numbers
+nmap <leader>n :set invrelativenumber invnumber<CR>
+" open NERDTree
+nmap <leader>t :NERDTreeToggle<CR>
+" open terminal
+nmap <leader>tt :tab terminal
+nmap <leader>tv :vert terminal
+" unhighlight search results
+nmap <leader>h :nohlsearch<CR>
+" easily change filestype
+nmap <leader>f :set filetype=
+" pretty JSON
+nmap <leader>j :%!jq .<CR>
+" shortcut to print syntax group under cursor
+nmap <leader>s :call GetSyntaxIDs()<CR>
+function GetSyntaxIDs()
+  for id in synstack(line("."), col("."))
+    echo synIDattr(id, "name")
+  endfor
+endfunction
+" quickfix window
+nmap <leader>qo :copen<CR>
+nmap <leader>qc :cclose<CR>
+nmap <leader>qp :cprevious<CR>
+nmap <leader>qn :cnext<CR>
+" preview window
+nmap <leader>pc :pclose<CR>
+" location list
+nmap <leader>lo :lopen<CR>
+nmap <leader>lc :lclose<CR>
+nmap <leader>lp :lprevious<CR>
+nmap <leader>ln :lnext<CR>
+
+" wildignore / ctrlp ignore rules
+set wildignore+=*.so,*.swp,*.zip,*.hi,*.o,*/node_modules/*,*/dist/*,*/.dist/*,*/build/*,*/.build/*,*/Godeps/*,*/elm-stuff/*,*/.gem/*,*/.git/*,*/tmp/*
+
+" Search shortcuts with fzf.vim
+map <C-p> :Files<CR>
+map <C-\> :Ag<CR>
+nmap <leader>b :Buffers<CR>
+
+" easy-align mapping
+nmap ga <Plug>(EasyAlign)
+xmap ga <Plug>(EasyAlign)
+
+" set up the_silver_searcher with grep
+if executable('ag')
+  let grepprg = 'ag --vimgrep'
+endif
+
+" run ctags on save, if available
+autocmd BufWritePost * call system('which ctags &> /dev/null && ctags -R . || exit 0')
+
+" rooter
+let g:rooter_patterns = ['.git', '.git/', 'shell.sh', 'shell.nix']
+let g:rooter_silent_chdir = 1
+
+" airline
+let g:airline#extensions#branch#enabled = 1
+
+" CoC Configuration (sets up language servers, formatters)
+let g:coc_user_config = {
+    \ 'diagnostic': {
+      \ 'enableMessage': 'never',
+      \ 'messageTarget': 'echo'
+    \ },
+    \ 'coc.preferences': {
+      \ 'formatOnSaveFiletypes': ['elm', 'haskell', 'lhaskell']
+    \ },
+    \ 'languageserver': {
+      \ 'elmLS': {
+        \ 'command': 'elm-language-server',
+        \ 'filetypes': ['elm'],
+        \ 'rootPatterns': ['elm.json', 'elm-tooling.json']
+      \ },
+      \ 'haskell': {
+        \ 'command': 'haskell-language-server',
+        \ 'args': [
+          \ '--lsp'
+        \ ],
+        \ 'requireRootPattern': v:true,
+        \ 'rootPatterns': [
+          \ 'hie.yaml',
+        \ ],
+        \ 'filetypes': [
+          \ 'haskell',
+          \ 'lhaskell',
+        \ ],
+        \ 'settings': {
+          \ 'haskell': {
+            \ 'formattingProvider': 'stylish-haskell'
+          \ }
+        \ }
+      \ }
+    \}
+\ }
+
+" CoC-specific key bindings
+nmap <silent><C-k> <Plug>(coc-diagnostic-prev)
+nmap <silent><C-j> <Plug>(coc-diagnostic-next)
+nmap <leader>ad :call CocAction('diagnosticPreview')<CR>
+nmap <leader>an <Plug>(coc-rename)
+nmap <leader>af :call CocAction('format')<CR>
+nmap <leader>ar <Plug>(coc-references)
+nmap <leader>at <Plug>(coc-type-definition)
+nmap <leader>ah :call CocActionAsync('doHover')<CR>
+nmap <leader>ag <Plug>(coc-definition)
+nmap <leader>ags :call CocAction('jumpDefinition', 'split')<CR>
+nmap <leader>agv :call CocAction('jumpDefinition', 'vsplit')<CR>
+nmap <leader>agt :call CocAction('jumpDefinition', 'tabe')<CR>
+nmap <leader>ald :CocList diagnostics<CR>
+nmap <leader>alo :CocList outline<CR>
+nmap <leader>alr :CocListResume<CR>
+
+" Enable per-project .vimrc files
+set exrc
+
+" Ensure per-project .vimrc files are secure
+set secure
+
+" Define function to complete various startup tasks
+function StartUp()
+" Load local .vimrc file
+if filereadable("./.vimrc")
+  source .vimrc
+endif
+if filereadable("./.tmp.vimrc")
+  source .tmp.vimrc
+endif
+endfunction
+
+" Load local .vimrc file when starting vim
+autocmd VimEnter * call StartUp()

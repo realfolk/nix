@@ -6,8 +6,10 @@ rec {
   };
 
   pkgs = {
-    vim = lib.importPackage ./lib/packages/vim/default.nix;
+    neovim = lib.importPackage ./lib/packages/neovim/default.nix;
+    #vim = lib.importPackage ./lib/packages/vim/default.nix;
     screen = lib.importPackage ./lib/packages/screen/default.nix;
+    ranger = lib.importPackage ./lib/packages/ranger/default.nix;
   };
 
   lib = {
