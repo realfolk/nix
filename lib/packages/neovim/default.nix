@@ -51,7 +51,7 @@ let
     };
   };
 
-  neovimWrapper = pkgs.writeShellScriptBin "nvim" ''
+  neovimWrapper = pkgs.writeShellScriptBin "vim" ''
     ${neovim}/bin/nvim $@
   '';
 
