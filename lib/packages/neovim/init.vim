@@ -6,9 +6,9 @@ set incsearch
 
 " enable relative line numbers
 set relativenumber
+
 " show the current line's number instead of zero
-" (disabled as it was causing visual artifacts in neovim)
-"set number
+set number
 
 " highlight the active row
 set cursorline
@@ -254,7 +254,7 @@ hi! link CocWarningHighlight Warning
 
 " set auto-completion options
 " (disabled for neovim)
-" set completeopt=menu,menuone,popup,noselect,noinsert 
+" set completeopt=menu,menuone,popup,noselect,noinsert
 
 " leader shortcuts
 let mapleader=","
