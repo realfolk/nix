@@ -29,8 +29,6 @@ rec {
       shellHook = ''
         ${shellHook}
         test -f ~/.bashrc && source ~/.bashrc
-        #test -f ~/.zshrc && source ~/.zshrc
-        #test -f ~/.fishrc && source ~/.fishrc
       '';
     };
 

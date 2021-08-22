@@ -25,7 +25,12 @@ let
   neovim = pkgs.neovim.override {
     vimAlias = true;
     configure = {
-      customRC = builtins.readFile ./init.vim;
+      customRC = ''
+        lua << EOF
+          ${builtins.readFile ./config/global.lua}
+          ${builtins.readFile ./config/language-server.lua}
+        EOF
+      '';
       packages.myPlugins = with pkgs.vimPlugins; {
         start = [
           vim-sensible
@@ -45,6 +50,16 @@ let
           yats-vim
           ledger
           yajs-vim
+          nvim-lspconfig
+          (nvim-treesitter.withPlugins (
+            plugins: with plugins; [
+              tree-sitter-nix
+              tree-sitter-haskell
+              tree-sitter-lua
+            ]
+          ))
+          nvim-compe
+          vim-rooter
         ];
         opt = [];
       };
