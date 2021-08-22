@@ -46,7 +46,6 @@ let
           Hoogle
           easy-align
           vim-rooter
-          coc-nvim
           yats-vim
           ledger
           yajs-vim
