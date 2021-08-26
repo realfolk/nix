@@ -59,6 +59,7 @@ let
           ))
           nvim-compe
           vim-rooter
+          vim-stylish-haskell
         ];
         opt = [];
       };

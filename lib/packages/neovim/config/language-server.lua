@@ -153,13 +153,19 @@ end
 
 -- Load language servers and override on_attach.
 local nvim_lsp = require('lspconfig')
-local servers = { 'hls', 'elmls' }
-for _, lsp in ipairs(servers) do
-  nvim_lsp[lsp].setup {
-    on_attach = on_attach,
-    flags = {
-      debounce_text_changes = 150,
-    }
+nvim_lsp.elmls.setup {
+  on_attach = on_attach,
+  flags = {
+    debounce_text_changes = 150
   }
-end
+}
 
+nvim_lsp.hls.setup {
+  flags = {
+    debounce_text_changes = 150
+  },
+  on_attach = function(client)
+    client.resolved_capabilities.document_formatting = false -- We let stylish-haskell plugin handle formatting.
+    on_attach(client)
+  end
+}
