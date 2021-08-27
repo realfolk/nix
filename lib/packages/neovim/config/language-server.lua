@@ -14,17 +14,10 @@ local on_attach = function(client, bufnr)
   vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
       vim.lsp.diagnostic.on_publish_diagnostics, {
         virtual_text = false,
-        underline = false,
+        underline = true,
         update_in_insert = false
       }
     )
-
-  require'nvim-treesitter.configs'.setup {
-    ensure_installed = { haskell, elm, nix },
-    highlight = {
-      enable = true
-    }
-  }
 
   -- Customize the LSP diagnostic gutter signs
   local signs = { Error = ">>", Warning = ">", Hint = "*", Information = ">" }
@@ -36,6 +29,11 @@ local on_attach = function(client, bufnr)
   vim.cmd('highlight! link LspDiagnosticsSignWarning GruvboxYellow')
   vim.cmd('highlight! link LspDiagnosticsSignHint GruvboxGreen')
   vim.cmd('highlight! link LspDiagnosticsSignInformation GruvboxGray')
+
+  vim.cmd('highlight! link LspDiagnosticsUnderlineError GruvboxRed')
+  vim.cmd('highlight! link LspDiagnosticsUnderlineWarning GruvboxYellow')
+  vim.cmd('highlight! link LspDiagnosticsUnderlineHint GruvboxGreen')
+  vim.cmd('highlight! link LspDiagnosticsUnderlineInformation GruvboxGray')
 
   -- Set up auto-complete (nvim-compe)
   vim.o.completeopt = "menuone,noselect"
@@ -73,7 +71,7 @@ local on_attach = function(client, bufnr)
   }
 
   -- Format on save.
-  vim.cmd [[autocmd BufWritePre * lua vim.lsp.buf.formatting()]]
+  vim.cmd [[autocmd BufWritePre * lua vim.lsp.buf.formatting_sync()]]
 
   -- Set up language server keybindings.
   -- Goto definition/declaration
@@ -169,3 +167,4 @@ nvim_lsp.hls.setup {
     on_attach(client)
   end
 }
+

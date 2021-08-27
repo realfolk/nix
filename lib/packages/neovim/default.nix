@@ -36,7 +36,7 @@ let
           vim-sensible
           The_NERD_tree
           The_NERD_Commenter
-          gruvbox
+          gruvbox-community
           surround
           airline
           fugitive
@@ -53,8 +53,8 @@ let
           (nvim-treesitter.withPlugins (
             plugins: with plugins; [
               tree-sitter-nix
-              tree-sitter-haskell
               tree-sitter-lua
+              tree-sitter-haskell
             ]
           ))
           nvim-compe

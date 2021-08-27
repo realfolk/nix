@@ -22,6 +22,15 @@ vim.g.airline = {
 vim.g.rooter_patterns = {'.git', '.git/', 'shell.sh', 'shell.nix'}
 vim.g.rooter_silent_chdir = 1
 
+-- Tree-sitter config
+require'nvim-treesitter.configs'.setup {
+  ensure_installed = { haskell, nix, lua }, 
+  highlight = { enable = true, additional_vim_regex_highlighting = true }
+}
+
+-- Autoindenting for elm
+vim.cmd('autocmd FileType elm setlocal shiftwidth=4 tabstop=4')
+
 -- Silver-search with grep
 vim.cmd([[
   if executable("ag")
