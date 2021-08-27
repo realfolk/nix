@@ -25,15 +25,15 @@ local on_attach = function(client, bufnr)
     local name = "LspDiagnosticsSign" .. type
     vim.fn.sign_define(name, { text = icon, texthl = name, numhl = "" })
   end
-  vim.cmd('highlight! link LspDiagnosticsSignError GruvboxRed')
-  vim.cmd('highlight! link LspDiagnosticsSignWarning GruvboxYellow')
-  vim.cmd('highlight! link LspDiagnosticsSignHint GruvboxGreen')
-  vim.cmd('highlight! link LspDiagnosticsSignInformation GruvboxGray')
+  vim.cmd('highlight! link LspDiagnosticsSignError GruvboxRedSign')
+  vim.cmd('highlight! link LspDiagnosticsSignWarning GruvboxYellowSign')
+  vim.cmd('highlight! link LspDiagnosticsSignHint GruvboxGreenSign')
+  vim.cmd('highlight! link LspDiagnosticsSignInformation GruvboxBlueSign')
 
-  vim.cmd('highlight! link LspDiagnosticsUnderlineError GruvboxRed')
-  vim.cmd('highlight! link LspDiagnosticsUnderlineWarning GruvboxYellow')
-  vim.cmd('highlight! link LspDiagnosticsUnderlineHint GruvboxGreen')
-  vim.cmd('highlight! link LspDiagnosticsUnderlineInformation GruvboxGray')
+  vim.cmd('highlight! link LspDiagnosticsUnderlineError GruvboxRedBold')
+  vim.cmd('highlight! link LspDiagnosticsUnderlineWarning GruvboxYellowBold')
+  vim.cmd('highlight! link LspDiagnosticsUnderlineHint GruvboxGreenBold')
+  vim.cmd('highlight! link LspDiagnosticsUnderlineInformation GruvBoxBlueBold')
 
   -- Set up auto-complete (nvim-compe)
   vim.o.completeopt = "menuone,noselect"
