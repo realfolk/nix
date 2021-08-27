@@ -25,7 +25,8 @@ vim.g.rooter_silent_chdir = 1
 -- Tree-sitter config
 require'nvim-treesitter.configs'.setup {
   ensure_installed = { haskell, nix, lua }, 
-  highlight = { enable = true, additional_vim_regex_highlighting = true }
+  highlight = { enable = true },
+  incremental_selection = { enable = true }
 }
 
 -- Autoindenting for elm
