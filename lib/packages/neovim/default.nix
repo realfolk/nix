@@ -54,7 +54,6 @@ let
             plugins: with plugins; [
               tree-sitter-nix
               tree-sitter-lua
-              tree-sitter-haskell
             ]
           ))
           completion-nvim

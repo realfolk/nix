@@ -28,7 +28,7 @@ vim.cmd([[
 
 -- Tree-sitter config
 require'nvim-treesitter.configs'.setup {
-  ensure_installed = { haskell, nix, lua, bash },
+  ensure_installed = { nix, lua, bash },
   highlight = { enable = true },
   incremental_selection = { enable = true }
 }
