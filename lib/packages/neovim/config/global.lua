@@ -21,10 +21,14 @@ vim.g.airline = {
 }
 vim.g.rooter_patterns = {'.git', '.git/', 'shell.sh', 'shell.nix'}
 vim.g.rooter_silent_chdir = 1
+vim.cmd([[
+  set completeopt=menuone,noinsert,noselect
+  set shortmess+=c
+]])
 
 -- Tree-sitter config
 require'nvim-treesitter.configs'.setup {
-  ensure_installed = { haskell, nix, lua }, 
+  ensure_installed = { haskell, nix, lua, bash },
   highlight = { enable = true },
   incremental_selection = { enable = true }
 }
@@ -48,7 +52,7 @@ vim.cmd('let mapleader=","')
 local opts = { noremap = true, silent = true }
 
 -- Misc helpers
-vim.api.nvim_set_keymap('n', '<leader>f', '<cmd>set filetype=', opts)                        -- set filetype helper
+vim.api.nvim_set_keymap('n', '<leader>f', ':set filetype=', { noremap = true })              -- set filetype helper
 vim.api.nvim_set_keymap('n', '<leader>h', '<cmd>nohl<CR>', opts)                             -- clear highlighted search items
 vim.api.nvim_set_keymap('n', '<leader>n', '<cmd>set invnumber invrelativenumber<CR>', opts)  -- toggle line numbering
 vim.api.nvim_set_keymap('n', '<leader><leader>', '<cmd>b#<CR>', opts)                        -- switch to last active buffer
@@ -66,3 +70,7 @@ vim.api.nvim_set_keymap('n', '<leader>b', '<cmd>Buffers<CR>', opts)  -- Show buf
 vim.api.nvim_set_keymap('x', 'ga', '<Plug>EasyAlign', opts)
 vim.api.nvim_set_keymap('n', 'ga', '<Plug>EasyAlign', opts)
 
+-- NERDTree
+vim.api.nvim_set_keymap('n', '<leader>to', '<cmd>NERDTreeFocus<CR>', opts)        -- NERDTree focus/open
+vim.api.nvim_set_keymap('n', '<leader>tc', '<cmd>NERDTreeClose<CR>', opts)        -- NERDTree close
+vim.api.nvim_set_keymap('n', '<leader>tr', '<cmd>NERDTreeRefreshRoot<CR>', opts)  -- NERDTree refresh

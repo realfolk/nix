@@ -57,7 +57,7 @@ let
               tree-sitter-haskell
             ]
           ))
-          nvim-compe
+          completion-nvim
           vim-rooter
           vim-stylish-haskell
         ];

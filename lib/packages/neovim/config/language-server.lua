@@ -1,7 +1,6 @@
 -- Executed when language server has been attached.
 local opts = { noremap = true, silent = true }
 local on_attach = function(client, bufnr)
-
   local function buf_set_keymap(...)
     vim.api.nvim_buf_set_keymap(bufnr, ...)
   end
@@ -12,12 +11,12 @@ local on_attach = function(client, bufnr)
 
   -- Customize diagnostic handling.
   vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
-      vim.lsp.diagnostic.on_publish_diagnostics, {
-        virtual_text = false,
-        underline = true,
-        update_in_insert = false
-      }
-    )
+  vim.lsp.diagnostic.on_publish_diagnostics, {
+    virtual_text = false,
+    underline = true,
+    update_in_insert = false
+  }
+  )
 
   -- Customize the LSP diagnostic gutter signs
   local signs = { Error = ">>", Warning = ">", Hint = "*", Information = ">" }
@@ -35,40 +34,10 @@ local on_attach = function(client, bufnr)
   vim.cmd('highlight! link LspDiagnosticsUnderlineHint GruvboxGreenBold')
   vim.cmd('highlight! link LspDiagnosticsUnderlineInformation GruvBoxBlueBold')
 
-  -- Set up auto-complete (nvim-compe)
-  vim.o.completeopt = "menuone,noselect"
-  require'compe'.setup {
-    enabled = true;
-    autocomplete = true;
-    debug = false;
-    min_length = 1;
-    preselect = 'enable';
-    throttle_time = 80;
-    source_timeout = 200;
-    resolve_timeout = 800;
-    incomplete_delay = 400;
-    max_abbr_width = 100;
-    max_kind_width = 100;
-    max_menu_width = 100;
-    documentation = {
-      border = { '', '' ,'', ' ', '', '', '', ' ' }, -- the border option is the same as `|help nvim_open_win|`
-      winhighlight = "NormalFloat:CompeDocumentation,FloatBorder:CompeDocumentationBorder",
-      max_width = 120,
-      min_width = 60,
-      max_height = math.floor(vim.o.lines * 0.3),
-      min_height = 1,
-    };
-    source = {
-      path = true;
-      buffer = true;
-      calc = true;
-      nvim_lsp = true;
-      nvim_lua = true;
-      vsnip = true;
-      ultisnips = true;
-      luasnip = true;
-    };
-  }
+  -- Autocomplete & tab completion
+  require'completion'.on_attach(client)
+  vim.cmd('inoremap <expr> <Tab> pumvisible() ? "\\<C-n>" : "\\<Tab>"')
+  vim.cmd('inoremap <expr> <S-Tab> pumvisible() ? "\\<C-p>" : "\\<S-Tab>"')
 
   -- Format on save.
   vim.cmd [[autocmd BufWritePre * lua vim.lsp.buf.formatting_sync()]]
@@ -131,20 +100,20 @@ end
 -- Opens the Preview Window and displays the given diagnostic table.
 function ShowInPreview(lines)
   vim.cmd([[
-    pclose
-    keepalt new +setlocal\ previewwindow|setlocal\ buftype=nofile|setlocal\ noswapfile|setlocal\ wrap [Document]
-    setl bufhidden=wipe
-    setl nobuflisted
-    setl nospell
-    exe 'setl filetype=text'
-    setl conceallevel=0
-    setl nofoldenable
+  pclose
+  keepalt new +setlocal\ previewwindow|setlocal\ buftype=nofile|setlocal\ noswapfile|setlocal\ wrap [Document]
+  setl bufhidden=wipe
+  setl nobuflisted
+  setl nospell
+  exe 'setl filetype=text'
+  setl conceallevel=0
+  setl nofoldenable
   ]])
   vim.api.nvim_buf_set_lines(0, 0, -1, 0, lines)
   vim.cmd('exe "normal! z" .' .. #lines .. '. "\\<cr>"')
   vim.cmd([[
-    exe "normal! gg"
-    wincmd p
+  exe "normal! gg"
+  wincmd p
   ]])
 end
 
