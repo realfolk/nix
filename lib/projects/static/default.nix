@@ -51,7 +51,7 @@ commands = rec {
       find -iname '*.css' -exec bash -c 'echo "Minifying $1" && ${pkgs.yuicompressor}/bin/yuicompressor --type css -o "$1" "$1" && echo "Minified $1"' bash "{}" \;
 
       echo "--- Minify HTML files ---"
-      find -iname '*.html' -exec bash -c 'echo "Minifying $1" && ${pkgs.python38Packages.htmlmin}/bin/htmlmin "$1" "$1" && echo "Minified $1"' bash "{}" \;
+      find -iname '*.html' -exec bash -c 'echo "Minifying $1" && ${pkgs.python38Packages.htmlmin}/bin/htmlmin --keep-optional-attribute-quotes "$1" "$1" && echo "Minified $1"' bash "{}" \;
 
       echo "--- Optimize images ---"
       find . \( -iname '*.jpg' -o -iname '*.jpeg' \) -exec bash -c '${pkgs.jpegoptim}/bin/jpegoptim --strip-all "$1"' bash "{}" \;
