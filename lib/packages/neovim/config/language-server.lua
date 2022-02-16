@@ -136,4 +136,3 @@ nvim_lsp.hls.setup {
     on_attach(client)
   end
 }
-

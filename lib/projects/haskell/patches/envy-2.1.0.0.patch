@@ -1,0 +1,13 @@
+diff --git a/envy.cabal b/envy.cabal
+index 2cee204..4f23f03 100644
+--- a/envy.cabal
++++ b/envy.cabal
+@@ -21,7 +21,7 @@ library
+   ghc-options:          -Wall
+   hs-source-dirs:       src
+   build-depends:        base         >= 4.11 && < 5
+-                      , bytestring   == 0.10.*
++                      , bytestring   >= 0.10 && < 0.12
+                       , containers   >= 0.5 && < 0.7
+                       , mtl          == 2.2.*
+                       , text         == 1.2.*

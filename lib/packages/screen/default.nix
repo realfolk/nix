@@ -6,9 +6,6 @@ screenrc = pkgs.writeText "screenrc" (builtins.readFile ./screenrc);
 
 in
 
-pkgs.screen.overrideAttrs (oldAttrs: {
-  nativeBuildInputs = [ pkgs.makeWrapper ];
-  postInstall = ''
-    wrapProgram $out/bin/${oldAttrs.pname} --add-flags '-c "${screenrc}"'
-  '';
-})
+pkgs.writeShellScriptBin "screen" ''
+  ${pkgs.screen}/bin/screen -c "${screenrc}" $@
+''

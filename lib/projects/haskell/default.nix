@@ -12,58 +12,86 @@ hlib = pkgs.haskell.lib;
 
 # GHC
 
+# haskell-language-server provides nix files for GHC by version
+hlsSrc = pkgs.fetchFromGitHub {
+  owner = "haskell";
+  repo = "haskell-language-server";
+  rev = "96ea854debd92f9a54e2270b9b9a080c0ce6f3d1";
+  sha256 = "19wj1b98vlzpxcv298p9wm876270r9j6rv1fz4avm2jybfim53vz";
+};
+#updateHaskellPackagesWithHLS = (import "${hlsSrc}/configuration-ghc-921.nix").tweakHpkgs;
+hls = (import "${hlsSrc}/flake.nix").allPackages.haskell-language-server-921;
+
 srcs = rec {
-  cryptohash-md5 = pkgs.fetchFromGitHub {
-    owner = "haskell-hvr";
-    repo = "cryptohash-md5";
-    rev = "c5531225d9a4fb8a96347e591205ada1d89efb76";
-    sha256 = "1mr9qrr6q946xvjs6vx78yp7fh1wansva2gmm49ys4qim85mqqvj";
+  envy = pkgs.fetchFromGitHub {
+    owner = "dmjio";
+    repo = "envy";
+    rev = "e90e9416da9e45fd2252ae6792896993eccc764d";
+    sha256 = "095c1pb831y7hvbsdyynk7v27g1p5ils1vqjbn1pi4rzqfnzql2s";
   };
-  cryptohash-sha1 = pkgs.fetchFromGitHub {
-    owner = "haskell-hvr";
-    repo = "cryptohash-sha1";
-    rev = "10bf345b6b003e77fb96f2ff13861a9a3a149290";
-    sha256 = "0g8x90sw0lg5iz9xh83i7iknf50k7f7fyx91rvsqns58d385csyf";
+  hcg-minus = pkgs.fetchFromGitLab {
+    owner = "rd--";
+    repo = "hcg-minus";
+    rev = "bb3950e8a7d735014a1fb1ecd9e138eb8788c774";
+    sha256 = "0b4yysxcg4i9ji7753m6xagv1syaydkxzwxdk15lgqlaw9g2r9ym";
   };
+  #cryptohash-md5 = pkgs.fetchFromGitHub {
+    #owner = "haskell-hvr";
+    #repo = "cryptohash-md5";
+    #rev = "c5531225d9a4fb8a96347e591205ada1d89efb76";
+    #sha256 = "1mr9qrr6q946xvjs6vx78yp7fh1wansva2gmm49ys4qim85mqqvj";
+  #};
+  #cryptohash-sha1 = pkgs.fetchFromGitHub {
+    #owner = "haskell-hvr";
+    #repo = "cryptohash-sha1";
+    #rev = "10bf345b6b003e77fb96f2ff13861a9a3a149290";
+    #sha256 = "0g8x90sw0lg5iz9xh83i7iknf50k7f7fyx91rvsqns58d385csyf";
+  #};
   haddock = pkgs.fetchFromGitHub {
     owner = "haskell";
     repo = "haddock";
-    rev = "3ddd7825865fd8643394354b259b2285ab3b783e";
-    sha256 = "0vwh09iqvr0qprz96fyaiiq9p94sc9ahkm6qv9jg3a7l5hdf7g63";
+    rev = "4cf2f4d8f6bd5588c2659e343573c5d30b329d37";
+    sha256 = "0bbads6243m871aq85slspqykmpg0gyql7cl21pzccyjvidbz4i0";
   };
   haddock-library = "${haddock}/haddock-library";
   haddock-api = "${haddock}/haddock-api";
 };
 
 ghcExtensions = (self: super: builtins.mapAttrs (name: value: hlib.dontCheck value) {
-  text-trie = hlib.appendPatch super.text-trie ./patches/text-trie-0.2.5.0.patch;
-  cryptohash-md5 = hlib.appendPatch (self.callCabal2nix "cryptohash-md5" srcs.cryptohash-md5 {}) ./patches/cryptohash-md5-0.11.101.0.patch;
-  cryptohash-sha1 = hlib.appendPatch (self.callCabal2nix "cryptohash-sha1" srcs.cryptohash-sha1 {}) ./patches/cryptohash-sha1-0.11.101.0.patch;
+  envy = hlib.appendPatch (self.callCabal2nix "envy" srcs.envy {}) ./patches/envy-2.1.0.0.patch;
+  hcg-minus = self.callCabal2nix "hcg-minus" srcs.hcg-minus {};
+  #text-trie = hlib.appendPatch super.text-trie ./patches/text-trie-0.2.5.0.patch;
+  #cryptohash-md5 = hlib.appendPatch (self.callCabal2nix "cryptohash-md5" srcs.cryptohash-md5 {}) ./patches/cryptohash-md5-0.11.101.0.patch;
+  #cryptohash-sha1 = hlib.appendPatch (self.callCabal2nix "cryptohash-sha1" srcs.cryptohash-sha1 {}) ./patches/cryptohash-sha1-0.11.101.0.patch;
   haddock = self.callCabal2nix "haddock" srcs.haddock {};
   haddock-library = self.callCabal2nix "haddock-library" srcs.haddock-library {};
   haddock-api = self.callCabal2nix "haddock-api" srcs.haddock-api {};
-  hls-pragma-plugin = hlib.dontCheck super.hls-pragma-plugin;
-  hls-splice-plugin = hlib.dontCheck super.hls-splice-plugin;
-  hls-class-plugin = hlib.dontCheck super.hls-class-plugin;
-  haskell-language-server =
-    let
-      hls = pkgs.lib.foldr (flag: pkg: hlib.disableCabalFlag pkg flag) super.haskell-language-server [
-        "all-formatters"
-        "ormolu"
-        "fourmolu"
-        "brittany"
-        "floskell"
-      ];
-    in
-      hls.override {
-        hls-ormolu-plugin = null;
-        hls-fourmolu-plugin = null;
-        hls-brittany-plugin = null;
-        hls-floskell-plugin = null;
-      };
+  #hls-pragma-plugin = hlib.dontCheck super.hls-pragma-plugin;
+  #hls-splice-plugin = hlib.dontCheck super.hls-splice-plugin;
+  #hls-class-plugin = hlib.dontCheck super.hls-class-plugin;
+  #haskell-language-server =
+    #let
+      #hls = pkgs.lib.foldr (flag: pkg: hlib.disableCabalFlag pkg flag) (self.callCabal2nix "haskell-language-server" srcs.haskell-language-server {}) [
+        #"brittany"
+        #"stylishHaskell"
+        #"hlint"
+        #"haddockComments"
+        #"tactics"
+        ##"all-formatters"
+        ##"ormolu"
+        ##"fourmolu"
+        ##"floskell"
+      #];
+    #in
+      #hls.override {
+        ##hls-brittany-plugin = null;
+        ##hls-ormolu-plugin = null;
+        ##hls-fourmolu-plugin = null;
+        ##hls-floskell-plugin = null;
+      #};
 });
 
-rootGhcPkgs = pkgs.haskell.packages.ghc8104;
+rootGhcPkgs = pkgs.haskell.packages.ghc921;
 
 ghcPkgs = rootGhcPkgs.extend (pkgs.lib.composeExtensions ghcExtensions packageExtensions);
 
@@ -264,7 +292,7 @@ in
       ghcidPkg
       #formatters bundled with haskell-language-server
       #no need to install them separately
-      ghcPkgs.haskell-language-server
+      ghcPkgs.hls
     ];
     ghc = ghcPkg;
     ghcPkgs = ghcPkgs;
