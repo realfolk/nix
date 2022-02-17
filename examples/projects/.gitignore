@@ -1,0 +1,6 @@
+build
+artifacts
+*.swp
+*.DS_Store
+src/test-elm-project/elm-stuff
+src/test-node-project/node_modules
