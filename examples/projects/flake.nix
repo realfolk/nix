@@ -6,31 +6,31 @@
     flake-utils.url = "github:numtide/flake-utils";
 
     neovim = {
-      url = "github:realfolk/web?dir=lib/packages/neovim";
+      url = "github:realfolk/nix?dir=lib/packages/neovim";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
     };
 
     tmux = {
-      url = "github:realfolk/web?dir=lib/packages/tmux";
+      url = "github:realfolk/nix?dir=lib/packages/tmux";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
     };
 
     ranger = {
-      url = "github:realfolk/web?dir=lib/packages/ranger";
+      url = "github:realfolk/nix?dir=lib/packages/ranger";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
     };
 
-    elm-packages.url = "github:realfolk/web?dir=lib/projects/elm/packages";
+    elm-packages.url = "github:realfolk/nix?dir=lib/projects/elm/packages";
 
     test-elm-project-definition = {
-      url = "github:realfolk/web?dir=examples/projects/test-elm-project";
+      url = "github:realfolk/nix?dir=examples/projects/test-elm-project";
     };
 
     test-elm-project = {
-      url = "github:realfolk/web?dir=lib/projects/elm/make";
+      url = "github:realfolk/nix?dir=lib/projects/elm/make";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
       inputs.elm-packages.follows = "elm-packages";
@@ -38,18 +38,18 @@
     };
 
     test-elm-project-common = {
-      url = "github:realfolk/web?dir=lib/projects/common";
+      url = "github:realfolk/nix?dir=lib/projects/common";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
       inputs.project.follows = "test-elm-project-definition";
     };
 
-    test-haskell-project-definition.url = "github:realfolk/web?dir=examples/projects/test-haskell-project";
+    test-haskell-project-definition.url = "github:realfolk/nix?dir=examples/projects/test-haskell-project";
 
-    haskell-packages.url = "github:realfolk/web?dir=lib/projects/haskell/packages/ghc-9.2.1";
+    haskell-packages.url = "github:realfolk/nix?dir=lib/projects/haskell/packages/ghc-9.2.1";
 
     test-haskell-project = {
-      url = "github:realfolk/web?dir=lib/projects/haskell/make";
+      url = "github:realfolk/nix?dir=lib/projects/haskell/make";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
       inputs.project.follows = "test-haskell-project-definition";
@@ -57,36 +57,36 @@
     };
 
     test-haskell-project-common = {
-      url = "github:realfolk/web?dir=lib/projects/common";
+      url = "github:realfolk/nix?dir=lib/projects/common";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
       inputs.project.follows = "test-haskell-project-definition";
     };
 
-    test-static-project-definition.url = "github:realfolk/web?dir=examples/projects/test-static-project";
+    test-static-project-definition.url = "github:realfolk/nix?dir=examples/projects/test-static-project";
 
     test-static-project = {
-      url = "github:realfolk/web?dir=lib/projects/static/make";
+      url = "github:realfolk/nix?dir=lib/projects/static/make";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
       inputs.project.follows = "test-static-project-definition";
     };
 
     test-static-project-common = {
-      url = "github:realfolk/web?dir=lib/projects/common";
+      url = "github:realfolk/nix?dir=lib/projects/common";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
       inputs.project.follows = "test-static-project-definition";
     };
 
-    node-interpreter.url = "github:realfolk/web?dir=lib/projects/node/interpreter/node-17";
+    node-interpreter.url = "github:realfolk/nix?dir=lib/projects/node/interpreter/node-17";
 
     test-node-project-definition = {
-      url = "github:realfolk/web?dir=examples/projects/test-node-project";
+      url = "github:realfolk/nix?dir=examples/projects/test-node-project";
     };
 
     test-node-project = {
-      url = "github:realfolk/web?dir=lib/projects/node/make";
+      url = "github:realfolk/nix?dir=lib/projects/node/make";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
       inputs.node-interpreter.follows = "node-interpreter";
@@ -94,7 +94,7 @@
     };
 
     test-node-project-common = {
-      url = "github:realfolk/web?dir=lib/projects/common";
+      url = "github:realfolk/nix?dir=lib/projects/common";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
       inputs.project.follows = "test-node-project-definition";
