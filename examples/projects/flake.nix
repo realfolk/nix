@@ -26,7 +26,7 @@
     elm-packages.url = "github:realfolk/nix?dir=lib/projects/elm/packages";
 
     test-elm-project-definition = {
-      url = "github:realfolk/nix?dir=examples/projects/test-elm-project";
+      url = "github:realfolk/nix?dir=examples/projects/project-flakes/test-elm-project";
     };
 
     test-elm-project = {
@@ -44,7 +44,7 @@
       inputs.project.follows = "test-elm-project-definition";
     };
 
-    test-haskell-project-definition.url = "github:realfolk/nix?dir=examples/projects/test-haskell-project";
+    test-haskell-project-definition.url = "github:realfolk/nix?dir=examples/projects/project-flakes/test-haskell-project";
 
     haskell-packages.url = "github:realfolk/nix?dir=lib/projects/haskell/packages/ghc-9.2.1";
 
@@ -63,7 +63,7 @@
       inputs.project.follows = "test-haskell-project-definition";
     };
 
-    test-static-project-definition.url = "github:realfolk/nix?dir=examples/projects/test-static-project";
+    test-static-project-definition.url = "github:realfolk/nix?dir=examples/projects/project-flakes/test-static-project";
 
     test-static-project = {
       url = "github:realfolk/nix?dir=lib/projects/static/make";
@@ -82,7 +82,7 @@
     node-interpreter.url = "github:realfolk/nix?dir=lib/projects/node/interpreter/node-17";
 
     test-node-project-definition = {
-      url = "github:realfolk/nix?dir=examples/projects/test-node-project";
+      url = "github:realfolk/nix?dir=examples/projects/project-flakes/test-node-project";
     };
 
     test-node-project = {
@@ -159,6 +159,7 @@
           ];
           shellHook = ''
             test -f ~/.bashrc && source ~/.bashrc
+            export PROJECT="$PWD/examples/projects"
             ${test-elm-project-common.lib.${system}.commands.mkdir-src.bin}
             ${test-haskell-project-common.lib.${system}.commands.mkdir-src.bin}
             ${test-haskell-project.lib.${system}.commands.hie-yaml.bin}
