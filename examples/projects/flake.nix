@@ -159,7 +159,7 @@
           ];
           shellHook = ''
             test -f ~/.bashrc && source ~/.bashrc
-            export PROJECT="$PWD/examples/projects"
+            export PROJECT="$PWD"
             ${test-elm-project-common.lib.${system}.commands.mkdir-src.bin}
             ${test-haskell-project-common.lib.${system}.commands.mkdir-src.bin}
             ${test-haskell-project.lib.${system}.commands.hie-yaml.bin}

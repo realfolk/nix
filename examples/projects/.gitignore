@@ -3,5 +3,6 @@ artifacts
 *.swp
 *.DS_Store
 hie.yaml
-src/test-elm-project/elm-stuff
-src/test-node-project/node_modules
+src/group/testelm/elm-stuff/
+src/group/testnode/node_modules/
+result
