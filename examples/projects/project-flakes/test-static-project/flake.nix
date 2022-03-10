@@ -2,11 +2,7 @@
   description = "Test Static project";
 
   inputs = {
-    static-lib = {
-      url = "github:realfolk/nix?dir=lib/projects/static/lib";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-utils.follows = "flake-utils";
-    };
+    static-lib.url = "github:realfolk/nix?dir=lib/projects/static/lib";
   };
 
   outputs = { static-lib, ... }:
