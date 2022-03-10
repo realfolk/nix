@@ -6,3 +6,4 @@ hie.yaml
 src/group/testelm/elm-stuff/
 src/group/testnode/node_modules/
 result
+flake.lock
