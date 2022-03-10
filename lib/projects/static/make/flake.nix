@@ -4,8 +4,8 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     flake-utils.url = "github:numtide/flake-utils";
-    project-lib.url = "path:./lib/projects/lib";
-    static-lib.url = "path:./lib/projects/static/lib";
+    project-lib.url = "github:realfolk/nix?dir=lib/projects/lib";
+    static-lib.url = "github:realfolk/nix?dir=lib/projects/static/lib";
   };
 
   outputs = { self, nixpkgs, flake-utils, project-lib, static-lib, project, ... }:

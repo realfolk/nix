@@ -2,7 +2,7 @@
   description = "Haskell project dependencies and utilities.";
 
   inputs = {
-    project-lib.url = "path:./lib/projects/lib";
+    project-lib.url = "github:realfolk/nix?dir=lib/projects/lib";
   };
 
   outputs = { self, project-lib, ... }:
