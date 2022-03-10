@@ -5,7 +5,7 @@
     project-lib.url = "github:realfolk/nix?dir=lib/projects/lib";
   };
 
-  outputs = { self, project-lib }:
+  outputs = { self, project-lib, ... }:
     {
       lib = {
         id = "elm";
