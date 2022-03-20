@@ -31,7 +31,7 @@
 
         tmux-new = pkgs.writeShellScriptBin "tmux-new" ''
           test -z "$1" && echo "Please enter a name for your session." && exit 1
-          ${tmux}/bin/tmux new-session -n shell -s "$1" $(${tmux-nix-shell-command}/bin/tmux-nix-shell-command)
+          ${tmux}/bin/tmux new-session -n shell -s "$1" bash -c "$(${tmux-nix-shell-command}/bin/tmux-nix-shell-command)"
         '';
 
         bundled-tmux = pkgs.symlinkJoin {
