@@ -10,9 +10,7 @@
   outputs = { self, nixpkgs, flake-utils, ranger-src, ... }:
     flake-utils.lib.eachDefaultSystem (system:
       let
-        pkgs = import nixpkgs {
-          inherit system;
-        };
+        pkgs = nixpkgs.legacyPackages.${system};
         python3Packages = pkgs.python3Packages;
         lib = pkgs.lib;
         highlight = pkgs.highlight;
@@ -60,9 +58,14 @@
 
       in
       {
+        overlay = final: prev: {
+          inherit ranger;
+        };
+
         packages = {
           inherit ranger;
         };
+
         defaultPackage = self.packages.${system}.ranger;
       });
 }

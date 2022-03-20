@@ -9,9 +9,7 @@
   outputs = { self, nixpkgs, flake-utils, ... }:
     flake-utils.lib.eachDefaultSystem (system:
       let
-        pkgs = import nixpkgs {
-          inherit system;
-        };
+        pkgs = nixpkgs.legacyPackages.${system};
 
         screenrc = pkgs.writeText "screenrc" (builtins.readFile ./screenrc);
 
@@ -20,9 +18,14 @@
         '';
       in
       {
+        overlay = final: prev: {
+          inherit screen;
+        };
+
         packages = {
           inherit screen;
         };
+
         defaultPackage = self.packages.${system}.screen;
       });
 }

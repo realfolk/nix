@@ -10,42 +10,45 @@
   outputs = inputs@{ self, nixpkgs, flake-utils, mosh-src, ... }:
     flake-utils.lib.eachDefaultSystem (system:
       let
-        mosh-overlay = final: prev: with nixpkgs.legacyPackages.${system}; {
-          mosh = final.stdenv.mkDerivation rec {
-            pname = "mosh";
-            version = "1.3.2";
-            src = mosh-src;
-            nativeBuildInputs = [ autoreconfHook pkg-config makeWrapper ];
-            buildInputs = [
-              protobuf
-              ncurses
-              zlib
-              openssl
-              bash-completion
-            ]
-            ++ (with perlPackages; [ perl IOTty ])
-            ++ lib.optional final.stdenv.isLinux libutempter;
+        pkgs = nixpkgs.legacyPackages.${system};
 
-            configurePhase = ''
-              ./autogen.sh;
-              ./configure;
-            '';
+        mosh = with pkgs; stdenv.mkDerivation {
+          pname = "mosh";
+          version = "1.3.2";
+          src = mosh-src;
+          nativeBuildInputs = [ autoreconfHook pkg-config makeWrapper ];
+          buildInputs = [
+            protobuf
+            ncurses
+            zlib
+            openssl
+            bash-completion
+          ]
+          ++ (with perlPackages; [ perl IOTty ])
+          ++ lib.optional stdenv.isLinux libutempter;
 
-            installPhase = '' 
-              make prefix=$out install;
-              wrapProgram $out/bin/mosh --prefix PERL5LIB : $PERL5LIB; 
-            ''
-            + final.lib.strings.optionalString (glibcLocales != null)
-              "wrapProgram $out/bin/mosh-server --set LOCALE_ARCHIVE ${glibcLocales}/lib/locale/locale-archive;";
-          };
+          configurePhase = ''
+            ./autogen.sh;
+            ./configure;
+          '';
+
+          installPhase = '' 
+            make prefix=$out install;
+            wrapProgram $out/bin/mosh --prefix PERL5LIB : $PERL5LIB; 
+          ''
+          + lib.strings.optionalString (glibcLocales != null)
+            "wrapProgram $out/bin/mosh-server --set LOCALE_ARCHIVE ${glibcLocales}/lib/locale/locale-archive;";
         };
-        pkgs = import nixpkgs { inherit system; overlays = [ mosh-overlay ]; };
       in
-      rec {
-        packages = with pkgs; {
+      {
+        overlay = final: prev: {
           inherit mosh;
         };
 
-        defaultPackage = packages.mosh;
+        packages = {
+          inherit mosh;
+        };
+
+        defaultPackage = self.packages.${system}.mosh;
       });
-} 
+}

@@ -9,9 +9,7 @@
   outputs = { self, nixpkgs, flake-utils, ... }:
     flake-utils.lib.eachDefaultSystem (system:
       let
-        pkgs = import nixpkgs {
-          inherit system;
-        };
+        pkgs = nixpkgs.legacyPackages.${system};
 
         config = pkgs.writeText "tmux.conf" (builtins.readFile ./tmux.conf);
 
@@ -42,9 +40,14 @@
         };
       in
       {
+        overlay = final: prev: {
+          tmux = bundled-tmux;
+        };
+
         packages = {
           tmux = bundled-tmux;
         };
+
         defaultPackage = self.packages.${system}.tmux;
       });
 }

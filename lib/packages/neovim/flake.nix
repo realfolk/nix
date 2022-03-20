@@ -81,9 +81,7 @@
   outputs = inputs@{ self, nixpkgs, flake-utils, neovim-nightly, ... }:
     flake-utils.lib.eachDefaultSystem (system:
       let
-        pkgs = import nixpkgs {
-          inherit system;
-        };
+        pkgs = nixpkgs.legacyPackages.${system};
 
         buildPlugin = name: pkgs.vimUtils.buildVimPluginFrom2Nix {
           pname = name;
@@ -139,12 +137,11 @@
       in
 
       {
-        packages = {
+        overlay = final: prev: {
           inherit neovim;
-          config = ./config;
         };
 
-        overlay = final: prev: {
+        packages = {
           inherit neovim;
         };
 
