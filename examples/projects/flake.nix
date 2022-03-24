@@ -204,11 +204,11 @@
           shellHook = ''
             test -f ~/.bashrc && source ~/.bashrc
             export PROJECT="$PWD"
-            ${testElmProjectCommon.lib.${system}.commands.mkdirSrc.bin}
-            ${testHaskellProjectCommon.lib.${system}.commands.mkdirSrc.bin}
-            ${testHaskellProjectHaskell.lib.${system}.commands.hieYaml.bin}
-            ${testStaticProjectCommon.lib.${system}.commands.mkdirSrc.bin}
-            ${testNodeProjectCommon.lib.${system}.commands.mkdirSrc.bin}
+            ${testElmProjectCommon.commands.mkdirSrc.bin}
+            ${testHaskellProjectCommon.commands.mkdirSrc.bin}
+            ${testHaskellProjectHaskell.commands.hieYaml.bin}
+            ${testStaticProjectCommon.commands.mkdirSrc.bin}
+            ${testNodeProjectCommon.commands.mkdirSrc.bin}
           '';
         };
       });
