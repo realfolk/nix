@@ -131,14 +131,10 @@
       in
 
       {
-        overlay = final: prev: {
+        overlays.default = final: prev: {
           inherit neovim;
         };
 
-        packages = {
-          inherit neovim;
-        };
-
-        defaultPackage = self.packages.${system}.neovim;
+        packages.default = neovim;
       });
 }

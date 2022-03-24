@@ -18,14 +18,10 @@
         '';
       in
       {
-        overlay = final: prev: {
+        overlays.default = final: prev: {
           inherit screen;
         };
 
-        packages = {
-          inherit screen;
-        };
-
-        defaultPackage = self.packages.${system}.screen;
+        packages.default = screen;
       });
 }

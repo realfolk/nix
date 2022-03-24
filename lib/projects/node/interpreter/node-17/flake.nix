@@ -8,6 +8,6 @@
 
   outputs = { self, nixpkgs, flakeUtils, ... }:
     flakeUtils.lib.eachDefaultSystem (system: {
-      defaultPackage = nixpkgs.legacyPackages.${system}.nodejs-17_x;
+      packages.default = nixpkgs.legacyPackages.${system}.nodejs-17_x;
     });
 }

@@ -34,20 +34,21 @@
           ${tmux}/bin/tmux new-session -n shell -s "$1" $(${tmux-nix-shell-command}/bin/tmux-nix-shell-command)
         '';
 
+        tmux-attach = pkgs.writeShellScriptBin "tmux-attach" ''
+          test -z "$1" && echo "Please enter a name for the session to reattach." && exit 1
+          ${tmux}/bin/tmux attach-session "$1"
+        '';
+
         bundled-tmux = pkgs.symlinkJoin {
           name = "bundled-tmux";
-          paths = [ tmux tmux-nix-shell-command tmux-new ];
+          paths = [ tmux tmux-nix-shell-command tmux-new tmux-attach ];
         };
       in
       {
-        overlay = final: prev: {
+        overlays.default = final: prev: {
           tmux = bundled-tmux;
         };
 
-        packages = {
-          tmux = bundled-tmux;
-        };
-
-        defaultPackage = self.packages.${system}.tmux;
+        packages.default = bundled-tmux;
       });
 }

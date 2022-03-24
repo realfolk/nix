@@ -41,14 +41,10 @@
         };
       in
       {
-        overlay = final: prev: {
+        overlays.default = final: prev: {
           inherit mosh;
         };
 
-        packages = {
-          inherit mosh;
-        };
-
-        defaultPackage = self.packages.${system}.mosh;
+        packages.default = mosh;
       });
 }

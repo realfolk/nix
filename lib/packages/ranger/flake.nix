@@ -58,14 +58,10 @@
 
       in
       {
-        overlay = final: prev: {
+        overlays.default = final: prev: {
           inherit ranger;
         };
 
-        packages = {
-          inherit ranger;
-        };
-
-        defaultPackage = self.packages.${system}.ranger;
+        packages.default = ranger;
       });
 }
