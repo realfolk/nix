@@ -88,6 +88,6 @@
         { inherit commands combinedCommandsPackage; };
     in
     {
-      lib = { inherit id defineProject make; }
+      lib = { inherit id defineProject make; };
     };
 }
