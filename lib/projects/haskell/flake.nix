@@ -25,7 +25,7 @@
         languageExtensions ? [],
         ...
       }:
-        { inherit executables haskellDependencies localDependencies languageExtensions; } // project-lib.lib.defineProject {
+        { inherit executables haskellDependencies localDependencies languageExtensions; } // projectLib.lib.defineProject {
           inherit
             groupName
             projectName
