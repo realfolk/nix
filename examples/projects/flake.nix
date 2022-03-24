@@ -29,12 +29,10 @@
       url = "github:realfolk/nix?dir=examples/projects/project-flakes/test-elm-project";
     };
 
-    test-elm-project = {
-      url = "github:realfolk/nix?dir=lib/projects/elm/make";
+    elm-project = {
+      url = "github:realfolk/nix?dir=lib/projects/elm";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
-      inputs.elm-packages.follows = "elm-packages";
-      inputs.project.follows = "test-elm-project-definition";
     };
 
     test-elm-project-common = {
@@ -109,7 +107,7 @@
       tmux,
       ranger,
       elm-packages,
-      test-elm-project,
+      elm-project,
       test-elm-project-common,
       haskell-packages,
       test-haskell-project,
@@ -124,6 +122,21 @@
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
+        test-elm-project =
+          elm-project.lib.make {
+            inherit system;
+            elmPackages = elm-packages.packages.${system};
+            project = elm-project.lib.defineProject {
+              groupName = "group";
+              projectName = "testelm";
+              srcDir = "$PROJECT/src";
+              buildDir = "$PROJECT/build";
+              buildArtifactsDir = "$PROJECT/artifacts";
+              entryPoints = {
+                main = "Main.elm";
+              };
+            };
+          };
       in
       {
         packages = {
@@ -142,7 +155,7 @@
             elm-packages.packages.${system}.elm-language-server
             elm-packages.packages.${system}.elm-format
             elm-packages.packages.${system}.elm-test
-            test-elm-project.defaultPackage.${system}
+            test-elm-project.combinedCommandsPackage
             test-elm-project-common.defaultPackage.${system}
             #Haskell
             haskell-packages.packages.${system}.ghc

@@ -1,101 +1,98 @@
 {
-  description = "Common commands for projects.";
+  description = "A flake for all projects.";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
-    flake-utils.url = "github:numtide/flake-utils";
-    project-lib.url = "github:realfolk/nix?dir=lib/projects/lib";
+    projectLib.url = "github:realfolk/nix?dir=lib/projects/lib";
   };
 
-  outputs = { self, nixpkgs, flake-utils, project-lib, project, ... }:
-    flake-utils.lib.eachDefaultSystem (system:
-      let
-        pkgs = import nixpkgs {
-          inherit system;
-        };
+  outputs = { self, nixpkgs, projectLib, ... }:
+    let
+      id = "common";
 
-        makeCommand = args: project-lib.lib.makeCommand (args // {
-          writeShellScriptBin = pkgs.writeShellScriptBin;
-        });
+      make = { system, project, ... }:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
 
-        id = "common";
+          makeCommand = args: projectLib.lib.makeCommand (args // {
+            writeShellScriptBin = pkgs.writeShellScriptBin;
+          });
 
-        mkdir-src = makeCommand {
-          inherit project;
-          name = "${id}-mkdir-src";
-          script = ''
-            mkdir -p "${project.srcPath}"
-          '';
-        };
+          mkdirSrc = makeCommand {
+            inherit project;
+            name = "${id}-mkdir-src";
+            script = ''
+              mkdir -p "${project.srcPath}"
+            '';
+          };
 
-        pwd-src = makeCommand {
-          inherit project;
-          name = "${id}-pwd-src";
-          script = ''
-            echo "${project.srcPath}"
-          '';
-        };
+          pwdSrc = makeCommand {
+            inherit project;
+            name = "${id}-pwd-src";
+            script = ''
+              echo "${project.srcPath}"
+            '';
+          };
 
-        pwd-build = makeCommand {
-          inherit project;
-          name = "${id}-pwd-build";
-          script = ''
-            echo "${project.buildPath}"
-          '';
-        };
+          pwdBuild = makeCommand {
+            inherit project;
+            name = "${id}-pwd-build";
+            script = ''
+              echo "${project.buildPath}"
+            '';
+          };
 
-        cd-src = makeCommand {
-          inherit project;
-          name = "${id}-cd-src";
-          script = ''
-            cd "${project.srcPath}"
-          '';
-        };
+          cdSrc = makeCommand {
+            inherit project;
+            name = "${id}-cd-src";
+            script = ''
+              cd "${project.srcPath}"
+            '';
+          };
 
-        cd-build = makeCommand {
-          inherit project;
-          name = "${id}-cd-build";
-          script = ''
-            cd "${project.buildPath}"
-          '';
-        };
+          cdBuild = makeCommand {
+            inherit project;
+            name = "${id}-cd-build";
+            script = ''
+              cd "${project.buildPath}"
+            '';
+          };
 
-        ls-src = makeCommand {
-          inherit project;
-          name = "${id}-ls-src";
-          script = ''
-            ls "${project.srcPath}" "$@"
-          '';
-        };
+          lsSrc = makeCommand {
+            inherit project;
+            name = "${id}-ls-src";
+            script = ''
+              ls "${project.srcPath}" "$@"
+            '';
+          };
 
-        ls-build = makeCommand {
-          inherit project;
-          name = "${id}-ls-build";
-          script = ''
-            ls "${project.buildPath}" "$@"
-          '';
-        };
-      in
-      {
-        lib = {
-          inherit id;
+          lsBuild = makeCommand {
+            inherit project;
+            name = "${id}-ls-build";
+            script = ''
+              ls "${project.buildPath}" "$@"
+            '';
+          };
+
           commands = {
             inherit
-              mkdir-src
-              pwd-src
-              pwd-build
-              cd-src
-              cd-build
-              ls-src
-              ls-build;
+              mkdirSrc
+              pwdSrc
+              pwdBuild
+              cdSrc
+              cdBuild
+              lsSrc
+              lsBuild;
           };
-        };
 
-        packages = builtins.mapAttrs (name: { package, ... }: package) self.lib.${system}.commands;
-
-        defaultPackage = pkgs.symlinkJoin {
-          name = "${id}-commands-${project.groupName}-${project.projectName}";
-          paths = builtins.attrValues self.packages.${system};
-        };
-      });
+          combinedCommandsPackage = pkgs.symlinkJoin {
+            name = "${id}-commands-${project.groupName}-${project.projectName}";
+            paths = builtins.map ({ package, ... }: package) (builtins.attrValues commands);
+          };
+        in
+        { inherit commands combinedCommandsPackage; };
+    in
+    {
+      lib = { inherit id make; };
+    };
 }

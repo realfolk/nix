@@ -3,12 +3,12 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
-    flake-utils.url = "github:numtide/flake-utils";
+    flakeUtils.url = "github:numtide/flake-utils";
     ranger-src = { url = "github:ranger/ranger"; flake = false; };
   };
 
-  outputs = { self, nixpkgs, flake-utils, ranger-src, ... }:
-    flake-utils.lib.eachDefaultSystem (system:
+  outputs = { self, nixpkgs, flakeUtils, ranger-src, ... }:
+    flakeUtils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
         python3Packages = pkgs.python3Packages;

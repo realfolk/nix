@@ -3,19 +3,19 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
-    flake-utils.url = "github:numtide/flake-utils";
-    mosh-src = { url = "github:mobile-shell/mosh?ref=master"; flake = false; };
+    flakeUtils.url = "github:numtide/flake-utils";
+    src = { url = "github:mobile-shell/mosh?ref=master"; flake = false; };
   };
 
-  outputs = inputs@{ self, nixpkgs, flake-utils, mosh-src, ... }:
-    flake-utils.lib.eachDefaultSystem (system:
+  outputs = inputs@{ self, nixpkgs, flakeUtils, src, ... }:
+    flakeUtils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
 
         mosh = with pkgs; stdenv.mkDerivation {
+          inherit src;
           pname = "mosh";
           version = "1.3.2";
-          src = mosh-src;
           nativeBuildInputs = [ autoreconfHook pkg-config makeWrapper ];
           buildInputs = [
             protobuf
