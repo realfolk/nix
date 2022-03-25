@@ -36,7 +36,7 @@
 
         tmux-attach = pkgs.writeShellScriptBin "tmux-attach" ''
           test -z "$1" && echo "Please enter a name for the session to reattach." && exit 1
-          ${tmux}/bin/tmux attach-session "$1"
+          ${tmux}/bin/tmux attach-session -t "$1"
         '';
 
         bundled-tmux = pkgs.symlinkJoin {
