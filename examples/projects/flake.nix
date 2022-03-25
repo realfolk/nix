@@ -176,7 +176,7 @@
           ranger = ranger.packages.${system}.default;
         };
 
-        devShell = pkgs.mkShell {
+        devShells.default = pkgs.mkShell {
           buildInputs = [
             self.packages.${system}.neovim
             self.packages.${system}.tmux
