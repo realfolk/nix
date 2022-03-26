@@ -7,7 +7,15 @@
   };
 
   outputs = { self, nixpkgs, flakeUtils, ... }:
-    flakeUtils.lib.eachDefaultSystem (system: {
-      packages = nixpkgs.legacyPackages.${system}.haskell.packages.ghc921;
-    });
+    flakeUtils.lib.eachDefaultSystem (system:
+      let
+        pkgs = import nixpkgs {
+          inherit system;
+          # Many haskell dependencies are usually marked as broken.
+          config.allowBroken = true;
+        };
+      in
+      {
+        packages = pkgs.haskell.packages.ghc921;
+      });
 }
