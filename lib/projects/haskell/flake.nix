@@ -10,21 +10,21 @@
     let
       id = "haskell";
 
-      ghcWithPackages = { haskellPackages, haskellDependencies ? (p: []), ... }:
+      ghcWithPackages = { haskellPackages, haskellDependencies ? (p: [ ]), ... }:
         haskellPackages.ghcWithPackages haskellDependencies;
 
-      defineProject = {
-        groupName,
-        projectName,
-        srcDir,
-        buildDir,
-        buildArtifactsDir,
-        executables ? {},
-        haskellDependencies ? (availableDependencies: []),
-        localDependencies ? [],
-        languageExtensions ? [],
-        ...
-      }:
+      defineProject =
+        { groupName
+        , projectName
+        , srcDir
+        , buildDir
+        , buildArtifactsDir
+        , executables ? { }
+        , haskellDependencies ? (availableDependencies: [ ])
+        , localDependencies ? [ ]
+        , languageExtensions ? [ ]
+        , ...
+        }:
         { inherit executables haskellDependencies localDependencies languageExtensions; } // projectLib.lib.defineProject {
           inherit
             groupName
@@ -42,7 +42,7 @@
             builtins.concatLists [
               (project.haskellDependencies availableDependencies)
               # Add the haskell dependencies of all local dependencies.
-              (builtins.concatMap (project: project.haskellDependencies availableDependencies) project.localDependencies)
+              (builtins.concatMap (project_: project_.haskellDependencies availableDependencies) project.localDependencies)
             ]);
 
           makeGhcFlags = prefix: builtins.concatLists [
@@ -56,7 +56,7 @@
 
           makeGhcFlagsString =
             prefix: sep:
-              builtins.concatStringsSep sep (makeGhcFlags prefix);
+            builtins.concatStringsSep sep (makeGhcFlags prefix);
 
           makeCommand = args: projectLib.lib.makeCommand (args // {
             inherit project;
@@ -108,7 +108,7 @@
                 cd "$dir"
                 find . -iname '*.hs' -exec bash -c 'echo "$(dirname $1)/$(basename $1 .hs)" | sed "s/^\(\.\/\|\/\)// ; s/\/\+/./g" >> "$HIE_BIOS_OUTPUT"' bash {} \;
               done
-              '';
+            '';
           };
 
           #See https://github.com/haskell/haskell-language-server/issues/826#issuecomment-708647758
@@ -120,11 +120,11 @@
           #above hieBios command to dynamically generate the list of arguments to pass to ghc.
           hieYaml = makeCommand {
             name = "${id}-hie-yaml";
-            script = 
-            ''
-              mkdir -p "${project.srcPath}"
-              echo -ne "cradle: {bios: {program: "${hieBios.bin}"}}" > "${project.srcPath}/hie.yaml"
-            '';
+            script =
+              ''
+                mkdir -p "${project.srcPath}"
+                echo -ne "cradle: {bios: {program: "${hieBios.bin}"}}" > "${project.srcPath}/hie.yaml"
+              '';
           };
 
           ghcid = makeCommandsForExecutables {
@@ -139,12 +139,13 @@
             makeScript = (executableName: mainFile:
               let
                 buildDir = "${makeBuildDir executableName}/docs";
-              in ''
+              in
+              ''
                 interface_cmds=$(find -L "${ghcPkg}/share/doc" -iname "*.haddock" | sed -e 's|\(.*\)\(/[^/]\+\)|-i \1,\1\2|')
                 test -d "${buildDir}" && rm -rf "${buildDir}"
                 mkdir -p ${buildDir}
                 ${ghcPkg}/bin/haddock -h ${makeGhcFlagsString "--optghc=" " "} -o ${buildDir} $interface_cmds "$@" --package-name=${project.projectName} "${project.srcPath}/${mainFile}"
-            '');
+              '');
           };
 
           build = makeCommandsForExecutables {
@@ -153,11 +154,12 @@
               let
                 buildDir = makeBuildDir executableName;
                 buildTarget = makeBuildTargetGhc executableName;
-              in ''
+              in
+              ''
                 mkdir -p "${buildDir}"
                 test -f "${buildTarget}" && rm "${buildTarget}"
                 ${ghc.bin} -threaded -j4 -hidir "${project.buildArtifactsPath}" -odir "${project.buildArtifactsPath}" --make "${project.srcPath}/${mainFile}" -o "${buildTarget}" "$@" && echo "Successfully built: ${buildTarget}"
-            '');
+              '');
           };
 
           buildOptimized = makeCommandsForExecutables {
