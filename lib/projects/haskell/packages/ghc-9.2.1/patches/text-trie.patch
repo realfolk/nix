@@ -1,0 +1,114 @@
+diff --git a/src/Data/Trie/Text/BitTwiddle.hs b/src/Data/Trie/Text/BitTwiddle.hs
+index ccc0089..2663767 100644
+--- a/src/Data/Trie/Text/BitTwiddle.hs
++++ b/src/Data/Trie/Text/BitTwiddle.hs
+@@ -1,8 +1,9 @@
+ {-# OPTIONS_GHC -Wall -fwarn-tabs -fno-warn-name-shadowing #-}
+ 
+ -- The MagicHash is for unboxed primitives (-fglasgow-exts also works)
+-{-# LANGUAGE CPP, MagicHash #-}
+ {-# LANGUAGE BangPatterns #-}
++{-# LANGUAGE CPP          #-}
++{-# LANGUAGE MagicHash    #-}
+ 
+ ----------------------------------------------------------------
+ --                                                  ~ 2019.04.03
+@@ -21,25 +22,31 @@
+ ----------------------------------------------------------------
+ 
+ module Data.Trie.Text.BitTwiddle
+-    ( Prefix, Mask
+-
+-    , zero, nomatch
+-
+-    , mask, shorter, branchMask
++    ( Mask
++    , Prefix
++    , branchMask
++    , mask
++    , nomatch
++    , shorter
++    , zero
+     ) where
+ 
+-import Data.Trie.TextInternal (TextElem)
++import           Data.Trie.TextInternal (TextElem)
+ 
+-import Data.Bits
++import           Data.Bits
+ 
+-#if __GLASGOW_HASKELL__ >= 503
+-import GHC.Exts  (Int(..), uncheckedShiftRL# )
+-import GHC.Word (Word16(..))
++#if __GLASGOW_HASKELL__ >= 902
++import           GHC.Exts               (Int (..), uncheckedShiftRLWord16#)
++import           GHC.Word               (Word16 (..))
++#elif __GLASGOW_HASKELL__ >= 503
++import           GHC.Exts               (Int (..), uncheckedShiftRL#)
++import           GHC.Word               (Word16 (..))
+ #elif __GLASGOW_HASKELL__
+-import GlaExts   ( Word8(..), Int(..), uncheckedShiftRL# )
+-import GHC.Word (Word16(..))
++import           GHC.Word               (Word16 (..))
++import           GlaExts                (Int (..), Word8 (..),
++                                         uncheckedShiftRL#)
+ #else
+-import Data.Word (Word16(..))
++import           Data.Word              (Word16 (..))
+ #endif
+ 
+ ----------------------------------------------------------------
+@@ -51,11 +58,13 @@ type Mask    = KeyElem
+ 
+ uncheckedShiftRL :: Word16 -> Int -> Word16
+ {-# INLINE [0] uncheckedShiftRL #-}
+-#if __GLASGOW_HASKELL__
++#if __GLASGOW_HASKELL__ >= 902
++uncheckedShiftRL (W16# x) (I# i) = W16# (uncheckedShiftRLWord16# x i)
++#elif __GLASGOW_HASKELL__
+ -- GHC: use unboxing to get @uncheckedShiftRL@ inlined.
+ uncheckedShiftRL (W16# x) (I# i) = W16# (uncheckedShiftRL# x i)
+ #else
+-uncheckedShiftRL x i = shiftR x i
++uncheckedShiftRL x i             = shiftR x i
+ #endif
+ 
+ 
+diff --git a/text-trie.cabal b/text-trie.cabal
+index 65c1f92..87792ab 100644
+--- a/text-trie.cabal
++++ b/text-trie.cabal
+@@ -73,9 +73,9 @@ Library
+     -- The lower bounds are more restrictive than necessary.
+     -- But then, we don't maintain any CI tests for older
+     -- versions, so these are the lowest bounds we've verified.
+-    Build-Depends: base       >= 4.5   && < 4.13
+-                 , text       >= 1.2.3 && < 1.2.4
+-                 , binary     >= 0.5.1 && < 0.8.7
++    Build-Depends: base
++                 , text
++                 , binary
+ 
+ ------------------------------------------------------------
+ Test-Suite test-text-trie
+@@ -90,15 +90,15 @@ Test-Suite test-text-trie
+                   , FromListBench.Text.Encode
+                   , TrieFile.Text
+     build-depends: text-trie
+-                 , base       >= 4.5   && < 4.13
+-                 , bytestring >= 0.9.2 && < 0.11
+-                 , text       >= 1.2.3 && < 1.2.4
+-                 , binary     >= 0.5.1 && < 0.8.7
++                 , base
++                 , bytestring
++                 , text
++                 , binary
+                  , QuickCheck
+                  , HUnit
+                  , smallcheck
+                  , microbench
+-                 , bytestring-trie >= 0.2.5 && < 0.2.6
++                 , bytestring-trie
+                  , silently >= 1.2.5 && < 1.2.6
+ 
+ ------------------------------------------------------------

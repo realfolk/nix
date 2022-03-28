@@ -1,0 +1,22 @@
+diff --git a/haddock-api.cabal b/haddock-api.cabal
+index 01165582..ee84aae3 100644
+--- a/haddock-api.cabal
++++ b/haddock-api.cabal
+@@ -46,7 +46,7 @@ library
+   build-depends: base            ^>= 4.16.0
+                , ghc             ^>= 9.2
+                , ghc-paths       ^>= 0.1.0.9
+-               , haddock-library ^>= 1.9.0
++               , haddock-library
+                , xhtml           ^>= 3000.2.2
+                , parsec          ^>= 3.1.13.0
+ 
+@@ -182,7 +182,7 @@ test-suite spec
+ 
+   build-depends: ghc             ^>= 9.2
+                , ghc-paths       ^>= 0.1.0.12
+-               , haddock-library ^>= 1.9.0
++               , haddock-library
+                , xhtml           ^>= 3000.2.2
+                , hspec           ^>= 2.9
+                , parsec          ^>= 3.1.13.0
