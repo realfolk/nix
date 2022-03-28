@@ -91,6 +91,11 @@
             script = "${ghcPkg}/bin/ghc ${makeGhcFlagsString "" " "} \"$@\"";
           };
 
+          ghcPkgCommand = makeCommand {
+            name = "${id}-ghc-pkg";
+            script = "${ghcPkg}/bin/ghc-pkg \"$@\"";
+          };
+
           ghci = makeCommand {
             name = "${id}-ghci";
             script = "${ghcPkg}/bin/ghci ${makeGhcFlagsString "" " "} \"$@\"";
@@ -187,12 +192,15 @@
               '');
           };
 
-          commands = { inherit ghcFlags ghc ghci hieBios hieYaml; }
-            // ghcid
-            // docs
-            // build
-            // buildOptimized
-            // run;
+          commands = {
+            inherit ghcFlags ghc ghci hieBios hieYaml;
+            ghcPkg = ghcPkgCommand;
+          }
+          // ghcid
+          // docs
+          // build
+          // buildOptimized
+          // run;
 
           combinedCommandsPackage = pkgs.symlinkJoin {
             name = "${id}-commands-${project.groupName}-${project.projectName}";
