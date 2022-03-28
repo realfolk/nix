@@ -2,7 +2,7 @@
   description = "Node.js interpreter v17";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs";
+    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     flakeUtils.url = "github:numtide/flake-utils";
   };
 

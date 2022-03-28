@@ -1,0 +1,151 @@
+{
+  "nodes": {
+    "envySrc": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1642300968,
+        "narHash": "sha256-WlD8rcM/k3iDXRLvoGksN7wj9pnW+6bXhseHgdYNrCQ=",
+        "owner": "dmjio",
+        "repo": "envy",
+        "rev": "e90e9416da9e45fd2252ae6792896993eccc764d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "dmjio",
+        "repo": "envy",
+        "rev": "e90e9416da9e45fd2252ae6792896993eccc764d",
+        "type": "github"
+      }
+    },
+    "flakeUtils": {
+      "locked": {
+        "lastModified": 1648297722,
+        "narHash": "sha256-W+qlPsiZd8F3XkzXOzAoR+mpFqzm3ekQkJNa+PIh1BQ=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "0f8662f1319ad6abf89b3380dd2722369fc51ade",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
+    "haddockSrc": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1648240414,
+        "narHash": "sha256-dxlQdNXBv87xmfb75qla01mTSHwro5DBI4eJw8JmyTo=",
+        "owner": "haskell",
+        "repo": "haddock",
+        "rev": "d8dbbdad173baafe73acc98e6427c468fd3e13cc",
+        "type": "github"
+      },
+      "original": {
+        "owner": "haskell",
+        "ref": "ghc-9.2",
+        "repo": "haddock",
+        "type": "github"
+      }
+    },
+    "haskellFilesystemSrc": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1536134781,
+        "narHash": "sha256-tqxqeJUWoEYNWNelLYrfcaM/DFlr2Uq09xbtu8Y0bVc=",
+        "owner": "fpco",
+        "repo": "haskell-filesystem",
+        "rev": "93b5f5dda080edf2912fb484518753d9dbca56cc",
+        "type": "github"
+      },
+      "original": {
+        "owner": "fpco",
+        "repo": "haskell-filesystem",
+        "rev": "93b5f5dda080edf2912fb484518753d9dbca56cc",
+        "type": "github"
+      }
+    },
+    "haskellLanguageServerSrc": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1647883165,
+        "narHash": "sha256-H9vVZDHjEX3B6fnpW3E/AKWWaeAiDPZcDUkZsvleSdc=",
+        "owner": "haskell",
+        "repo": "haskell-language-server",
+        "rev": "a538641bf76ead5bc24f19926d259b67e4aa9c01",
+        "type": "github"
+      },
+      "original": {
+        "owner": "haskell",
+        "repo": "haskell-language-server",
+        "rev": "a538641bf76ead5bc24f19926d259b67e4aa9c01",
+        "type": "github"
+      }
+    },
+    "hieBiosSrc": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1646689921,
+        "narHash": "sha256-rB0jhbAC1+zsqDfKiI42iDr/aplatDkkBvTzFNv4UdM=",
+        "owner": "haskell",
+        "repo": "hie-bios",
+        "rev": "0d1cdc3ea2a3b87588f24a28bd0da6dc93a952df",
+        "type": "github"
+      },
+      "original": {
+        "owner": "haskell",
+        "repo": "hie-bios",
+        "rev": "0d1cdc3ea2a3b87588f24a28bd0da6dc93a952df",
+        "type": "github"
+      }
+    },
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1648219316,
+        "narHash": "sha256-Ctij+dOi0ZZIfX5eMhgwugfvB+WZSrvVNAyAuANOsnQ=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "30d3d79b7d3607d56546dd2a6b49e156ba0ec634",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixpkgs-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "root": {
+      "inputs": {
+        "envySrc": "envySrc",
+        "flakeUtils": "flakeUtils",
+        "haddockSrc": "haddockSrc",
+        "haskellFilesystemSrc": "haskellFilesystemSrc",
+        "haskellLanguageServerSrc": "haskellLanguageServerSrc",
+        "hieBiosSrc": "hieBiosSrc",
+        "nixpkgs": "nixpkgs",
+        "textTrieSrc": "textTrieSrc"
+      }
+    },
+    "textTrieSrc": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1555013051,
+        "narHash": "sha256-eKDURE8hsIP5P8t8iIl1CE5UFxHQGJgwiiZzRuCKRTQ=",
+        "owner": "michaeljklein",
+        "repo": "text-trie",
+        "rev": "c698d139c4693d231e081941bc958a8417ffb6c3",
+        "type": "github"
+      },
+      "original": {
+        "owner": "michaeljklein",
+        "repo": "text-trie",
+        "rev": "c698d139c4693d231e081941bc958a8417ffb6c3",
+        "type": "github"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}
