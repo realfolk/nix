@@ -170,7 +170,12 @@ nvim_lsp.elmls.setup({
 nvim_lsp.hls.setup({
   on_attach = on_attach,
   capabilities = capabilities,
-  cmd = { "haskell-language-server-wrapper", "--lsp" }
+  cmd = { "haskell-language-server-wrapper", "--lsp" },
+  settings = {
+    haskell = {
+      formattingProvider = "stylish-haskell"
+    }
+  }
 })
 
 nvim_lsp.rnix.setup({
