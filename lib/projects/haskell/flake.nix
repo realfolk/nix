@@ -10,9 +10,6 @@
     let
       id = "haskell";
 
-      ghcWithPackages = { haskellPackages, haskellDependencies ? (p: [ ]), ... }:
-        haskellPackages.ghcWithPackages haskellDependencies;
-
       defineProject =
         { groupName
         , projectName
