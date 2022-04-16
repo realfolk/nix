@@ -1,5 +1,22 @@
 {
   "nodes": {
+    "animalcaseSrc": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1415960276,
+        "narHash": "sha256-B+nC1X/Y17xEyILAWdVhxHb2jtsPPJYgJdDEKk2ueh0=",
+        "owner": "ibotty",
+        "repo": "animalcase",
+        "rev": "6b8b1adda4f56e854d74c38137d378aaa0636b9d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ibotty",
+        "repo": "animalcase",
+        "rev": "6b8b1adda4f56e854d74c38137d378aaa0636b9d",
+        "type": "github"
+      }
+    },
     "envySrc": {
       "flake": false,
       "locked": {
@@ -19,11 +36,11 @@
     },
     "flakeUtils": {
       "locked": {
-        "lastModified": 1648297722,
-        "narHash": "sha256-W+qlPsiZd8F3XkzXOzAoR+mpFqzm3ekQkJNa+PIh1BQ=",
+        "lastModified": 1649676176,
+        "narHash": "sha256-OWKJratjt2RW151VUlJPRALb7OU2S5s+f0vLj4o1bHM=",
         "owner": "numtide",
         "repo": "flake-utils",
-        "rev": "0f8662f1319ad6abf89b3380dd2722369fc51ade",
+        "rev": "a4b154ebbdc88c8498a5c7b01589addc9e9cb678",
         "type": "github"
       },
       "original": {
@@ -35,11 +52,11 @@
     "haddockSrc": {
       "flake": false,
       "locked": {
-        "lastModified": 1648240414,
-        "narHash": "sha256-dxlQdNXBv87xmfb75qla01mTSHwro5DBI4eJw8JmyTo=",
+        "lastModified": 1649764674,
+        "narHash": "sha256-vaU9QTDUjqtSydjI3tcjO4ojuX1SHD98PjyHqR+8++8=",
         "owner": "haskell",
         "repo": "haddock",
-        "rev": "d8dbbdad173baafe73acc98e6427c468fd3e13cc",
+        "rev": "0c5447f74bb53f754e7ac32c1a01d57e138a9fc5",
         "type": "github"
       },
       "original": {
@@ -111,13 +128,14 @@
       },
       "original": {
         "owner": "nixos",
-        "ref": "nixpkgs-unstable",
         "repo": "nixpkgs",
+        "rev": "30d3d79b7d3607d56546dd2a6b49e156ba0ec634",
         "type": "github"
       }
     },
     "root": {
       "inputs": {
+        "animalcaseSrc": "animalcaseSrc",
         "envySrc": "envySrc",
         "flakeUtils": "flakeUtils",
         "haddockSrc": "haddockSrc",
