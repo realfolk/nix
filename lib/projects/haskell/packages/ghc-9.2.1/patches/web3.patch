@@ -1,0 +1,17 @@
+diff --git a/web3.cabal b/web3.cabal
+index 0fc90e5..b045a9d 100644
+--- a/web3.cabal
++++ b/web3.cabal
+@@ -31,8 +31,8 @@ library
+       src
+   ghc-options: -funbox-strict-fields -Wduplicate-exports -Whi-shadowing -Widentities -Woverlapping-patterns -Wpartial-type-signatures -Wunrecognised-pragmas -Wtyped-holes -Wincomplete-patterns -Wincomplete-uni-patterns -Wmissing-fields -Wmissing-methods -Wmissing-exported-signatures -Wmissing-monadfail-instances -Wmissing-signatures -Wname-shadowing -Wunused-binds -Wunused-top-binds -Wunused-local-binds -Wunused-pattern-binds -Wunused-imports -Wunused-matches -Wunused-foralls -Wtabs
+   build-depends:
+-      base >4.11 && <4.15
+-    , web3-ethereum ==1.0.*
+-    , web3-polkadot ==1.0.*
+-    , web3-provider ==1.0.*
++      base
++    , web3-ethereum
++    , web3-polkadot
++    , web3-provider
+   default-language: Haskell2010

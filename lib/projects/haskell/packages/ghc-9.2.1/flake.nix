@@ -39,6 +39,16 @@
       url = "github:ibotty/animalcase/6b8b1adda4f56e854d74c38137d378aaa0636b9d";
       flake = false;
     };
+
+    relapseSrc = {
+      url = "github:iostat/relapse/bd00d20d1b7a3ea2dd60ee6787f2944d850d875d";
+      flake = false;
+    };
+
+    hsWeb3Src = {
+      url = "github:airalab/hs-web3/078bcd35b11e585ad93aa82b5a98fbfa5d02ac52";
+      flake = false;
+    };
   };
 
   outputs =
@@ -52,6 +62,8 @@
     , haskellFilesystemSrc
     , textTrieSrc
     , animalcaseSrc
+    , relapseSrc
+    , hsWeb3Src
     , ...
     }:
     flakeUtils.lib.eachDefaultSystem (system:
@@ -86,9 +98,21 @@
           hspec-discover = self.hspec-discover_2_9_4;
         };
         ghcide = self.callCabal2nix "ghcide" "${haskellLanguageServerSrc}/ghcide" { };
+        relapse = hlib.appendPatch (self.callCabal2nix "relapse" relapseSrc { }) ./patches/relapse.patch;
+        scale = hlib.appendPatch (self.callCabal2nix "scale" "${hsWeb3Src}/packages/scale" { }) ./patches/scale.patch;
+        web3 = hlib.appendPatch (self.callCabal2nix "web3" "${hsWeb3Src}/packages/web3" { }) ./patches/web3.patch;
+        memory-hexstring = hlib.appendPatch (self.callCabal2nix "memory-hexstring" "${hsWeb3Src}/packages/hexstring" { }) ./patches/memory-hexstring.patch;
+        jsonrpc-tinyclient = hlib.appendPatch (self.callCabal2nix "jsonrpc-tinyclient" "${hsWeb3Src}/packages/jsonrpc" { }) ./patches/jsonrpc-tinyclient.patch;
+        web3-provider = hlib.appendPatch (self.callCabal2nix "web3-provider" "${hsWeb3Src}/packages/provider" { }) ./patches/web3-provider.patch;
+        web3-crypto = hlib.appendPatch (self.callCabal2nix "web3-crypto" "${hsWeb3Src}/packages/crypto" { }) ./patches/web3-crypto.patch;
+        web3-solidity = hlib.appendPatch (self.callCabal2nix "web3-solidity" "${hsWeb3Src}/packages/solidity" { }) ./patches/web3-solidity.patch;
+        web3-ethereum = hlib.appendPatch (self.callCabal2nix "web3-ethereum" "${hsWeb3Src}/packages/ethereum" { }) ./patches/web3-ethereum.patch;
+        web3-bignum = hlib.appendPatch (self.callCabal2nix "web3-bignum" "${hsWeb3Src}/packages/bignum" { }) ./patches/web3-bignum.patch;
+        web3-polkadot = hlib.appendPatch (self.callCabal2nix "web3-polkadot" "${hsWeb3Src}/packages/polkadot" { }) ./patches/web3-polkadot.patch;
         system-fileio = hlib.appendPatch (self.callCabal2nix "system-fileio" "${haskellFilesystemSrc}/system-fileio" { }) ./patches/system-fileio.patch;
         text-trie = hlib.appendPatch (self.callCabal2nix "text-trie" textTrieSrc { }) ./patches/text-trie.patch;
         hie-bios = self.callCabal2nix "hie-bios" hieBiosSrc { };
+        vinyl = self.vinyl_0_14_1;
         haskell-language-server =
           let
             pkg0 = self.callCabal2nix "haskell-language-server" haskellLanguageServerSrc { };

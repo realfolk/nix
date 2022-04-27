@@ -117,6 +117,23 @@
         "type": "github"
       }
     },
+    "hsWeb3Src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1647455352,
+        "narHash": "sha256-4WhcKQa4id5uSUktZ9Yl9JGZLKetLACWkwT/B1ozxfo=",
+        "owner": "airalab",
+        "repo": "hs-web3",
+        "rev": "078bcd35b11e585ad93aa82b5a98fbfa5d02ac52",
+        "type": "github"
+      },
+      "original": {
+        "owner": "airalab",
+        "repo": "hs-web3",
+        "rev": "078bcd35b11e585ad93aa82b5a98fbfa5d02ac52",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1648219316,
@@ -133,6 +150,23 @@
         "type": "github"
       }
     },
+    "relapseSrc": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1548331295,
+        "narHash": "sha256-n0OEdl2iriUFPec32Jqj4MyoTZJ9PWh+Ei9/JktwI7c=",
+        "owner": "iostat",
+        "repo": "relapse",
+        "rev": "bd00d20d1b7a3ea2dd60ee6787f2944d850d875d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "iostat",
+        "repo": "relapse",
+        "rev": "bd00d20d1b7a3ea2dd60ee6787f2944d850d875d",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "animalcaseSrc": "animalcaseSrc",
@@ -142,7 +176,9 @@
         "haskellFilesystemSrc": "haskellFilesystemSrc",
         "haskellLanguageServerSrc": "haskellLanguageServerSrc",
         "hieBiosSrc": "hieBiosSrc",
+        "hsWeb3Src": "hsWeb3Src",
         "nixpkgs": "nixpkgs",
+        "relapseSrc": "relapseSrc",
         "textTrieSrc": "textTrieSrc"
       }
     },
