@@ -311,11 +311,11 @@
       },
       "locked": {
         "dir": "lib/packages/neovim",
-        "lastModified": 1648495866,
-        "narHash": "sha256-AItXFV4BObBVbQx/l7x/dA9RLhwayDISEGi7GKz3jO8=",
+        "lastModified": 1651813566,
+        "narHash": "sha256-wdNvJu/x5i6vEpMPJM03M91Edjv0ryFLqsdSqEGpF+Q=",
         "owner": "realfolk",
         "repo": "nix",
-        "rev": "879eed1b7a7ad823be370d196437e48e5756fbde",
+        "rev": "544c8f4111519f6e35188085b01e31115850b068",
         "type": "github"
       },
       "original": {
