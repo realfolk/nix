@@ -134,7 +134,7 @@
         web3-ethereum = hlib.appendPatch (self.callCabal2nix "web3-ethereum" "${hsWeb3Src}/packages/ethereum" { }) ./patches/web3-ethereum.patch;
         web3-bignum = hlib.appendPatch (self.callCabal2nix "web3-bignum" "${hsWeb3Src}/packages/bignum" { }) ./patches/web3-bignum.patch;
         web3-polkadot = hlib.appendPatch (self.callCabal2nix "web3-polkadot" "${hsWeb3Src}/packages/polkadot" { }) ./patches/web3-polkadot.patch;
-        system-fileio = hlib.appendPatch (self.callCabal2nix "system-fileio" "${haskellFilesystemSrc}/system-fileio" { }) ./patches/system-fileio.patch;
+        system-fileio = self.callCabal2nix "system-fileio" "${haskellFilesystemSrc}/system-fileio" { };
         text-trie = hlib.appendPatch (self.callCabal2nix "text-trie" textTrieSrc { }) ./patches/text-trie.patch;
         hie-bios = self.callCabal2nix "hie-bios" hieBiosSrc { };
         vinyl = self.vinyl_0_14_3;
