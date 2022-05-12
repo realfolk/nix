@@ -8,7 +8,7 @@
     tmux.url = "github:realfolk/nix?dir=lib/packages/tmux";
     ranger.url = "github:realfolk/nix?dir=lib/packages/ranger";
     elmPackages.url = "github:realfolk/nix?dir=lib/projects/elm/packages/elm-0.19";
-    haskellPackages.url = "github:realfolk/nix?dir=lib/projects/haskell/packages/ghc-9.2.1";
+    haskellPackages.url = "github:realfolk/nix?dir=lib/projects/haskell/packages/ghc-9.2";
     nodeInterpreter.url = "github:realfolk/nix?dir=lib/projects/node/interpreter/node-17";
     commonProject.url = "github:realfolk/nix?dir=lib/projects/common";
     elmProject.url = "github:realfolk/nix?dir=lib/projects/elm";
