@@ -125,6 +125,7 @@
         retrie = self.callCabal2nix "retrie" retrieSrc { };
         retrie_1_2_0_1 = self.retrie;
         scale = hlib.appendPatch (self.callCabal2nix "scale" "${hsWeb3Src}/packages/scale" { }) ./patches/scale.patch;
+        time-compat = hlib.dontCheck super.time-compat;
         web3 = hlib.appendPatch (self.callCabal2nix "web3" "${hsWeb3Src}/packages/web3" { }) ./patches/web3.patch;
         memory-hexstring = hlib.appendPatch (self.callCabal2nix "memory-hexstring" "${hsWeb3Src}/packages/hexstring" { }) ./patches/memory-hexstring.patch;
         jsonrpc-tinyclient = hlib.appendPatch (self.callCabal2nix "jsonrpc-tinyclient" "${hsWeb3Src}/packages/jsonrpc" { }) ./patches/jsonrpc-tinyclient.patch;
