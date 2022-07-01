@@ -49,6 +49,23 @@
         "type": "github"
       }
     },
+    "foundationSrc": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1646281943,
+        "narHash": "sha256-Q6OZgp3pQzV4GKufBt+AssBye/AHI9CGYT6F+StjnCg=",
+        "owner": "haskell-foundation",
+        "repo": "foundation",
+        "rev": "fc4daf9c869f903cec49b37177d1e1633ce01e58",
+        "type": "github"
+      },
+      "original": {
+        "owner": "haskell-foundation",
+        "repo": "foundation",
+        "rev": "fc4daf9c869f903cec49b37177d1e1633ce01e58",
+        "type": "github"
+      }
+    },
     "ghcExactPrintSrc": {
       "flake": false,
       "locked": {
@@ -206,6 +223,7 @@
         "animalcaseSrc": "animalcaseSrc",
         "envySrc": "envySrc",
         "flakeUtils": "flakeUtils",
+        "foundationSrc": "foundationSrc",
         "ghcExactPrintSrc": "ghcExactPrintSrc",
         "haddockSrc": "haddockSrc",
         "haskellFilesystemSrc": "haskellFilesystemSrc",

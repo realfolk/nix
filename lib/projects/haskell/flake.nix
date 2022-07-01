@@ -49,6 +49,8 @@
             ]
             (map (ext: "${prefix}-X${ext}") project.languageExtensions)
             (map (p: "${prefix}-i=${p.srcPath}") project.localDependencies)
+            # TODO add nested local dependencies of local dependencies.
+            # TODO dedupe localDependencies.
           ];
 
           makeGhcFlagsString =

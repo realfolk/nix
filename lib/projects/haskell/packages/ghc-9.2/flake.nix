@@ -76,6 +76,13 @@
       url = "github:haskell/stylish-haskell/v0.14.2.0";
       flake = false;
     };
+
+    # 2022-03-02
+    foundationSrc = {
+      url = "github:haskell-foundation/foundation/fc4daf9c869f903cec49b37177d1e1633ce01e58";
+      flake = false;
+    };
+
   };
 
   outputs =
@@ -94,6 +101,7 @@
     , ghcExactPrintSrc
     , retrieSrc
     , stylishHaskellSrc
+    , foundationSrc
     , ...
     }:
     flakeUtils.lib.eachDefaultSystem (system:
@@ -111,6 +119,7 @@
       packages = rootHaskellPackages.extend (self: super: builtins.mapAttrs (name: value: hlib.dontCheck value) {
         animalcase = hlib.appendPatch (self.callCabal2nix "animalcase" animalcaseSrc { }) ./patches/animalcase.patch;
         apply-refact = self.apply-refact_0_10_0_0;
+        basement = self.callCabal2nix "basement" "${foundationSrc}/basement" { };
         envy = hlib.appendPatch (self.callCabal2nix "envy" envySrc { }) ./patches/envy.patch;
         ghc-exactprint = self.callCabal2nix "ghc-exactprint" ghcExactPrintSrc { };
         ghcide = self.callCabal2nix "ghcide" "${haskellLanguageServerSrc}/ghcide" { };
