@@ -53,9 +53,11 @@
       flake = false;
     };
 
-    # 2022-03-16
+    # 2022-06-10
+    # From PR: https://github.com/airalab/hs-web3/pull/131
+    # PR fixes situations where argument is a list of composite type.
     hsWeb3Src = {
-      url = "github:airalab/hs-web3/078bcd35b11e585ad93aa82b5a98fbfa5d02ac52";
+      url = "github:airalab/hs-web3/61a35a6187f2d92fdf574fa5765028bd1ac7657e";
       flake = false;
     };
 

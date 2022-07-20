@@ -36,11 +36,11 @@
     },
     "flakeUtils": {
       "locked": {
-        "lastModified": 1649676176,
-        "narHash": "sha256-OWKJratjt2RW151VUlJPRALb7OU2S5s+f0vLj4o1bHM=",
+        "lastModified": 1656928814,
+        "narHash": "sha256-RIFfgBuKz6Hp89yRr7+NR5tzIAbn52h8vT6vXkYjZoM=",
         "owner": "numtide",
         "repo": "flake-utils",
-        "rev": "a4b154ebbdc88c8498a5c7b01589addc9e9cb678",
+        "rev": "7e2a3b3dfd9af950a856d66b0a7d01e3c18aa249",
         "type": "github"
       },
       "original": {
@@ -154,17 +154,17 @@
     "hsWeb3Src": {
       "flake": false,
       "locked": {
-        "lastModified": 1647455352,
-        "narHash": "sha256-4WhcKQa4id5uSUktZ9Yl9JGZLKetLACWkwT/B1ozxfo=",
+        "lastModified": 1654854093,
+        "narHash": "sha256-aoK4pRfrqkZ0nJjPxGxeAUgdN4hK4cbWDguvg6zfFr4=",
         "owner": "airalab",
         "repo": "hs-web3",
-        "rev": "078bcd35b11e585ad93aa82b5a98fbfa5d02ac52",
+        "rev": "61a35a6187f2d92fdf574fa5765028bd1ac7657e",
         "type": "github"
       },
       "original": {
         "owner": "airalab",
         "repo": "hs-web3",
-        "rev": "078bcd35b11e585ad93aa82b5a98fbfa5d02ac52",
+        "rev": "61a35a6187f2d92fdf574fa5765028bd1ac7657e",
         "type": "github"
       }
     },
