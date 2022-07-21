@@ -53,11 +53,15 @@
       flake = false;
     };
 
-    # 2022-06-10
-    # From PR: https://github.com/airalab/hs-web3/pull/131
-    # PR fixes situations where argument is a list of composite type.
+    # 2022-07-20
+    # References the "meld/tuple-fix" branch.
+    # Fork of airalab/hs-web3 that includes some changes to work
+    # with GHC 9.2 and a fix for ABI functions that accept tuples.
+    # The fix is in currently-open PR:
+    # https://github.com/airalab/hs-web3/pull/131
     hsWeb3Src = {
-      url = "github:airalab/hs-web3/61a35a6187f2d92fdf574fa5765028bd1ac7657e";
+      #url = "github:airalab/hs-web3/61a35a6187f2d92fdf574fa5765028bd1ac7657e";
+      url = "github:QodaFi/hs-web3/901b97e2fecdaac94a7d10b864f3ff70a5bec75a";
       flake = false;
     };
 
@@ -135,21 +139,24 @@
         relapse = hlib.appendPatch (self.callCabal2nix "relapse" relapseSrc { }) ./patches/relapse.patch;
         retrie = self.callCabal2nix "retrie" retrieSrc { };
         retrie_1_2_0_1 = self.retrie;
-        scale = hlib.appendPatch (self.callCabal2nix "scale" "${hsWeb3Src}/packages/scale" { }) ./patches/scale.patch;
         time-compat = hlib.dontCheck super.time-compat;
-        web3 = hlib.appendPatch (self.callCabal2nix "web3" "${hsWeb3Src}/packages/web3" { }) ./patches/web3.patch;
-        memory-hexstring = hlib.appendPatch (self.callCabal2nix "memory-hexstring" "${hsWeb3Src}/packages/hexstring" { }) ./patches/memory-hexstring.patch;
-        jsonrpc-tinyclient = hlib.appendPatch (self.callCabal2nix "jsonrpc-tinyclient" "${hsWeb3Src}/packages/jsonrpc" { }) ./patches/jsonrpc-tinyclient.patch;
-        web3-provider = hlib.appendPatch (self.callCabal2nix "web3-provider" "${hsWeb3Src}/packages/provider" { }) ./patches/web3-provider.patch;
-        web3-crypto = hlib.appendPatch (self.callCabal2nix "web3-crypto" "${hsWeb3Src}/packages/crypto" { }) ./patches/web3-crypto.patch;
-        web3-solidity = hlib.appendPatch (self.callCabal2nix "web3-solidity" "${hsWeb3Src}/packages/solidity" { }) ./patches/web3-solidity.patch;
-        web3-ethereum = hlib.appendPatch (self.callCabal2nix "web3-ethereum" "${hsWeb3Src}/packages/ethereum" { }) ./patches/web3-ethereum.patch;
-        web3-bignum = hlib.appendPatch (self.callCabal2nix "web3-bignum" "${hsWeb3Src}/packages/bignum" { }) ./patches/web3-bignum.patch;
-        web3-polkadot = hlib.appendPatch (self.callCabal2nix "web3-polkadot" "${hsWeb3Src}/packages/polkadot" { }) ./patches/web3-polkadot.patch;
-        system-fileio = self.callCabal2nix "system-fileio" "${haskellFilesystemSrc}/system-fileio" { };
         text-trie = hlib.appendPatch (self.callCabal2nix "text-trie" textTrieSrc { }) ./patches/text-trie.patch;
         hie-bios = self.callCabal2nix "hie-bios" hieBiosSrc { };
         vinyl = self.vinyl_0_14_3;
+        system-fileio = self.callCabal2nix "system-fileio" "${haskellFilesystemSrc}/system-fileio" { };
+        # hs-web3 overrides
+        jsonrpc-tinyclient = super.callCabal2nix "jsonrpc-tinyclient" "${hsWeb3Src}/packages/jsonrpc" { };
+        memory-hexstring = super.callCabal2nix "memory-hexstring" "${hsWeb3Src}/packages/hexstring" { };
+        scale = super.callCabal2nix "scale" "${hsWeb3Src}/packages/scale" { };
+        web3 = super.callCabal2nix "web3" "${hsWeb3Src}/packages/web3" { };
+        web3-bignum = super.callCabal2nix "web3-bignum" "${hsWeb3Src}/packages/bignum" { };
+        web3-crypto = super.callCabal2nix "web3-crypto" "${hsWeb3Src}/packages/crypto" { };
+        web3-ethereum = super.callCabal2nix "web3-ethereum" "${hsWeb3Src}/packages/ethereum" { };
+        web3-ipfs = super.callCabal2nix "web3-ipfs" "${hsWeb3Src}/packages/ipfs" { };
+        web3-polkadot = super.callCabal2nix "web3-polkadot" "${hsWeb3Src}/packages/polkadot" { };
+        web3-provider = super.callCabal2nix "web3-provider" "${hsWeb3Src}/packages/provider" { };
+        web3-solidity = super.callCabal2nix "web3-solidity" "${hsWeb3Src}/packages/solidity" { };
+        # haskell-language-server
         haskell-language-server =
           let
             cabalOptions = builtins.concatStringsSep " " [
