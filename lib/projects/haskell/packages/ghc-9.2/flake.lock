@@ -154,17 +154,17 @@
     "hsWeb3Src": {
       "flake": false,
       "locked": {
-        "lastModified": 1658386572,
-        "narHash": "sha256-odwJbY2LEtJM/xRCIKy94uKVGhcid0RZeBTvewig1Ao=",
+        "lastModified": 1658389841,
+        "narHash": "sha256-TFzmfid/I6b73OEoo2kKXyixQswqPkaS3Gmu5m5RIT0=",
         "owner": "QodaFi",
         "repo": "hs-web3",
-        "rev": "901b97e2fecdaac94a7d10b864f3ff70a5bec75a",
+        "rev": "7cf7dbf7acee214845347b30354448b0ac2a632e",
         "type": "github"
       },
       "original": {
         "owner": "QodaFi",
         "repo": "hs-web3",
-        "rev": "901b97e2fecdaac94a7d10b864f3ff70a5bec75a",
+        "rev": "7cf7dbf7acee214845347b30354448b0ac2a632e",
         "type": "github"
       }
     },

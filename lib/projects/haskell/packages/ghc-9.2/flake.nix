@@ -61,7 +61,7 @@
     # https://github.com/airalab/hs-web3/pull/131
     hsWeb3Src = {
       #url = "github:airalab/hs-web3/61a35a6187f2d92fdf574fa5765028bd1ac7657e";
-      url = "github:QodaFi/hs-web3/901b97e2fecdaac94a7d10b864f3ff70a5bec75a";
+      url = "github:QodaFi/hs-web3/7cf7dbf7acee214845347b30354448b0ac2a632e";
       flake = false;
     };
 
