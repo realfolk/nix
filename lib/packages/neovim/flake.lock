@@ -396,6 +396,7 @@
         "telescopeFzyNative": "telescopeFzyNative",
         "toggleterm": "toggleterm",
         "tokyonightNvim": "tokyonightNvim",
+        "vimAbolish": "vimAbolish",
         "vimNix": "vimNix",
         "vimRooter": "vimRooter",
         "vimRzip": "vimRzip",
@@ -464,6 +465,22 @@
       "original": {
         "owner": "folke",
         "repo": "tokyonight.nvim",
+        "type": "github"
+      }
+    },
+    "vimAbolish": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1616252559,
+        "narHash": "sha256-iwK7VRF+F+GHJO3Xbbns8jWkIoD/YPQHcWOrsEWNP/E=",
+        "owner": "tpope",
+        "repo": "vim-abolish",
+        "rev": "3f0c8faadf0c5b68bcf40785c1c42e3731bfa522",
+        "type": "github"
+      },
+      "original": {
+        "owner": "tpope",
+        "repo": "vim-abolish",
         "type": "github"
       }
     },

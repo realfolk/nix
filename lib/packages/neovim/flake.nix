@@ -54,6 +54,7 @@
     gitsigns = { url = "github:lewis6991/gitsigns.nvim"; flake = false; };
 
     # Misc
+    vimAbolish = { url = "github:tpope/vim-abolish"; flake = false; };
     #LEARN
     lualineNvim = { url = "github:nvim-lualine/lualine.nvim"; flake = false; };
     vimRooter = { url = "github:airblade/vim-rooter"; flake = false; };
@@ -103,6 +104,7 @@
           "cmpCmdline"
           "gitsigns"
           "luasnip"
+          "vimAbolish"
           "lualineNvim"
           "vimRooter"
           "vimSurround"
