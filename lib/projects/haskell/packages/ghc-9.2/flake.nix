@@ -145,17 +145,17 @@
         vinyl = self.vinyl_0_14_3;
         system-fileio = self.callCabal2nix "system-fileio" "${haskellFilesystemSrc}/system-fileio" { };
         # hs-web3 overrides
-        jsonrpc-tinyclient = super.callCabal2nix "jsonrpc-tinyclient" "${hsWeb3Src}/packages/jsonrpc" { };
-        memory-hexstring = super.callCabal2nix "memory-hexstring" "${hsWeb3Src}/packages/hexstring" { };
-        scale = super.callCabal2nix "scale" "${hsWeb3Src}/packages/scale" { };
-        web3 = super.callCabal2nix "web3" "${hsWeb3Src}/packages/web3" { };
-        web3-bignum = super.callCabal2nix "web3-bignum" "${hsWeb3Src}/packages/bignum" { };
-        web3-crypto = super.callCabal2nix "web3-crypto" "${hsWeb3Src}/packages/crypto" { };
-        web3-ethereum = super.callCabal2nix "web3-ethereum" "${hsWeb3Src}/packages/ethereum" { };
-        web3-ipfs = super.callCabal2nix "web3-ipfs" "${hsWeb3Src}/packages/ipfs" { };
-        web3-polkadot = super.callCabal2nix "web3-polkadot" "${hsWeb3Src}/packages/polkadot" { };
-        web3-provider = super.callCabal2nix "web3-provider" "${hsWeb3Src}/packages/provider" { };
-        web3-solidity = super.callCabal2nix "web3-solidity" "${hsWeb3Src}/packages/solidity" { };
+        jsonrpc-tinyclient = self.callCabal2nix "jsonrpc-tinyclient" "${hsWeb3Src}/packages/jsonrpc" { };
+        memory-hexstring = self.callCabal2nix "memory-hexstring" "${hsWeb3Src}/packages/hexstring" { };
+        scale = self.callCabal2nix "scale" "${hsWeb3Src}/packages/scale" { };
+        web3 = self.callCabal2nix "web3" "${hsWeb3Src}/packages/web3" { };
+        web3-bignum = self.callCabal2nix "web3-bignum" "${hsWeb3Src}/packages/bignum" { };
+        web3-crypto = self.callCabal2nix "web3-crypto" "${hsWeb3Src}/packages/crypto" { };
+        web3-ethereum = self.callCabal2nix "web3-ethereum" "${hsWeb3Src}/packages/ethereum" { };
+        web3-ipfs = self.callCabal2nix "web3-ipfs" "${hsWeb3Src}/packages/ipfs" { };
+        web3-polkadot = self.callCabal2nix "web3-polkadot" "${hsWeb3Src}/packages/polkadot" { };
+        web3-provider = self.callCabal2nix "web3-provider" "${hsWeb3Src}/packages/provider" { };
+        web3-solidity = self.callCabal2nix "web3-solidity" "${hsWeb3Src}/packages/solidity" { };
         # haskell-language-server
         haskell-language-server =
           let
