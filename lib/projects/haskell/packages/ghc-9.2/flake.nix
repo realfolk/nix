@@ -111,7 +111,6 @@
         relapse = hlib.appendPatch (self.callCabal2nix "relapse" relapseSrc { }) ./patches/relapse.patch;
         time-compat = hlib.dontCheck super.time-compat;
         text-trie = hlib.appendPatch (self.callCabal2nix "text-trie" textTrieSrc { }) ./patches/text-trie.patch;
-        vinyl = self.vinyl_0_14_3;
         system-fileio = self.callCabal2nix "system-fileio" "${haskellFilesystemSrc}/system-fileio" { };
         # hs-web3 overrides
         jsonrpc-tinyclient = self.callCabal2nix "jsonrpc-tinyclient" "${hsWeb3Src}/packages/jsonrpc" { };
