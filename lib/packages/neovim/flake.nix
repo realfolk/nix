@@ -2,7 +2,7 @@
   description = "Real Folk's custom neovim.";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs?ref=22.11";
     flakeUtils.url = "github:numtide/flake-utils";
 
     ### Plugins ###

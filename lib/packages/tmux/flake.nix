@@ -2,7 +2,7 @@
   description = "Real Folk's custom tmux.";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs?ref=22.11";
     flakeUtils.url = "github:numtide/flake-utils";
   };
 
@@ -14,19 +14,19 @@
         config = pkgs.writeText "tmux.conf" (builtins.readFile ./tmux.conf);
 
         tmux = pkgs.writeShellScriptBin "tmux" ''
-            ${pkgs.tmux}/bin/tmux -f "${config}" $@
+          ${pkgs.tmux}/bin/tmux -f "${config}" $@
         '';
 
         tmux-nix-shell-command = pkgs.writeShellScriptBin "tmux-nix-shell-command" ''
-        if test -x shell.sh
-        then
-          echo -n ./shell.sh
-        elif test -f ./flake.nix && test -z "$IN_NIX_SHELL"
-        then
-          echo -n nix develop path:./
-        else
-          echo -n "$SHELL"
-        fi
+          if test -x shell.sh
+          then
+            echo -n ./shell.sh
+          elif test -f ./flake.nix && test -z "$IN_NIX_SHELL"
+          then
+            echo -n nix develop path:./
+          else
+            echo -n "$SHELL"
+          fi
         '';
 
         tmux-new = pkgs.writeShellScriptBin "tmux-new" ''

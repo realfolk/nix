@@ -2,7 +2,7 @@
   description = "Builds mosh from source (latest). Used to enable truecolor.";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs?ref=22.11";
     flakeUtils.url = "github:numtide/flake-utils";
     src = { url = "github:mobile-shell/mosh?ref=master"; flake = false; };
   };

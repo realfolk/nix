@@ -2,7 +2,7 @@
   description = "Real Folk's custom GNU screen.";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs?ref=22.11";
     flakeUtils.url = "github:numtide/flake-utils";
   };
 
@@ -14,7 +14,7 @@
         screenrc = pkgs.writeText "screenrc" (builtins.readFile ./screenrc);
 
         screen = pkgs.writeShellScriptBin "screen" ''
-            ${pkgs.screen}/bin/screen -c "${screenrc}" $@
+          ${pkgs.screen}/bin/screen -c "${screenrc}" $@
         '';
       in
       {

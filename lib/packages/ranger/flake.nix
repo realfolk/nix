@@ -2,7 +2,7 @@
   description = "Real Folk's custom-configured Ranger.";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs?ref=22.11";
     flakeUtils.url = "github:numtide/flake-utils";
     ranger-src = { url = "github:ranger/ranger"; flake = false; };
   };
