@@ -5,26 +5,9 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     flakeUtils.url = "github:numtide/flake-utils";
 
-    haskellLanguageServerSrc = {
-      url = "github:haskell/haskell-language-server/1.9.0.0";
-      flake = false;
-    };
-
     # 2022-04-12
     haddockSrc = {
       url = "github:haskell/haddock/0c5447f74bb53f754e7ac32c1a01d57e138a9fc5";
-      flake = false;
-    };
-
-    # 2022-01-15
-    envySrc = {
-      url = "github:dmjio/envy/e90e9416da9e45fd2252ae6792896993eccc764d";
-      flake = false;
-    };
-
-    # 2022-04-27
-    haskellFilesystemSrc = {
-      url = "github:fpco/haskell-filesystem/064e3baa3168febe30b8db4296abc86b36521b88";
       flake = false;
     };
 
@@ -40,33 +23,12 @@
       flake = false;
     };
 
-    # 2019-01-24
-    relapseSrc = {
-      url = "github:iostat/relapse/bd00d20d1b7a3ea2dd60ee6787f2944d850d875d";
-      flake = false;
-    };
-
-    # 2022-07-20
-    # References the "meld/tuple-fix" branch.
+    # 2023-06-09
+    # References the QodaFi/hs-web3 "master" branch.
     # Fork of airalab/hs-web3 that includes some changes to work
-    # with GHC 9.2 and a fix for ABI functions that accept tuples.
-    # The fix is in currently-open PR:
-    # https://github.com/airalab/hs-web3/pull/131
+    # with GHC 9.2 via Nix.
     hsWeb3Src = {
-      #url = "github:airalab/hs-web3/61a35a6187f2d92fdf574fa5765028bd1ac7657e";
-      url = "github:QodaFi/hs-web3/7cf7dbf7acee214845347b30354448b0ac2a632e";
-      flake = false;
-    };
-
-    # 2022-04-06
-    ghcExactPrintSrc = {
-      url = "github:alanz/ghc-exactprint/d9cb00673552dbc098059100e025592a7389d5a6";
-      flake = false;
-    };
-
-    # 2022-04-27
-    stylishHaskellSrc = {
-      url = "github:haskell/stylish-haskell/v0.14.2.0";
+      url = "github:QodaFi/hs-web3/455e28c7189b21c427d7960e37b685ad802dd2f0";
       flake = false;
     };
 
@@ -76,16 +38,10 @@
     { self
     , nixpkgs
     , flakeUtils
-    , haskellLanguageServerSrc
     , haddockSrc
-    , envySrc
-    , haskellFilesystemSrc
     , textTrieSrc
     , animalcaseSrc
-    , relapseSrc
     , hsWeb3Src
-    , ghcExactPrintSrc
-    , stylishHaskellSrc
     , ...
     }:
     flakeUtils.lib.eachDefaultSystem (system:
@@ -102,16 +58,10 @@
 
       packages = rootHaskellPackages.extend (self: super: builtins.mapAttrs (name: value: hlib.dontCheck value) {
         animalcase = hlib.appendPatch (self.callCabal2nix "animalcase" animalcaseSrc { }) ./patches/animalcase.patch;
-        apply-refact = self.apply-refact_0_10_0_0;
-        envy = hlib.appendPatch (self.callCabal2nix "envy" envySrc { }) ./patches/envy.patch;
-        ghc-exactprint = self.callCabal2nix "ghc-exactprint" ghcExactPrintSrc { };
         haddock = self.callCabal2nix "haddock" haddockSrc { };
         haddock-library = hlib.appendPatch (self.callCabal2nix "haddock-library" "${haddockSrc}/haddock-library" { }) ./patches/haddock-library.patch;
         haddock-api = hlib.appendPatch (self.callCabal2nix "haddock-api" "${haddockSrc}/haddock-api" { }) ./patches/haddock-api.patch;
-        relapse = hlib.appendPatch (self.callCabal2nix "relapse" relapseSrc { }) ./patches/relapse.patch;
-        time-compat = hlib.dontCheck super.time-compat;
         text-trie = hlib.appendPatch (self.callCabal2nix "text-trie" textTrieSrc { }) ./patches/text-trie.patch;
-        system-fileio = self.callCabal2nix "system-fileio" "${haskellFilesystemSrc}/system-fileio" { };
         # hs-web3 overrides
         jsonrpc-tinyclient = self.callCabal2nix "jsonrpc-tinyclient" "${hsWeb3Src}/packages/jsonrpc" { };
         memory-hexstring = self.callCabal2nix "memory-hexstring" "${hsWeb3Src}/packages/hexstring" { };
@@ -124,21 +74,36 @@
         web3-polkadot = self.callCabal2nix "web3-polkadot" "${hsWeb3Src}/packages/polkadot" { };
         web3-provider = self.callCabal2nix "web3-provider" "${hsWeb3Src}/packages/provider" { };
         web3-solidity = self.callCabal2nix "web3-solidity" "${hsWeb3Src}/packages/solidity" { };
-        haskell-language-server =
-          let
-            cabalOptions = builtins.concatStringsSep " " [
-              "-f-fourmolu"
-              "-f-ormolu"
-              "-f-floskell"
-            ];
-            pkg2 = self.callCabal2nixWithOptions "haskell-language-server" haskellLanguageServerSrc cabalOptions { };
-            pkg3 = hlib.dontCheck (hlib.dontHaddock pkg2);
-            pkg4 = hlib.enableSharedExecutables pkg3;
-          in
-          pkg4;
+        # haskell-language-server overrides
+        haskell-language-server = hlib.dontHaddock super.haskell-language-server;
+        hls-alternate-number-format-plugin = hlib.dontHaddock super.hls-alternate-number-format-plugin;
+        hls-cabal-fmt-plugin = hlib.dontHaddock super.hls-cabal-fmt-plugin;
+        hls-cabal-plugin = hlib.dontHaddock super.hls-cabal-plugin;
+        hls-call-hierarchy-plugin = hlib.dontHaddock super.hls-call-hierarchy-plugin;
+        hls-change-type-signature-plugin = hlib.dontHaddock super.hls-change-type-signature-plugin;
+        hls-class-plugin = hlib.dontHaddock super.hls-class-plugin;
+        hls-code-range-plugin = hlib.dontHaddock super.hls-code-range-plugin;
+        hls-eval-plugin = hlib.dontHaddock super.hls-eval-plugin;
+        hls-explicit-fixity-plugin = hlib.dontHaddock super.hls-explicit-fixity-plugin;
+        hls-explicit-imports-plugin = hlib.dontHaddock super.hls-explicit-imports-plugin;
+        hls-explicit-record-fields-plugin = hlib.dontHaddock super.hls-explicit-record-fields-plugin;
+        hls-floskell-plugin = hlib.dontHaddock super.hls-floskell-plugin;
+        hls-fourmolu-plugin = hlib.dontHaddock super.hls-fourmolu-plugin;
         hls-gadt-plugin = hlib.dontHaddock super.hls-gadt-plugin;
+        hls-graph = hlib.dontHaddock super.hls-graph;
+        hls-hlint-plugin = hlib.dontHaddock super.hls-hlint-plugin;
+        hls-module-name-plugin = hlib.dontHaddock super.hls-module-name-plugin;
+        hls-ormolu-plugin = hlib.dontHaddock super.hls-ormolu-plugin;
+        hls-plugin-api = hlib.dontHaddock super.hls-plugin-api;
+        hls-pragmas-plugin = hlib.dontHaddock super.hls-pragmas-plugin;
+        hls-qualify-imported-names-plugin = hlib.dontHaddock super.hls-qualify-imported-names-plugin;
+        hls-refactor-plugin = hlib.dontHaddock super.hls-refactor-plugin;
+        hls-refine-imports-plugin = hlib.dontHaddock super.hls-refine-imports-plugin;
         hls-rename-plugin = hlib.dontHaddock super.hls-rename-plugin;
-        hls-call-hierarchy-plugin = self.callCabal2nix "hls-call-hierarchy-plugin" "${haskellLanguageServerSrc}/plugins/hls-call-hierarchy-plugin" { };
+        hls-retrie-plugin = hlib.dontHaddock super.hls-retrie-plugin;
+        hls-splice-plugin = hlib.dontHaddock super.hls-splice-plugin;
+        hls-stylish-haskell-plugin = hlib.dontHaddock super.hls-stylish-haskell-plugin;
+        hls-test-utils = hlib.dontHaddock super.hls-test-utils;
       });
     in
     { inherit packages; });
