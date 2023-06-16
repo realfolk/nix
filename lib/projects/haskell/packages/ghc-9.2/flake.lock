@@ -95,17 +95,17 @@
     "textTrieSrc": {
       "flake": false,
       "locked": {
-        "lastModified": 1555013051,
-        "narHash": "sha256-eKDURE8hsIP5P8t8iIl1CE5UFxHQGJgwiiZzRuCKRTQ=",
-        "owner": "michaeljklein",
+        "lastModified": 1686935576,
+        "narHash": "sha256-8Jp+cOqnku6w0XyInPRiFkq2ER7P6ifKoghpWPtBH+Y=",
+        "owner": "realfolk",
         "repo": "text-trie",
-        "rev": "c698d139c4693d231e081941bc958a8417ffb6c3",
+        "rev": "fab16265b5c17e158820ed0356cd88eb4d34c2ed",
         "type": "github"
       },
       "original": {
-        "owner": "michaeljklein",
+        "owner": "realfolk",
         "repo": "text-trie",
-        "rev": "c698d139c4693d231e081941bc958a8417ffb6c3",
+        "rev": "fab16265b5c17e158820ed0356cd88eb4d34c2ed",
         "type": "github"
       }
     }

@@ -13,7 +13,7 @@
 
     # 2019-04-11
     textTrieSrc = {
-      url = "github:michaeljklein/text-trie/c698d139c4693d231e081941bc958a8417ffb6c3";
+      url = "github:realfolk/text-trie/fab16265b5c17e158820ed0356cd88eb4d34c2ed";
       flake = false;
     };
 
@@ -61,7 +61,7 @@
         haddock = self.callCabal2nix "haddock" haddockSrc { };
         haddock-library = hlib.appendPatch (self.callCabal2nix "haddock-library" "${haddockSrc}/haddock-library" { }) ./patches/haddock-library.patch;
         haddock-api = hlib.appendPatch (self.callCabal2nix "haddock-api" "${haddockSrc}/haddock-api" { }) ./patches/haddock-api.patch;
-        text-trie = hlib.appendPatch (self.callCabal2nix "text-trie" textTrieSrc { }) ./patches/text-trie.patch;
+        text-trie = self.callCabal2nix "text-trie" textTrieSrc { };
         # hs-web3 overrides
         jsonrpc-tinyclient = self.callCabal2nix "jsonrpc-tinyclient" "${hsWeb3Src}/packages/jsonrpc" { };
         memory-hexstring = self.callCabal2nix "memory-hexstring" "${hsWeb3Src}/packages/hexstring" { };
