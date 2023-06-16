@@ -45,7 +45,7 @@
             name = "${id}-cabal";
             script = ''
               cd "${project.srcPath}"
-              ${cabalInstallPkg}/bin/cabal "$@";
+              ${cabalInstallPkg}/bin/cabal "$@"
             '';
           };
 
