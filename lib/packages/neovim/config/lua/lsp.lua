@@ -26,7 +26,7 @@ local on_attach = function(client, bufnr)
   end
 
   -- Format on save.
-  vim.cmd [[autocmd BufWritePre * lua vim.lsp.buf.formatting_sync()]]
+  vim.cmd [[autocmd BufWritePre * lua vim.lsp.buf.format({async=false})]]
 
   -- Set up language server keybindings.
   -- Goto definition/declaration
@@ -60,7 +60,7 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('n', '<leader>qn', '<cmd>cnext<CR>', opts)
 
   -- Format
-  buf_set_keymap('n', '<leader>af', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
+  buf_set_keymap('n', '<leader>af', '<cmd>lua vim.lsp.buf.format({async=true})<CR>', opts)
 end
 
 
