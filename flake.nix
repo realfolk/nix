@@ -2,7 +2,7 @@
   description = "Packages and shells for working on Real Folk's Nix files.";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs?ref=23.05";
     flakeUtils.url = "github:numtide/flake-utils";
     neovim.url = "github:realfolk/nix?dir=lib/packages/neovim";
     ranger.url = "github:realfolk/nix?dir=lib/packages/ranger";
