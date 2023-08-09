@@ -1,3 +1,6 @@
+# This script was adapted from the following GitHub Gist:
+# https://gist.github.com/miguelmota/3793b160992b4ea0b616497b8e5aee2f
+
 # Arguments
 
 PUB_KEY_OUT="$1"
