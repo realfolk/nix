@@ -21,6 +21,7 @@
         default = pkgs.writeScriptBin "generate-ethereum-account" ''
           #! /usr/bin/env bash
 
+          OPENSSL_BIN="${pkgs.openssl}/bin/openssl"
           KECCAK_256SUM_BIN="${sha3sum.packages.${system}.default}/bin/keccak-256sum"
 
           ${builtins.readFile ./generate-ethereum-account.sh}

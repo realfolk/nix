@@ -28,8 +28,8 @@ touch $INIT_KEY_TMP_FILE
 
 # Generate the private and public keys
 
-openssl ecparam -name secp256k1 -genkey -noout \
-  | openssl ec -text -noout > $INIT_KEY_TMP_FILE \
+$OPENSSL_BIN ecparam -name secp256k1 -genkey -noout \
+  | $OPENSSL_BIN ec -text -noout > $INIT_KEY_TMP_FILE \
   2> /dev/null
 
 # Extract the public key, remove the (hex) EC prefix 04 and generate the hash
