@@ -34,6 +34,8 @@ $OPENSSL_BIN ecparam -name secp256k1 -genkey -noout \
 
 # Extract the public key, remove the (hex) EC prefix 04 and generate the hash
 
+test -f $PUB_KEY_OUT && rm -f $PUB_KEY_OUT
+
 cat $INIT_KEY_TMP_FILE \
   | grep pub -A 5 \
   | tail -n +2 \
@@ -44,13 +46,19 @@ cat $INIT_KEY_TMP_FILE \
   | tail -c 41 \
   > $PUB_KEY_OUT
 
+chmod 400 $PUB_KEY_OUT
+
 # Extract the private key and remove the leading zero byte
+
+test -f $PRIV_KEY_OUT && rm -f $PRIV_KEY_OUT
 
 cat $INIT_KEY_TMP_FILE \
   | grep priv -A 3 \
   | tail -n +2 \
   | tr -d '\n[:space:]:' \
   | sed 's/^00//' > $PRIV_KEY_OUT
+
+chmod 400 $PRIV_KEY_OUT
 
 # Clean up temporary files
 
