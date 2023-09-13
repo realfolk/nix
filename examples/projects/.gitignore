@@ -1,9 +1,9 @@
-build
-artifacts
 *.swp
 *.DS_Store
+artifacts/
+build/
+dist-newstyle/
+elm-stuff/
+node_modules/
 hie.yaml
-src/group/testelm/elm-stuff/
-src/group/testnode/node_modules/
 result
-flake.lock

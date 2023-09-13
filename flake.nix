@@ -1,21 +1,33 @@
 {
-  description = "Packages, apps and developer shells for working on Real Folk's projects.";
+  description = "Packages, apps, project helpers and developer shells for working on Real Folk's projects.";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs?ref=23.05";
-    flake-utils.url = "github:numtide/flake-utils";
+    flakeUtils.url = "github:numtide/flake-utils";
+
     rnixLsp.url = "github:nix-community/rnix-lsp";
+
+    haskellPackages = {
+      url = "path:./lib/projects/haskell/packages/ghc-9.2";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flakeUtils.follows = "flakeUtils";
+    };
   };
 
   outputs =
     { self
     , nixpkgs
-    , flake-utils
+    , flakeUtils
     , rnixLsp
+    , haskellPackages
+    , ...
     }:
-    flake-utils.lib.eachDefaultSystem (system:
+    flakeUtils.lib.eachDefaultSystem (system:
     let
       pkgs = nixpkgs.legacyPackages.${system};
+      elmPackages = pkgs.elmPackages;
+
+      nodejs = pkgs.nodejs-18_x;
 
       generate-ethereum-account = pkgs.callPackage ./lib/packages/generate-ethereum-account {};
       mosh = pkgs.callPackage ./lib/packages/mosh {};
@@ -27,11 +39,25 @@
     {
       packages = {
         rnixLsp = rnixLsp.defaultPackage.${system};
+        inherit nodejs;
         inherit generate-ethereum-account mosh neovim ranger screen tmux;
       };
 
       apps = {
-        generate-ethereum-account = flake-utils.lib.mkApp { drv = self.packages.${system}.generate-ethereum-account; };
+        generate-ethereum-account = flakeUtils.lib.mkApp { drv = self.packages.${system}.generate-ethereum-account; };
+      };
+
+      lib = {
+        inherit elmPackages;
+        haskellPackages = haskellPackages.packages.${system};
+
+        cabalProject = pkgs.callPackage ./lib/projects/cabal {};
+        commonProject = pkgs.callPackage ./lib/projects/common {};
+        elmProject = pkgs.callPackage ./lib/projects/elm {};
+        haskellProject = pkgs.callPackage ./lib/projects/haskell {};
+        nodeProject = pkgs.callPackage ./lib/projects/node {};
+        rustProject = pkgs.callPackage ./lib/projects/rust {};
+        staticProject = pkgs.callPackage ./lib/projects/static {};
       };
 
       devShells.default = pkgs.mkShell {

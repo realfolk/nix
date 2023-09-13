@@ -1,8 +1,15 @@
+# NOTE: If I run `nix flake show path:./lib/projects/haskell/packages/ghc-9.2 --verbose` on this flake I get the following error:
+#
+# > evaluating 'packages.x86_64-linux.Cabal'...
+# > error: expected a derivation
+#
+# TODO: Figure out what's happening and how to fix it.
+
 {
   description = "Haskell packages for GHC 9.2.6";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs?ref=23.05";
     flakeUtils.url = "github:numtide/flake-utils";
 
     # 2022-04-12
@@ -31,7 +38,6 @@
       url = "github:QodaFi/hs-web3/455e28c7189b21c427d7960e37b685ad802dd2f0";
       flake = false;
     };
-
   };
 
   outputs =

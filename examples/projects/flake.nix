@@ -1,60 +1,81 @@
 {
-  description = "An example of a development shell using Real Folk's project flakes.";
+  description = "An example of a development shell using Real Folk's project helpers.";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs?ref=23.05";
     flakeUtils.url = "github:numtide/flake-utils";
-    neovim.url = "github:realfolk/nix?dir=lib/packages/neovim";
-    tmux.url = "github:realfolk/nix?dir=lib/packages/tmux";
-    ranger.url = "github:realfolk/nix?dir=lib/packages/ranger";
-    elmPackages.url = "github:realfolk/nix?dir=lib/projects/elm/packages/elm-0.19";
-    haskellPackages.url = "github:realfolk/nix?dir=lib/projects/haskell/packages/ghc-9.2";
-    nodeInterpreter.url = "github:realfolk/nix?dir=lib/projects/node/interpreter/node-17";
-    commonProject.url = "github:realfolk/nix?dir=lib/projects/common";
-    elmProject.url = "github:realfolk/nix?dir=lib/projects/elm";
-    haskellProject.url = "github:realfolk/nix?dir=lib/projects/haskell";
-    staticProject.url = "github:realfolk/nix?dir=lib/projects/static";
-    nodeProject.url = "github:realfolk/nix?dir=lib/projects/node";
-    projectLib.url = "github:realfolk/nix?dir=lib/projects/lib";
+
+    realfolkNix.url = "path:../..";
+    # NOTE: Projects external to this repository would use
+    #       the following flake reference instead:
+    #
+    #   realfolkNix.url = "github:realfolk/nix";
   };
 
   outputs =
     { self
     , nixpkgs
     , flakeUtils
-    , neovim
-    , tmux
-    , ranger
-    , elmPackages
-    , haskellPackages
-    , nodeInterpreter
-    , commonProject
-    , elmProject
-    , haskellProject
-    , nodeProject
-    , staticProject
-    , projectLib
+    , realfolkNix
     , ...
     }:
     flakeUtils.lib.eachDefaultSystem (system:
     let
       pkgs = nixpkgs.legacyPackages.${system};
+      realfolkNixPkgs = realfolkNix.packages.${system};
 
-      config = {
+      nodejs = realfolkNixPkgs.nodejs;
+
+      neovim = realfolkNixPkgs.neovim;
+      tmux = realfolkNixPkgs.tmux;
+      ranger = realfolkNixPkgs.ranger;
+
+      realfolkNixLib = realfolkNix.lib.${system};
+
+      elmPackages = realfolkNixLib.elmPackages;
+      haskellPackages = realfolkNixLib.haskellPackages;
+
+      cabalProject = realfolkNixLib.cabalProject;
+      commonProject = realfolkNixLib.commonProject;
+      elmProject = realfolkNixLib.elmProject;
+      haskellProject = realfolkNixLib.haskellProject;
+      nodeProject = realfolkNixLib.nodeProject;
+      rustProject = realfolkNixLib.rustProject;
+      staticProject = realfolkNixLib.staticProject;
+
+      dirs = {
         srcDir = "$PROJECT/src";
         buildDir = "$PROJECT/build";
         buildArtifactsDir = "$PROJECT/artifacts";
       };
 
-      defineProject = args: projectLib.lib.defineProject (args // config);
+      defineCabalProject = cabalProject.defineProject dirs;
 
-      defineElmProject = args: elmProject.lib.defineProject (args // config);
+      defineCommonProject = commonProject.defineProject dirs;
 
-      defineHaskellProject = args: haskellProject.lib.defineProject (args // config);
+      defineElmProject = elmProject.defineProject dirs;
 
-      defineStaticProject = args: staticProject.lib.defineProject (args // config);
+      defineHaskellProject = haskellProject.defineProject dirs;
 
-      defineNodeProject = args: nodeProject.lib.defineProject (args // config);
+      defineNodeProject = nodeProject.defineProject dirs;
+
+      defineRustProject = rustProject.defineProject dirs;
+
+      defineStaticProject = staticProject.defineProject dirs;
+
+      testCabalProjectDefinition = {
+        groupName = "group";
+        projectName = "testcabal";
+      };
+
+      testCabalProjectCabal = cabalProject.make {
+        project = defineCabalProject testCabalProjectDefinition;
+        inherit haskellPackages;
+      };
+
+      testCabalProjectCommon = commonProject.make {
+        project = defineCommonProject testCabalProjectDefinition;
+      };
 
       testElmProjectDefinition = {
         groupName = "group";
@@ -64,15 +85,12 @@
         };
       };
 
-      testElmProjectElm = elmProject.lib.make {
-        inherit system;
-        elmPackages = elmPackages.packages.${system};
+      testElmProjectElm = elmProject.make {
         project = defineElmProject testElmProjectDefinition;
       };
 
-      testElmProjectCommon = commonProject.lib.make {
-        inherit system;
-        project = defineProject testElmProjectDefinition;
+      testElmProjectCommon = commonProject.make {
+        project = defineCommonProject testElmProjectDefinition;
       };
 
       testHaskellProjectDefinition = {
@@ -87,30 +105,13 @@
         ];
       };
 
-      testHaskellProjectHaskell = haskellProject.lib.make {
-        inherit system;
-        haskellPackages = haskellPackages.packages.${system};
+      testHaskellProjectHaskell = haskellProject.make {
         project = defineHaskellProject testHaskellProjectDefinition;
+        inherit haskellPackages;
       };
 
-      testHaskellProjectCommon = commonProject.lib.make {
-        inherit system;
-        project = defineProject testHaskellProjectDefinition;
-      };
-
-      testStaticProjectDefinition = {
-        groupName = "group";
-        projectName = "teststatic";
-      };
-
-      testStaticProjectStatic = staticProject.lib.make {
-        inherit system;
-        project = defineStaticProject testStaticProjectDefinition;
-      };
-
-      testStaticProjectCommon = commonProject.lib.make {
-        inherit system;
-        project = defineProject testStaticProjectDefinition;
+      testHaskellProjectCommon = commonProject.make {
+        project = defineCommonProject testHaskellProjectDefinition;
       };
 
       testNodeProjectDefinition = {
@@ -121,57 +122,90 @@
         };
       };
 
-      testNodeProjectNode = nodeProject.lib.make {
-        inherit system;
-        nodeInterpreter = nodeInterpreter.packages.${system}.default;
+      testNodeProjectNode = nodeProject.make {
         project = defineNodeProject testNodeProjectDefinition;
+        nodeInterpreter = nodejs;
       };
 
-      testNodeProjectCommon = commonProject.lib.make {
-        inherit system;
-        project = defineProject testNodeProjectDefinition;
+      testNodeProjectCommon = commonProject.make {
+        project = defineCommonProject testNodeProjectDefinition;
+      };
+
+      testRustProjectDefinition = {
+        groupName = "group";
+        projectName = "testrust";
+      };
+
+      testRustProjectRust = rustProject.make {
+        project = defineRustProject testRustProjectDefinition;
+      };
+
+      testRustProjectCommon = commonProject.make {
+        project = defineCommonProject testRustProjectDefinition;
+      };
+
+      testStaticProjectDefinition = {
+        groupName = "group";
+        projectName = "teststatic";
+      };
+
+      testStaticProjectStatic = staticProject.make {
+        project = defineStaticProject testStaticProjectDefinition;
+      };
+
+      testStaticProjectCommon = commonProject.make {
+        project = defineCommonProject testStaticProjectDefinition;
       };
     in
     {
-      packages = {
-        neovim = neovim.packages.${system}.default;
-        tmux = tmux.packages.${system}.default;
-        ranger = ranger.packages.${system}.default;
-      };
-
       devShells.default = pkgs.mkShell {
-        buildInputs = [
-          self.packages.${system}.neovim
-          self.packages.${system}.tmux
-          self.packages.${system}.ranger
-          #Elm
-          elmPackages.packages.${system}.elm
-          elmPackages.packages.${system}.elm-language-server
-          elmPackages.packages.${system}.elm-format
-          elmPackages.packages.${system}.elm-test
+        packages = [
+          neovim
+          ranger
+          tmux
+
+          # Cabal
+          testCabalProjectCabal.combinedCommandsPackage
+          testCabalProjectCommon.combinedCommandsPackage
+
+          # Elm
+          elmPackages.elm
+          elmPackages.elm-language-server
+          elmPackages.elm-format
+          elmPackages.elm-test
           testElmProjectElm.combinedCommandsPackage
           testElmProjectCommon.combinedCommandsPackage
-          #Haskell
-          haskellPackages.packages.${system}.ghc
-          haskellPackages.packages.${system}.haskell-language-server
+
+          # Haskell
+          haskellPackages.ghc
+          haskellPackages.haskell-language-server
           testHaskellProjectHaskell.combinedCommandsPackage
           testHaskellProjectCommon.combinedCommandsPackage
-          #Static Assets
-          testStaticProjectStatic.combinedCommandsPackage
-          testStaticProjectCommon.combinedCommandsPackage
-          #Node.js
-          nodeInterpreter.packages.${system}.default
+
+          # Node.js
+          nodejs
           testNodeProjectNode.combinedCommandsPackage
           testNodeProjectCommon.combinedCommandsPackage
+
+          # Rust
+          testRustProjectRust.combinedCommandsPackage
+          testRustProjectCommon.combinedCommandsPackage
+
+          # Static Assets
+          testStaticProjectStatic.combinedCommandsPackage
+          testStaticProjectCommon.combinedCommandsPackage
         ];
+
         shellHook = ''
           test -f ~/.bashrc && source ~/.bashrc
           export PROJECT="$PWD"
+          ${testCabalProjectCommon.commands.mkdirSrc.bin}
           ${testElmProjectCommon.commands.mkdirSrc.bin}
           ${testHaskellProjectCommon.commands.mkdirSrc.bin}
           ${testHaskellProjectHaskell.commands.hieYaml.bin}
-          ${testStaticProjectCommon.commands.mkdirSrc.bin}
           ${testNodeProjectCommon.commands.mkdirSrc.bin}
+          ${testRustProjectCommon.commands.mkdirSrc.bin}
+          ${testStaticProjectCommon.commands.mkdirSrc.bin}
         '';
       };
     });
