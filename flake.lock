@@ -66,14 +66,20 @@
         "textTrieSrc": "textTrieSrc"
       },
       "locked": {
-        "lastModified": 1,
-        "narHash": "sha256-1gtTIfVZD6fX1Rst3I7+RMBLx8CLoOqvQNu9ioKt0tQ=",
-        "path": "./lib/projects/haskell/packages/ghc-9.2",
-        "type": "path"
+        "dir": "lib/projects/haskell/packages/ghc-9.2",
+        "lastModified": 1694726527,
+        "narHash": "sha256-opqUll/X/tvS7ldFWy3Oa/EyU1AYhVSqH0u+wqCjByc=",
+        "owner": "dwayne",
+        "repo": "realfolk-nix",
+        "rev": "e97fc5950df2b8bf9390763ad533116ed80051fa",
+        "type": "github"
       },
       "original": {
-        "path": "./lib/projects/haskell/packages/ghc-9.2",
-        "type": "path"
+        "dir": "lib/projects/haskell/packages/ghc-9.2",
+        "owner": "dwayne",
+        "repo": "realfolk-nix",
+        "rev": "e97fc5950df2b8bf9390763ad533116ed80051fa",
+        "type": "github"
       }
     },
     "hsWeb3Src": {

@@ -8,7 +8,7 @@
     rnixLsp.url = "github:nix-community/rnix-lsp";
 
     haskellPackages = {
-      url = "path:./lib/projects/haskell/packages/ghc-9.2";
+      url = "github:dwayne/realfolk-nix?rev=e97fc5950df2b8bf9390763ad533116ed80051fa&dir=lib/projects/haskell/packages/ghc-9.2";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flakeUtils.follows = "flakeUtils";
     };
