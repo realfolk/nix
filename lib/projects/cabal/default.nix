@@ -36,12 +36,4 @@ in
 {
   inherit id make;
   inherit (lib) defineProject;
-  shellHook = ghc: ''
-    export NIX_GHC="${ghc}/bin/ghc"
-    export NIX_GHCPKG="${ghc}/bin/ghc-pkg"
-    export NIX_GHC_DOCDIR="${ghc}/share/doc/ghc/html"
-    # Export the GHC lib dir to the environment
-    # so ghcide knows how to source package dependencies.
-    export NIX_GHC_LIBDIR="$(${ghc}/bin/ghc --print-libdir)"
-  '';
 }
