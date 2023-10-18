@@ -5,21 +5,21 @@
     nixpkgs.url = "github:nixos/nixpkgs?ref=23.05";
     flakeUtils.url = "github:numtide/flake-utils";
 
-    rnixLsp.url = "github:nix-community/rnix-lsp";
-
     haskellPackages = {
-      url = "github:dwayne/realfolk-nix?rev=e97fc5950df2b8bf9390763ad533116ed80051fa&dir=lib/projects/haskell/packages/ghc-9.2";
+      url = "github:realfolk/nix?dir=lib/projects/haskell/packages/ghc-9.2";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flakeUtils.follows = "flakeUtils";
     };
+
+    rnixLsp.url = "github:nix-community/rnix-lsp";
   };
 
   outputs =
     { self
     , nixpkgs
     , flakeUtils
-    , rnixLsp
     , haskellPackages
+    , rnixLsp
     , ...
     }:
     flakeUtils.lib.eachDefaultSystem (system:
@@ -62,11 +62,11 @@
 
       devShells.default = pkgs.mkShell {
         packages = [
-          pkgs.silver-searcher
-          pkgs.fzf
-          self.packages.${system}.rnixLsp
           neovim
+          pkgs.fzf
+          pkgs.silver-searcher
           ranger
+          self.packages.${system}.rnixLsp
         ];
 
         shellHook = ''
