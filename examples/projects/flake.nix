@@ -5,11 +5,15 @@
     nixpkgs.url = "github:nixos/nixpkgs?ref=23.05";
     flakeUtils.url = "github:numtide/flake-utils";
 
-    realfolkNix.url = "path:../..";
-    # NOTE: Projects external to this repository would use
-    #       the following flake reference instead:
-    #
-    #   realfolkNix.url = "github:realfolk/nix";
+    realfolkNix = {
+      # NOTE: Projects external to this repository would use
+      #       the following flake reference instead:
+      #
+      # url = "github:realfolk/nix";
+      url = "path:../..";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flakeUtils.follows = "flakeUtils";
+    };
   };
 
   outputs =
