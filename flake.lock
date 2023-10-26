@@ -67,11 +67,11 @@
       },
       "locked": {
         "dir": "lib/projects/haskell/packages/ghc-9.2",
-        "lastModified": 1697651444,
-        "narHash": "sha256-rN40ZC89HCu2R8pXoHoH+lwCd09zr97XD/UXLWhGkiA=",
+        "lastModified": 1698351244,
+        "narHash": "sha256-RR+xztItnlya0/5eoswJ4WrFFQkMCspbNkINHRan69Y=",
         "owner": "realfolk",
         "repo": "nix",
-        "rev": "26006e294688de0c3509a020afde801d83a418c4",
+        "rev": "b6bce74d19e63041283ad4da8fcd201b33c7687e",
         "type": "github"
       },
       "original": {
