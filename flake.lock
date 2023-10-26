@@ -67,11 +67,11 @@
       },
       "locked": {
         "dir": "lib/projects/haskell/packages/ghc-9.2",
-        "lastModified": 1697651167,
-        "narHash": "sha256-+1x2j3se2sS/Ayvz3NwmHhGu6dlCoAAwcpQ1jgU26jA=",
+        "lastModified": 1697651444,
+        "narHash": "sha256-rN40ZC89HCu2R8pXoHoH+lwCd09zr97XD/UXLWhGkiA=",
         "owner": "realfolk",
         "repo": "nix",
-        "rev": "3107696f45e39262b2c15faf0a3c2e3a39077fb2",
+        "rev": "26006e294688de0c3509a020afde801d83a418c4",
         "type": "github"
       },
       "original": {
@@ -135,27 +135,15 @@
         "type": "github"
       }
     },
-    "nixpkgs_2": {
-      "locked": {
-        "lastModified": 1656753965,
-        "narHash": "sha256-BCrB3l0qpJokOnIVc3g2lHiGhnjUi0MoXiw6t1o8H1E=",
-        "owner": "nixos",
-        "repo": "nixpkgs",
-        "rev": "0ea7a8f1b939d74e5df8af9a8f7342097cdf69eb",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nixos",
-        "ref": "nixos-unstable",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
     "rnixLsp": {
       "inputs": {
         "naersk": "naersk",
-        "nixpkgs": "nixpkgs_2",
-        "utils": "utils"
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "utils": [
+          "flakeUtils"
+        ]
       },
       "locked": {
         "lastModified": 1669555118,
@@ -208,21 +196,6 @@
         "owner": "realfolk",
         "repo": "text-trie",
         "rev": "fab16265b5c17e158820ed0356cd88eb4d34c2ed",
-        "type": "github"
-      }
-    },
-    "utils": {
-      "locked": {
-        "lastModified": 1656928814,
-        "narHash": "sha256-RIFfgBuKz6Hp89yRr7+NR5tzIAbn52h8vT6vXkYjZoM=",
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "rev": "7e2a3b3dfd9af950a856d66b0a7d01e3c18aa249",
-        "type": "github"
-      },
-      "original": {
-        "owner": "numtide",
-        "repo": "flake-utils",
         "type": "github"
       }
     }

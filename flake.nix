@@ -11,7 +11,11 @@
       inputs.flakeUtils.follows = "flakeUtils";
     };
 
-    rnixLsp.url = "github:nix-community/rnix-lsp";
+    rnixLsp = {
+      url = "github:nix-community/rnix-lsp";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.utils.follows = "flakeUtils";
+    };
   };
 
   outputs =
