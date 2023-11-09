@@ -57,7 +57,10 @@
 
         cabalProject = pkgs.callPackage ./lib/projects/cabal {};
         commonProject = pkgs.callPackage ./lib/projects/common {};
+
         elmProject = pkgs.callPackage ./lib/projects/elm {};
+        elmBuilder = pkgs.callPackage ./lib/projects/elm/builder.nix {};
+
         haskellProject = pkgs.callPackage ./lib/projects/haskell {};
         nodeProject = pkgs.callPackage ./lib/projects/node {};
         rustProject = pkgs.callPackage ./lib/projects/rust {};
