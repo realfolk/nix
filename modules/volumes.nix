@@ -32,7 +32,7 @@ with lib;
   config =
     let
       volumes = config.webDeploy.volumes;
-      user = config.webDeploy.user;
+      username = config.webDeploy.user.name;
     in
     {
       fileSystems = builtins.mapAttrs
@@ -53,14 +53,14 @@ with lib;
             value = {
               wantedBy = [ "multi-user.target" ];
               after = [ "${mountPathSystemd}.mount" ];
-              description = "Change the ownership of ${mountPath} to ${user.name}";
+              description = "Change the ownership of ${mountPath} to ${username}";
               serviceConfig = {
                 Type = "oneshot";
                 User = "root";
                 ExecStart =
                   let
                     script = pkgs.writeShellScript "chown-${mountPathSystemd}.sh" ''
-                      chown -hR ${user.name} ${mountPath}
+                      chown -hR ${username} ${mountPath}
                     '';
                   in
                   "${script}";

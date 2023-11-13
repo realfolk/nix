@@ -59,7 +59,7 @@ in
   config =
     let
       apps = config.webDeploy.apps;
-      user = config.webDeploy.user;
+      username = config.webDeploy.user.name;
     in
     mkIf (apps != {})
       {
@@ -74,7 +74,7 @@ in
                 environment = app.environment;
                 serviceConfig = {
                   Type = "simple";
-                  User = user.name;
+                  User = username;
                   Restart = "always";
                   WorkingDirectory = "~";
                   ExecStart = app.command;
