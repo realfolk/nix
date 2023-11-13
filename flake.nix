@@ -94,11 +94,23 @@
     }) //
     {
       nixosModules = {
+        default = {
+          imports = [
+            self.nixosModules.apps
+            self.nixosModules.redirects
+            self.nixosModules.secrets
+            self.nixosModules.user
+            self.nixosModules.volumes
+            self.nixosModules.digitalOcean
+          ];
+        };
+
         apps = import ./modules/apps.nix;
         redirects = import ./modules/redirects.nix;
         secrets = import ./modules/secrets.nix;
         user = import ./modules/user.nix;
         volumes = import ./modules/volumes.nix;
+        digitalOcean = import ./modules/virtualisation/digital-ocean.nix;
       };
     };
 }
