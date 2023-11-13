@@ -40,10 +40,6 @@ let
     };
 in
 {
-  imports = [
-    ./user.nix
-  ];
-
   options.webDeploy.apps = mkOption {
     type = with types; attrsOf (submodule appOptions);
     default = {};

@@ -94,11 +94,11 @@
     }) //
     {
       nixosModules = {
-        apps = import ./nixos/modules/apps.nix;
-        redirects = import ./nixos/modules/redirects.nix;
-        secrets = import ./nixos/modules/secrets.nix;
-        user = import ./nixos/modules/user.nix;
-        volumes = import ./nixos/modules/volumes.nix;
+        apps = import ./modules/apps.nix;
+        redirects = import ./modules/redirects.nix;
+        secrets = import ./modules/secrets.nix;
+        user = import ./modules/user.nix;
+        volumes = import ./modules/volumes.nix;
       };
     };
 }

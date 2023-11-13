@@ -3,10 +3,6 @@
 with lib;
 
 {
-  imports = [
-    ./user.nix
-  ];
-
   options.webDeploy.volumes = mkOption {
     type = types.attrsOf (types.submodule {
       options = {

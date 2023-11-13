@@ -6,10 +6,6 @@ let
   secrets = config.webDeploy.secrets;
 in
 {
-  imports = [
-    ./user.nix
-  ];
-
   options.webDeploy.secrets = mkOption {
     type = with types; attrsOf path;
     default = {};
