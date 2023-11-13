@@ -51,6 +51,14 @@
         generate-ethereum-account = flakeUtils.lib.mkApp { drv = self.packages.${system}.generate-ethereum-account; };
       };
 
+      nixosModules = {
+        apps = import ./nixos/modules/apps.nix;
+        redirects = import ./nixos/modules/redirects.nix;
+        secrets = import ./nixos/modules/secrets.nix;
+        user = import ./nixos/modules/user.nix;
+        volumes = import ./nixos/modules/volumes.nix;
+      };
+
       lib = {
         inherit elmPackages;
         haskellPackages = haskellPackages.packages.${system};
