@@ -36,6 +36,11 @@ let
             }
             '';
         };
+
+        maxRuntime = mkOptions {
+          type = types.str;
+          default = "infinity";
+        };
       };
     };
 in
@@ -76,6 +81,7 @@ in
                   Type = "simple";
                   User = username;
                   Restart = "always";
+                  RuntimeMaxSec = app.maxRuntime;
                   WorkingDirectory = "~";
                   ExecStart = app.command;
                 };
