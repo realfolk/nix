@@ -37,7 +37,7 @@ let
             '';
         };
 
-        maxRuntime = mkOptions {
+        maxRuntime = mkOption {
           type = types.str;
           default = "infinity";
         };
