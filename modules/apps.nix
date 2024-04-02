@@ -16,6 +16,12 @@ let
           example = literalExpression "qoda.fi";
         };
 
+        aliases = mkOption {
+          type = types.listOf types.str;
+          default = [ ];
+          example = [ "alias0.qoda.fi" "alias1.qoda.fi" ];
+        };
+
         port = mkOption {
           type = types.port;
           example = literalExpression "3000";
@@ -28,12 +34,12 @@ let
 
         environment = mkOption {
           type = with types; attrsOf str;
-          default = {};
+          default = { };
           example = literalExpression
             ''
-            {
-              NAME = "VALUE";
-            }
+              {
+                NAME = "VALUE";
+              }
             '';
         };
 
@@ -47,17 +53,17 @@ in
 {
   options.webDeploy.apps = mkOption {
     type = with types; attrsOf (submodule appOptions);
-    default = {};
+    default = { };
     example = literalExpression
       ''
-      {
-        "qoda-dapp-server" = {
-          description = "Run the Qoda DApp server.";
-          domain = "qoda.fi";
-          port = 3000;
-          command = "/path/to/binary --arg1 --arg2=foo";
-        };
-      }
+        {
+          "qoda-dapp-server" = {
+            description = "Run the Qoda DApp server.";
+            domain = "qoda.fi";
+            port = 3000;
+            command = "/path/to/binary --arg1 --arg2=foo";
+          };
+        }
       '';
   };
 
@@ -66,7 +72,7 @@ in
       apps = config.webDeploy.apps;
       username = config.webDeploy.user.name;
     in
-    mkIf (apps != {})
+    mkIf (apps != { })
       {
         systemd.services = mapAttrs'
           (name: app:
@@ -99,6 +105,7 @@ in
               value = {
                 forceSSL = true;
                 enableACME = true;
+                serverAliases = app.aliases;
                 locations = {
                   "/" = {
                     proxyPass = "http://127.0.0.1:${builtins.toString app.port}";
