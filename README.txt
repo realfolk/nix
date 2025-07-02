@@ -1,1 +1,1 @@
-A Nix flake containing packages, apps, project helpers and developer shells for working on Real Folk's projects.
+This repository has been archived in favour of [Compass](https://github.com/GoSteadily/nix-compass).
